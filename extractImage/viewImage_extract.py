@@ -1,6 +1,7 @@
 import json
 import os
 import cv2
+import glob
 from matplotlib import pyplot as plt
 
 imgDir = "/home/kara9147/ML/caltech-pedestrian-dataset-converter/data/images/"
@@ -124,10 +125,25 @@ def boudingBoxing():
     cv2.waitKey()
     cv2.destroyAllWindows()
 
+def resize_store_gray_images():
+    filelist = glob.glob('/home/kara9147/ML/caltech-pedestrian-dataset-converter/data/cropImgDir/*.png')
+
+    for f in filelist:
+        file_name = os.path.basename(f)
+        img_data = cv2.imread(f, cv2.IMREAD_GRAYSCALE)
+        #print(img_data.shape)
+        if img_data is None:
+            print("Image {} could not be loaded!!".format(f))
+            exit(-1)
+        print(file_name)
+        img_resized = cv2.resize(img_data, (72, 72))
+        cv2.imwrite(resizeImgDir + file_name, img_resized)
+
 #estimateMaxWidthAndHeight()
 #cropAndSave()
 #allVideos()
-boudingBoxing()
+#boudingBoxing()
+resize_store_gray_images()
 
 
 
