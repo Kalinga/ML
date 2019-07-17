@@ -456,19 +456,17 @@ by\par
 \@prevdegrees
 \par
 \choosecase{Submitted to the} \choosecase{\@department} \\
-\choosecase{in partial fulfillment of the requirements for the}
+\choosecase{in fulfillment of the requirements for the}
 \choosecase{\@degreeword} 
 \choosecase{of}
 \par
 \choosecase{\@degree}
 \par
 at the
-\par\MIT\par
+\par\TUIL\par
 \@degreemonth\ \@degreeyear
-\par
-\@copyrightnotice
-\par
-\vskip 3\baselineskip
+
+\vskip 1\baselineskip
 \signature{Author}{\@department \\ \@thesisdate}
 \par
 \vfill
@@ -489,7 +487,7 @@ by \\
 \par
 \def\baselinestretch{1}\@normalsize
 Submitted to the \@department \\
-on \@thesisdate, in partial fulfillment of the \\
+on \@thesisdate, in fulfillment of the \\
 requirements for the \@degreeword\ of \\
 \@degree
 \end{center}
@@ -520,6 +518,9 @@ requirements for the \@degreeword\ of \\
 
 \def\MIT{MASSACHUSETTS INSTITUTE OF TECHNOLOGY}
 \def\Mit{Massachusetts Institute of Technology}
+
+\def\TUIL{TECHNISCHE UNIVERSIT{\"A}T ILMENAU}
+\def\tuil{ Technische Universit{\"a}t Ilmenau}
 
 \def\permission{\par\noindent{\centering
    The author hereby grants to MIT permission to reproduce and to
