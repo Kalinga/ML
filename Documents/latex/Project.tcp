@@ -6,7 +6,7 @@ Version=4
 MainFile=Ray,Kalinga Bhusan.tex
 UseBibTeX=1
 UseMakeIndex=1
-ActiveProfile=LaTeX ⇨ DVI ⇨ PDF
+ActiveProfile=LaTeX ⇨ PDF
 ProjectLanguage=en
 ProjectDialect=US
 
