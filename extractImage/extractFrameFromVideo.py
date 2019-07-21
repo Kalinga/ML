@@ -59,7 +59,7 @@ def annotationSchema():
 def play():
     path = "/home/kara9147/ML/caltech-pedestrian-dataset-converter/data/plots/"
     set_name = "set00"
-    video_name = "V000"
+    video_name = "V006"
 
     annotations = json.load(open('/home/kara9147/ML/caltech-pedestrian-dataset-converter/data/annotations.json'))
     frames = annotations[set_name][video_name]['frames']
@@ -84,14 +84,17 @@ def play():
 
         frameNo = frameNo + 1
 
-        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        #gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
-        cv2.imshow('frame',gray)
+        cv2.imshow('frame',frame)
         if cv2.waitKey(250) & 0xFF == ord('q'):
             break
 
     cap.release()
     cv2.destroyAllWindows()
 
-annotationSchema()
-#play()
+#annotationSchema()
+play()
+
+
+
