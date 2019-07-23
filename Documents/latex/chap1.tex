@@ -12,17 +12,41 @@ online recommender system, medical diagnosis and few more. With availability of 
 computing power such as high speed CPU and high bandwidth GPU, large amount of 
 data from which actionable insight is expected and nice and powerful ecosystem of  
 tools such as TensorFlow and PyTorch; many researchers are enticed in the scientific 
-community starting from neurologist to computer scientist to research in the area of Artificial Intelligence. Several interesting findings, new algorithms, record breaking benchmarking results 
-while applying Deep Learning algorithms has taken AI to a different level.
+community starting from neurologist to computer scientist towards research in the area 
+of Artificial Intelligence. Several interesting findings, new algorithms, record 
+breaking benchmarking results while applying Deep Learning algorithms has taken 
+AI to a different level. Challenges are there while just considering image data, 
+the verities of image sources for example we can get photos that are taken by 
+professionals, synthetic photos drawn by image generators and real life photos 
+that we see and capture in our day to day life. So the results benchmarks and 
+observation across these aforementioned classes of data set does not transfer to the other
 
 We have reached at XXXX starting from single artificial Neuron, 
 
-Challenges are there while just considering image data, the verities of image sources 
-for example we can get photos that are taken by professionals, synthetic photos drawn 
-by image generators and real life photos that we see and capture in our day to day life.
-So the results benchmarks and observation across these aforementioned classes of 
-data set does not transfer to the other.
+\section{Terminology}
 
+In the current work and by other authors also training and learning is used interchangeably. Let me loosely define some frequently used terms and concepts in the Machine Learning arena.
+\\*\textbf{Epoch:}
+During the learning the network sees the set of samples several times. During the training, presenting the network entire set of sample once is known as an epoch. So an epoch represents one iteration over entire dataset.
+\\*\textbf{Batch and batch size:}
+Mainly because of two reasons we can not pass the entire data set to the network for the training purpose at once. Firstly, datasets by nature most of the time are huge. Let it be image data or some other textual data, in many scenarios it is not possible to feed all the data because of hardware constraints, such as not enough RAM to hold entire dataset.
+Secondly to update weight during training process, network has to wait for a very very long time to calculate the delta weight after processing all the input data. To solve this problem usually the full data set is split into several small batches and number of samples within each small batch is known as 
+Batch and batch size.
+\\*\textbf{Iterations:} 
+Number of batches that a neural network process to complete a single epoch.
+The number of  iterations, batch size and  number of data samples in the data set is given by, the below expression.
+\begin{equation}
+    D = B * I
+\end{equation}
+Where D is the total number of samples in the dataset.
+\\*B is the number of samples in the mini batch that is fed to the network at once.
+\\*I is the  total number of batches the network process in a single epoch.
+
+Larger batch size requires more computational resource and achieves faster completion, in contrast smaller batch size leads to more generalization. In this regards, Yann  LeCun humorously said
+\begin{quote}
+Training with large mini batches is bad for your health. More importantly, it's bad for your test error.  Friends, don;t let friends use mini batches larger than 32.
+\end{quote}   
+The empirical study of the performance of mini-batch stochastic gradient descent in \cite{masters2018revisiting} show that, the team obtained the best training stability and generalization performance using small batch sizes, for a given computational cost, across a wide range of experiments they conducted. In all cases they have achieved the best results with batch sizes m = 32 or smaller.
 
 
 Micro-optimization is a technique to reduce the overall operation count of
