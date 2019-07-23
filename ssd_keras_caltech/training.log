@@ -1,0 +1,42 @@
+Epoch 1/10
+618459596
+
+3724/3724 [==============================] - 31809s 9s/step - loss: 3.3122 - val_loss: 3.1434
+
+Epoch 00001: val_loss improved from inf to 3.14345, saving model to ssd7_epoch-01_loss-3.3122_val_loss-3.1434.h5
+Epoch 2/10
+3724/3724 [==============================] - 38611s 10s/step - loss: 2.9265 - val_loss: 3.1769
+
+Epoch 00002: val_loss did not improve from 3.14345
+Epoch 3/10
+3724/3724 [==============================] - 42309s 11s/step - loss: 2.8490 - val_loss: 3.0063
+
+Epoch 00003: val_loss improved from 3.14345 to 3.00631, saving model to ssd7_epoch-03_loss-2.8490_val_loss-3.0063.h5
+Epoch 4/10
+3724/3724 [==============================] - 42356s 11s/step - loss: 2.7958 - val_loss: 2.9888
+
+Epoch 00004: val_loss improved from 3.00631 to 2.98879, saving model to ssd7_epoch-04_loss-2.7958_val_loss-2.9888.h5
+Epoch 5/10
+3724/3724 [==============================] - 43166s 12s/step - loss: 2.7596 - val_loss: 2.9775
+
+Epoch 00005: val_loss improved from 2.98879 to 2.97745, saving model to ssd7_epoch-05_loss-2.7596_val_loss-2.9775.h5
+Epoch 6/10
+3724/3724 [==============================] - 42905s 12s/step - loss: 2.7433 - val_loss: 3.0394
+
+Epoch 00006: val_loss did not improve from 2.97745
+Epoch 7/10
+3724/3724 [==============================] - 43141s 12s/step - loss: 2.7257 - val_loss: 3.0857
+
+Epoch 00007: val_loss did not improve from 2.97745
+Epoch 8/10
+3724/3724 [==============================] - 42601s 11s/step - loss: 2.7163 - val_loss: 3.0807
+
+Epoch 00008: val_loss did not improve from 2.97745
+Epoch 9/10
+3724/3724 [==============================] - 43354s 12s/step - loss: 2.7086 - val_loss: 3.0512
+
+Epoch 00009: val_loss did not improve from 2.97745
+Epoch 10/10
+3724/3724 [==============================] - 43317s 12s/step - loss: 2.7047 - val_loss: 3.0653
+
+Epoch 00010: val_loss did not improve from 2.97745
