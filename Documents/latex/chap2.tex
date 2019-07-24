@@ -5,6 +5,24 @@
 %% \files=
 %% prompt when you run the file main.tex through LaTeX.
 \chapter{State of the Art}
+Apart from object detection which includes different classes of living or non-living, detection of human is considered to be of high  interest of many researchers as application of human detection finds its application in several areas such as patient monitoring, security system, robot-human co-working environment, autonomous driving and many more. There are several proposals proposed for person detection, many of them try to achieve high accuracy at the expense of high computational cost. This leads many of such proposal not useful for real time application such driver-less cars.   
+Before the dominance of convolutional neural
+network (CNN) and Deep Learning which has outperformed other traditional methods in the recent times, several researchers found some interesting and great methods, it is worth to present and discuss some of the these nice work done by researchers in these area. 
+\par
+Pedro F. Felzenszwalb and team proposed deformable part model (DPM) \cite{felzenszwalb2009object} which is based on pictorial structures that represent objects by means of a collection of object parts arranged in a deformable configuration. Each object part captures local appearance properties of
+an object and the deformable configuration is identified  by spring-like connections between certain pairs of such parts. They use a variation of Support Vector Machine(SVM) which they named as latent SVM (LSVM) is used for the training of the model and  histogram of oriented gradients (HOG) used for features vector.
+
+@article{felzenszwalb2009object,
+	title={Object detection with discriminatively trained part-based models},
+	author={Felzenszwalb, Pedro F and Girshick, Ross B and McAllester, David and Ramanan, Deva},
+	journal={IEEE transactions on pattern analysis and machine intelligence},
+	volume={32},
+	number={9},
+	pages={1627--1645},
+	year={2009},
+	publisher={IEEE}
+}
+
 
 Micro-optimization is a technique to reduce the overall operation count of
 floating point operations.  In a standard floating point unit, floating
