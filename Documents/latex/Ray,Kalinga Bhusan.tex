@@ -31,6 +31,8 @@
 %% some PDF conversions mess up the ligatures.  -LB, 1/22/2014
 \usepackage{cmap}
 \usepackage[T1]{fontenc}
+
+% Originally this was the style
 \pagestyle{plain}
 
 %% This bit allows you to either specify only the files which you wish to
@@ -42,6 +44,8 @@
 \def\all{all}
 %\ifx\files\all \typeout{Including all files.} \else \typeout{Including only \files.} \includeonly{\files} \fi
 
+\usepackage{fancyhdr}
+
 \begin{document}
 
 \include{cover}
@@ -50,15 +54,17 @@
 % signature.tex for more information and uncomment the following line if
 % applicable.
 % \include{signature}
+
+% Original pagestyle
 \pagestyle{plain}
 
 \include{contents}
 
 \include{chap1}
 \include{chap2}
-\include{chap3}
-\include{chap4}
-\include{chap5}
+%\include{chap3}
+%\include{chap4}
+%\include{chap5}
 
 \appendix
 \include{appa}

@@ -4,6 +4,16 @@
 %% You can process specific files by typing their names in at the 
 %% \files=
 %% prompt when you run the file main.tex through LaTeX.
+\pagestyle{fancy}
+\fancyhf{}
+%\fancyhead[EL]{\nouppercase\leftmark}
+\fancyhead[EL]{\leftmark} % E: even, L:Left, O:Odd, 
+\fancyhead[OL]{\leftmark}
+\fancyhead[ER,OR]{\thepage}
+
+\pagenumbering{arabic}
+\setcounter{page}{1}
+
 \chapter{Introduction}
 \section{Motivation}
 Deep Learning has made some significant impacts in the areas of image classification, 
