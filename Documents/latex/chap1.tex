@@ -33,31 +33,30 @@ AI to a different level.
 \vspace{1em}
 \noindent Unlike human, recognizing and localizing objects still remains a challenge for artificial 
 systems, mainly because of two factors - view point dependent object variability and
-high in-class variability. In the human detection task intra-class variability includes
+high in-class variability. In the human detection task, intra-class variability includes
 color of the clothing, type of clothing, appearance, pose, illumination, partial occlusions
-and background. Pedestrian detection has remain most studied problem in the computer vision.
-In the last decade with application of CNNs researchers are able to get some nice results 
+and background. Pedestrian detection has remained one of  the most studied problem in the computer vision.
+In the last decade with application of CNNs, researchers are able to get some nice results 
 those are good enough for application in practical scenarios.
 
 \vspace{1em}
 \noindent The detection of the human is a partial task where human and machine must interact 
 with each other and machine expected to understand human intention. For example, 
-a self driving must anticipate and predict the pedestrian in a reliable manner, whether 
-the pedestrian intents to cross the road, or standing near the curb or waiting at waiting shelter.
-Such intent prediction problem can be viewed as two step related problem. First detect the 
+an autonomous vehicle must anticipate and predict the pedestrian behavior in a reliable manner, whether 
+the pedestrian intents to cross the road, or standing near the curb or waiting at the waiting-shelter.
+Such intent prediction problem can be viewed as two step related problems. First detect the 
 human and track the person in several frames and predict after tracking for certain time using a 
 previously trained model for such intention prediction.
 
 \vspace{1em}
 \noindent The main idea of this thesis is to take a look at different aspect of solving such a problem, 
 starting with reliable data \footnote{There are several image and video datasets exist in the 
-public domain for research purpose} acquisition, understanding the annotation in the data, 
-training a neural network using efficient features for the detection of person. Detecting the same person in the series of subsequent frames and finally prediction of pedestrian intention using another classifier.
+public domain for research purpose} acquisition, understanding the annotation in the data, extractions of efficient features, training a neural network using extracted features for the detection of person. Detecting the same person in the series of subsequent frames and finally prediction of pedestrian intention using another classifier. Such a classifier must have been trained with set of sequence labeled data. 
 
 \section{Problem Statement} 
-Which model to be used for the first part of the problem, which deals with detecting the pedestrians in the scene? If the model capable of detecting multiple pedestrians in the scene? What is the processing time, if the processing time under a threshold for the purpose of using it in the real time scenario?
-Which kind of algorithm to use used for second part of the problem, which deals with predicting the pedestrian intention? What is the time delay of such models if such model can be applicable in real time application scenarios?
-How to choose right network for such problems, training them on large dataset which includes several thousand of images or hours of real video recordings? How to set and tune several hyper parameters while training the neural network? This Thesis work mainly answers above question by investigating and  applying several methodologies into practice.
+Which model to be used for the first part of the problem, which deals with detecting the pedestrians in the scene? If the model is capable of detecting multiple pedestrians in the scene? What is the processing time, if the processing time is under a threshold for the purpose of using it in the real time scenario?
+Which kind of algorithm to be used for second part of the problem, which deals with predicting the pedestrian intention? What is the time delay of such models and whether such models are suitable for real time application scenarios?
+How to choose right network for such problems, training them on large dataset which includes several thousand of images or hours of video recordings? How to set and tune several hyper parameters while training the neural network? This Thesis work mainly answers above question by investigating and  applying several methodologies into the practice.
 
 \section{Objectives}
 The main idea of this thesis is establishing a Pipeline by selecting appropriate models at both stages and evaluating the end results. Acquiring the public dataset related to pedestrian movement and validating the proposed model on them and estimating the performance in accordance with the dataset owner specification for doing so.
@@ -65,7 +64,7 @@ The main idea of this thesis is establishing a Pipeline by selecting appropriate
 \section{Overview}
 The texts in this thesis is split as below.
 \begin{itemize}
-  \item {\textbf {\textit{Chapter 2}} describes CNN for feature extraction, Deep Learning, state of the art}
+  \item {\textbf {\textit{Chapter 2}} describes State-of-the-art, CNN for feature extraction, Deep Learning}
   \item {\textbf {\textit{Chapter 3}} explains methodology choosing right algorithm}
 	\item {\textbf {\textit{Chapter 4}} presents implementation, and shows the results of various experiments and setups  }
 	\item {\textbf {\textit{Chapter 5}} concludes my thesis with a summary of the main results and brief discussion for probable future topics of research}
