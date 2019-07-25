@@ -45,6 +45,14 @@
 %\ifx\files\all \typeout{Including all files.} \else \typeout{Including only \files.} \includeonly{\files} \fi
 
 \usepackage{fancyhdr}
+%\usepackage{acro}
+
+%\include{abbr}
+
+\usepackage{nomencl}
+\makenomenclature
+ 
+\renewcommand{\nomname}{Abbreviation}
 
 \begin{document}
 
@@ -59,6 +67,14 @@
 \pagestyle{plain}
 
 \include{contents}
+
+\newcommand{\newpara}{\vspace{1em}\noindent}
+
+\include{abbr}
+
+% C:\Users\kara9147\Documents\GitHub\ML\Documents\latex>
+%makeindex -s nomencl.ist -t  main.nlg -o %main.nls main.nlo
+\printnomenclature
 
 \include{chap1}
 \include{chap2}

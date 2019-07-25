@@ -16,10 +16,10 @@
 
 \chapter{Introduction}
 \section{Motivation}
-Apart from object detection which includes different classes of living or non-living, detection of human is considered to be of high  interest of many researchers as application of human detection finds its application in several areas such as patient monitoring, security system, robot-human co-working environment, autonomous driving and many more.
+Apart from object detection which includes different classes of living or non-living, detection of human is considered to be of high  interest of many researchers as application of human detection finds its application in several areas such as patient monitoring, security system, robot-human co-working environment, autonomous driving and many more. Specifically, knowing the motive of the pedestrian to cross the road in front of the vehicle, before the pedestrian has actually entered into the road, would
+empower the the ADAS to warm the driver, or for autonomous vehicle to perform required maneuvers in time .
 
-\vspace{1em}
-\noindent Deep Learning has made some significant impacts in the areas of image classification, 
+\newpara Deep Learning has made some significant impacts in the areas of image classification, 
 object detection, speech recognition, text-to-speech generation, machine translation,
 online recommender system, medical diagnosis and few more. With availability of high 
 computing power such as high speed CPU and high bandwidth GPU, large amount of 
@@ -30,8 +30,7 @@ of Artificial Intelligence. Several interesting findings, new algorithms, record
 breaking benchmarking results while applying Deep Learning algorithms has taken 
 AI to a different level.
 
-\vspace{1em}
-\noindent Unlike human, recognizing and localizing objects still remains a challenge for artificial 
+\newpara Unlike human, recognizing and localizing objects still remains a challenge for artificial 
 systems, mainly because of two factors - view point dependent object variability and
 high in-class variability. In the human detection task, intra-class variability includes
 color of the clothing, type of clothing, appearance, pose, illumination, partial occlusions
@@ -39,8 +38,7 @@ and background. Pedestrian detection has remained one of  the most studied probl
 In the last decade with application of CNNs, researchers are able to get some nice results 
 those are good enough for application in practical scenarios.
 
-\vspace{1em}
-\noindent The detection of the human is a partial task where human and machine must interact 
+\newpara The detection of the human is a partial task where human and machine must interact 
 with each other and machine expected to understand human intention. For example, 
 an autonomous vehicle must anticipate and predict the pedestrian behavior in a reliable manner, whether 
 the pedestrian intents to cross the road, or standing near the curb or waiting at the waiting-shelter.
@@ -48,8 +46,7 @@ Such intent prediction problem can be viewed as two step related problems. First
 human and track the person in several frames and predict after tracking for certain time using a 
 previously trained model for such intention prediction.
 
-\vspace{1em}
-\noindent The main idea of this thesis is to take a look at different aspect of solving such a problem, 
+\newpara The main idea of this thesis is to take a look at different aspect of solving such a problem, 
 starting with reliable data \footnote{There are several image and video datasets exist in the 
 public domain for research purpose} acquisition, understanding the annotation in the data, extractions of efficient features, training a neural network using extracted features for the detection of person. Detecting the same person in the series of subsequent frames and finally prediction of pedestrian intention using another classifier. Such a classifier must have been trained with set of sequence labeled data. 
 

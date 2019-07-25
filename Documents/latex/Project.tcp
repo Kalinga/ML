@@ -3,10 +3,10 @@ Type=TeXnicCenterProjectInformation
 Version=4
 
 [ProjectInfo]
-MainFile=Ray,Kalinga Bhusan.tex
+MainFile=main.tex
 UseBibTeX=1
 UseMakeIndex=1
-ActiveProfile=LaTeX ⇨ PDF
+ActiveProfile=LaTeX-PDF-nomencl
 ProjectLanguage=en
 ProjectDialect=US
 
