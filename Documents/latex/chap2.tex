@@ -8,7 +8,8 @@
 The problem of human action classification or pedestrian intent prediction from a sequence of images has got an huge attention from the researchers in recent years. 
 This problem is inherently complex as it is based on other 
 complex problems. To detect the action or intention one must first detect the object in an image and classify it. Track the same object over several continuous frames to identify the intention. There are several proposals proposed for person detection, many of them try to achieve high accuracy at the expense of high computational cost. This leads many of such proposal not useful for real time application such driver-less cars.   
-Before the dominance of convolutional neural network (CNN) and Deep Learning which has outperformed other traditional methods in the recent times, several researchers found some interesting and great methods, it is worth to present and discuss some of the these nice work done by researchers in these area.
+Before the dominance of convolutional neural network (CNN) and Deep Learning which has outperformed other traditional methods in the recent times, several researchers found some interesting and great methods, it is worth to present and discuss some of the these nice work done by researchers in these area. In general we can think of two types activity prediction, (i) early activity detection (ii) future activity prediction. In the case of early activity detection, the class label of an action is inferred at the point when the activity starts or shortly after the activity started. Where as in the future activity prediction, the class label of the action that will happen next is predicted and also the starting time in the future is also predicted.
+ 
 
 \newpara
 Pedro F. Felzenszwalb and team proposed deformable part model (DPM) \cite{felzenszwalb2009object} which is based on pictorial structures that represent objects by means of a collection of object parts arranged in a deformable configuration. Each object part captures local appearance properties of
@@ -17,6 +18,11 @@ an object and the deformable configuration is identified  by spring-like connect
 \newpara
 Researcher Fang and team in their 2018 paper \cite{fang2018pedestrian} described about image based 2D pose estimation for detecting pedestrian intention: whether the pedestrian crossing the road, stopping before entering the road, starting to walk or bending towards the road. They performed their experiment with choreographed Daimler dataset. They also used publicly available, a rather new dataset (JAAD) that allows development of methods and experiment in a more naturalistic driving condition. They used CNN based pedestrian detection, tracking and pose estimation to predict the crossing action from monocular images. In their paper they have mentioned that without additional information such as stereo, optical-flow or ego-motion compensation, they achieved the state-of-the-art results with only image-based 2D pose estimation.
 
+
+\newpara
+ Abu Farha and team presented \cite{abu2018will} a similar work, where they discussed methods to predicts action that are considerably in future and their duration. They proposed two approaches, in the first approach they used RNN-HMM, where the anticipated activities are fed to the RNN to predict the remaining duration of the on going activities and duration of the next activity along with its class.
+ In the second approach the proposed CNN based single pass model which predicts length and label of the future action. They have found that these both approach have outperformed both grammar based baseline and nearest neighbor baseline.
+  
 \section{Terminology}
 In the current work and by other authors also training and learning is used interchangeably. Let me loosely define some frequently used terms and concepts in the Machine Learning arena.
 \\*\textbf{Epoch:}
