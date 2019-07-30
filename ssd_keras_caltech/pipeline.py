@@ -37,10 +37,11 @@ img_width = 640  # Width of the input images
 img_channels = 3  # Number of color channels of the input images
 intensity_mean = 127.5  # Set this to your preference (maybe `None`). The current settings transform the input pixel values to the interval `[-1,1]`.
 intensity_range = 127.5  # Set this to your preference (maybe `None`). The current settings transform the input pixel values to the interval `[-1,1]`.
-n_classes = 2  # Number of positive classes pepole, person, person-fa, person?
+n_classes = 1  # Number of positive classes pepole, person, person-fa, person?
 scales = [0.08, 0.16, 0.32, 0.64,
           0.96]  # An explicit list of anchor box scaling factors. If this is passed, it will override `min_scale` and `max_scale`.
-aspect_ratios = [0.5, 1.0, 2.0]  # The list of aspect ratios for the anchor boxes
+aspect_ratios = [0.1, 0.2, 0.33, 0.413, 0.418, 0.8]#width/height
+#aspect_ratios = [0.5, 1.0, 2.0]  # The list of aspect ratios for the anchor boxes
 two_boxes_for_ar1 = True  # Whether or not you want to generate two anchor boxes for aspect ratio 1
 steps = None  # In case you'd like to set the step sizes for the anchor box grids manually; not recommended
 offsets = None  # In case you'd like to set the offsets for the anchor box grids manually; not recommended
@@ -87,7 +88,7 @@ def build_prediction_model():
 
         model.compile(optimizer=adam, loss=ssd_loss.compute_loss)
     else:
-        model_path = '/home/kara9147/ML/ssd_keras_caltech/ssd7_epoch-05_loss-2.7596_val_loss-2.9775.h5'
+        model_path = '/home/kara9147/ML/ssd_keras_caltech/1class_epoch-03_loss-2.4099_val_loss-2.4834.h5'
 
         print("Using saved model: {}".format(model_path))
         model = load_model(model_path,
@@ -236,8 +237,8 @@ def draw():
 
 def play():
     start_time_video = time.time()
-    #cap = cv2.VideoCapture("/home/kara9147/ML/caltech-pedestrian-dataset-converter/data/plots/set10_V007.avi")
-    cap = cv2.VideoCapture("/home/kara9147/ML/caltech-pedestrian-dataset-converter/data/plots/set08_V004.avi")
+    cap = cv2.VideoCapture("/home/kara9147/ML/caltech-pedestrian-dataset-converter/data/plots/set00_V000.avi")
+    #cap = cv2.VideoCapture("/home/kara9147/ML/caltech-pedestrian-dataset-converter/data/plots/set08_V004.avi")
 
     # Time to read all frames, predict and put bounding boxes around them, and show them.
     i = 0
@@ -271,7 +272,7 @@ def play():
             # 4: Decode the raw prediction `y_pred`
 
             y_pred_decoded = decode_detections(y_pred,
-                                               confidence_thresh=0.25,
+                                               confidence_thresh=0.5,
                                                iou_threshold=0.1,
                                                top_k=200,
                                                normalize_coords=normalize_coords,
