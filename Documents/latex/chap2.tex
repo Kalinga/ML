@@ -115,11 +115,40 @@ The empirical study of the performance of mini-batch stochastic gradient descent
 %
 %\tagrind[htbp]{code/pmn.s.tex}{Post Multiply Normalization}{opt:pmn}
 
+\section{Data Acquisition}
+
+Overview of caltech dataset
+ \cite{dollar2011pedestrian}
+which  includes   350,000  pedestrianbounding boxes (BB) labeled in 250,000 frames and remainsthe largest  such data  set to  date.
 
 Challenges are there while just considering image data, 
 the verities of image sources for example we can get photos that are taken by 
 professionals, synthetic photos drawn by image generators and real life photos 
 that we see and capture in our day to day life. So the results of these benchmarks and 
 observation across these aforementioned classes of data set does not transfer to the other scenarios.
+
+As already mentioned by \cite{walk2010new} Caltech data set is difficult for various reasons.
+Many small pedestrians
+realistic occlusion frequency
+image quality is poor
+includes blur
+visible JPEG artifacts
+
+\newpara
+In our training data we had total number of BB for Person as a label=153234
+sample data looks as below:
+%frame,xmin,xmax,ymin,ymax,class_id
+%set00_V000_1213.png,573,591,169,211,1
+%set00_V000_1213.png,473,484,170,193,1
+%set00_V000_166.png,406,418,164,187,1
+%set00_V000_166.png,435,442,167,181,1
+%set00_V000_166.png,233,241,120,134,1
+%set00_V000_744.png,564,588,153,218,1
+%set00_V000_744.png,565,587,173,206,1
+%set00_V000_654.png,406,417,162,194,1
+In 61439 unique images.
+There are 72933 BB whose height is less than 50. As per \cite{walk2010new}, they considered 50-pixel-or-taller, unoccluded pedestrians, as they are not clear. Removing those BB where the height is less than 5o pixel, we are left with 80301 BBs in 37181 unique frames.
+%df_with_height = df[(df['height'] >= 50) == True]
+%df_with_width = df[(df['width'] <= 10) == True], gave us 519 such BBs where the width of the BB is less than or equals to 10 pixel. We also discarded such labels from our input training data set. We are finally left with 79831 BBs in 37081 unique frames.
 
 
