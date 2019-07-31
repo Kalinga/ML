@@ -98,8 +98,25 @@ Larger batch size requires more computational resource and achieves faster compl
 ``Training with large mini batches is bad for your health. More importantly, it's bad for your test error.  Friends, don't let friends use mini batches larger than 32.''
 \end{quote}   
 The empirical study of the performance of mini-batch stochastic gradient descent in \cite{masters2018revisiting} show that, the team obtained the best training stability and generalization performance using small batch sizes, for a given computational cost, across a wide range of experiments they conducted. In all cases they have achieved the best results with batch sizes m = 32 or smaller.
+\\*\textbf{Intersection Over Union:}
+Intersection Over Union (IOU) is a measure similar to Jaccard Index that measures the overlap ratio between two bounding boxes. It evaluates the ratio between area of  overlapping area between two BBs and area of union between them.
 
+\begin{equation}
+    IoU = \frac{area of overlap} {area of union}
+\end{equation}
 
+\begin{tikzpicture}
+\draw [ultra thick,red] (0,0) rectangle (4,4);
+\draw [ultra thick,blue] (1.5,1.5) rectangle (5.5,5.5);
+\begin{scope}
+\fill[green] (1.5,1.5) rectangle (3.98,3.98);
+\end{scope}
+\end{tikzpicture}
+
+\begin{tikzpicture}
+\draw [ultra thick,blue] (0,0) rectangle (4,4);
+\draw [ultra thick,red] (1.5,1.5) rectangle (5.5,5.5);
+\end{tikzpicture}
 %optimizations are described in detail in section~\ref{ch1:opts}.
 
 %\section{Description of micro-optimization}\label{ch1:opts}
