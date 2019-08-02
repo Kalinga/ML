@@ -180,3 +180,32 @@ There are 72933 BB whose height is less than 50. As per \cite{walk2010new}, they
 %df_with_width = df[(df['width'] <= 10) == True], gave us 519 such BBs where the width of the BB is less than or equals to 10 pixel. We also discarded such labels from our input training data set. We are finally left with 79831 BBs in 37081 unique frames.
 
 
+\section{SSD}
+Faster R-CNN, operates at only 7 frames per second (FPS) SSD aimed at improving the speed by employing some new methods which does not re-samples pixels or features for the bounding hypothesized boxes. This improves the speed substantially with out much or no decrease in accuracy. 
+
+
+The central principle on which SSD \cite{liu2016ssd} is based on is, discretizing the output space of bounding boxes into a set of pre-determined default boxes consisting of different aspect ratios and scale per feature map location. The principle used as part of SSD overcomes the challenge faced in \cite{ren2015faster} and its predecessors which includes multi phase training and slow inference time. SSD does this by doing both the task of object localization and classification in a single forward pass. It uses a \textit{MultiBox} approach, which pre-computes priors \footnote{Alternatively known as anchors in Faster R-CNN}, fixed size bounding boxes. In MultiBox based approach, prediction starts with priors and try to regress closer to the ground truth bounding boxes.
+It uses combination of confidence loss and location loss for calculating the loss of the model. Confidence loss uses categorical cross-entropy \footnote{otherwise known as softmax loss} and location loss uses Smooth L1-Norm \footnote{\textit{L1}-norm is well known as \textit{Manhattan }norm}.
+
+\begin{equation}
+	\left \| x_1 \right \| =\sum_i(x_{1_i})
+\end {equation}
+
+L1-norm gives distance between two vectors, known as \textit{Sum of Absolute Difference} distance given by below equation:
+\begin{equation}
+	SAD(x_1,x_2) = \left \| x_1-x_2 \right \|_1 = \sum \left | x_{1_i}-x_{2_i} \right |
+\end {equation}
+
+\textbf{Fixed Priors:} In case of MultiBox, the priors are chosen according to their IoU with respect to ground truth above a certain defined ratio. \footnote{Usually 0.5 is considered as threshold value}.
+However, in case of Fixed Priors, carefully, a set of different size and aspect ratio priors are chosen manually. This lead to removal of pre-training phase for the prior generation. For a feature map with \textit{b} default bounding boxes per cell and model is trained for \textit{c} classes, then the number of values for the feature map is given by the relation 
+\begin{equation}
+	f = (m * n )  (4 + c) * b
+\end {equation}
+4 in the above equation indicates number of co-ordinate values for two corner points. Additional point to note is, more the number of default boxes, the more accurate is the detection at the cost of speed.
+
+\section{Data Augmentation}
+Data augmentation  is a key in image based deep leaning application. This make the model robust to different object sizes, logically possible  additional training image generation via appkiaction of various image modification such as flipping horizontally \footnote{Many time flipping image vertically does not make sense in real world scenarios, wherever it makes sense, it can be done as well.}, shear, distortion, change in color intensity. In \cite{liu2016ssd} authors mentioned application of flipping each image randomly horizontally with probability of 0.5, this ensures objects appear on left and right with similar likelihood.
+
+\section{Non-Maximum Suppression (NMS)}
+During inference time, SSD predicts, a large number of boxes in a cluttered manner. To prune most of them, a technique called \textit{non-maximum suppression} is applied. This technique discards those boxes having lebel confidence less than a threshold and IoU less than a defined threshold. \footnote{Usually 0.45 is used as IoU threshold}. After discarding such boxes, only top \textit{N} predictions are returned which ensures most likely predictions.
+ 
