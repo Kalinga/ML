@@ -209,3 +209,98 @@ Data augmentation  is a key in image based deep leaning application. This make t
 \section{Non-Maximum Suppression (NMS)}
 During inference time, SSD predicts, a large number of boxes in a cluttered manner. To prune most of them, a technique called \textit{non-maximum suppression} is applied. This technique discards those boxes having lebel confidence less than a threshold and IoU less than a defined threshold. \footnote{Usually 0.45 is used as IoU threshold}. After discarding such boxes, only top \textit{N} predictions are returned which ensures most likely predictions.
  
+\section{RNN}
+Recurrent neural network primarily are densly connected neural network simmilar to feed forward network with a key difference; introduction of \textit{time} component in RNN. The output of a hidden layer in an RNN is \textit{fed back } into itself. With this we can model the data which is time dependent or sequence dependent in nature.
+
+Mathematically RNNs can be represented as below: 
+\begin{equation}
+	\textbf{h}_t = \sigma (\textbf{Ux}_t + \textbf{Vh}_{t-1}) 
+\end{equation}
+
+Where \textit{U} is the input weight matrix and \textit{V} is the recurrent outputs. Time stamp denoted by \textit{t}. If we unfold the above equation and go back three time step we have,
+
+\begin{equation}
+	\textbf{h}_t = \sigma (\textbf{Ux}_t + \textbf{V}(\sigma(\textbf{Ux}_{t-1} + \textbf{V}(\sigma(\textbf{Ux}_{t-2})))
+\end{equation}
+
+And in general, if we unfold in n time slot back,
+
+\begin{equation}
+\textbf{h}_t = \sigma (\textbf{Ux}_t + ...( \textbf{V}(\sigma(\textbf{Ux}_{t-n+2} + \textbf{V}(\sigma(\textbf{Ux}_{t-n+1})..)))
+\end{equation}
+
+The problem in general suffered by a plain RNN is over a large period of time the back propagation gradients either exploding or vanishing. During a \textit{vanishing gradient } problem, the gradients of the network output with respect to the early layer of the network becomes extremely small, which indicates a large change in the parameters for the early layers does not have a big effect on network output. Usually this happens when the activation function such as \textit{sigmoid} or \textit{tanh} squash their input into a small output range non-linearly. Considering the activation function sigmoid which is defined as below,
+
+\begin{equation}
+	S(x) = \frac{1}{ 1+ e^x}
+\end{equation}
+
+Sigmoid is a special case of standard Logistic function defined as 
+\begin{equation}
+f(x) = \frac{L}{ 1+ e^{-k(x-x_0)}}
+\end{equation}
+Where \\
+L: Curve’s maximum value \\
+k: Steepness of the curve \\
+(x0 - x): value of Sigmoid’s midpoint \\
+
+A standard logistic function is called sigmoid when (k=1,x0=0,L=1) and can be viewed as below: \\
+
+\begin{tikzpicture}
+\begin{axis}%
+[
+grid=major,     
+xmin=-10,
+xmax=10,
+axis x line=bottom,
+ytick={0,.5,1},
+ymax=1,
+axis y line=middle,
+]
+\addplot%
+[
+blue,%
+mark=none,
+samples=200,
+domain=-6:6,
+]
+(x,{1/(1+exp(-x))});
+\end{axis}
+\end{tikzpicture}
+
+Sigmoid function can be re written as  \\
+\begin{equation}
+	S(x) = (1+e^{-x})^{-1}
+\end{equation}
+And by taking the derivative \\
+\begin{equation}
+\frac{d}{dx}S(x) = \frac{d}{dx} (1+e^{-x})^{-1} \\
+= \frac{e^{-x}} {(1+e^{-x})^{-2}} 
+\end{equation}
+
+Plotting the derivative of the sigmoid activation function as below, we notice that 
+
+\begin{tikzpicture}
+\begin{axis}%
+[
+grid=major,     
+xmin=-10,
+xmax=10,
+axis x line=bottom,
+ytick={0,.5,1},
+ymax=1,
+axis y line=middle,
+]
+\addplot%
+[
+blue,%
+mark=none,
+samples=100,
+domain=-10:10,
+]
+(x,{exp(-x)/((1+exp(-x)) * (1+exp(-x)))});
+\end{axis}
+\end{tikzpicture}
+
+the sigmoid derivative is well below the 1.0 in the whole range of input values. And this makes the gradients vanishing quite fast as, multiplying this value \footnote{value less than 1} several times for several layer \textit{ back propagation} brings the value close to 0.
+
