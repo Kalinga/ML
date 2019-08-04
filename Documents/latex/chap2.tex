@@ -210,14 +210,61 @@ Data augmentation  is a key in image based deep leaning application. This make t
 During inference time, SSD predicts, a large number of boxes in a cluttered manner. To prune most of them, a technique called \textit{non-maximum suppression} is applied. This technique discards those boxes having lebel confidence less than a threshold and IoU less than a defined threshold. \footnote{Usually 0.45 is used as IoU threshold}. After discarding such boxes, only top \textit{N} predictions are returned which ensures most likely predictions.
  
 \section{RNN}
-Recurrent neural network primarily are densly connected neural network simmilar to feed forward network with a key difference; introduction of \textit{time} component in RNN. The output of a hidden layer in an RNN is \textit{fed back } into itself. With this we can model the data which is time dependent or sequence dependent in nature.
+Recurrent neural network primarily are densly connected neural network simmilar to feed forward network with a key difference; introduction of \textit{time} component in RNN. The output of a hidden layer in an RNN is \textit{fed back } into itself. With this we can model the data which is time dependent or sequence dependent in nature. In programming terms this can be represented by a fixed program taking certain inputs and some internal variable.
+\begin{center}
+
+\begin{tikzpicture}[item/.style={circle,draw,thick,align=center},
+itemc/.style={item,on chain,join}]
+ \begin{scope}[start chain=going right,nodes=itemc,every
+ join/.style={-latex,very thick},local bounding box=chain]
+ \end{scope}
+ \node[left=2em,item] (AL) {$A$};
+ \path (AL.west) ++ (-1em,2em) coordinate (aux);
+ \draw[very thick,-latex,rounded corners] (AL.east) -| ++ (1em,2em) -- (aux) 
+ |- (AL.west);
+ \draw[very thick,-latex] (AL.north) -- ++ (0,2em)
+ node[above,item,fill=gray!10] {$h_t$};
+ \draw[very thick,latex-] (AL.south) -- ++ (0,-2em)
+ node[below,item,fill=gray!10] {$x_t$};
+\end{tikzpicture}
+
+\end{center}
+
+The above diagram depicts a compact loop form of an RNN showing a loop. An RNN can be thought as a multiple copies of the same network, each previous network passing a message to it successor. By unrolling the compact for we can visualize the RNN as below. 
+\begin{center}
+
+\begin{tikzpicture}[item/.style={circle,draw,thick,align=center},
+itemc/.style={item,on chain,join}]
+ \begin{scope}[start chain=going right,nodes=itemc,every
+ join/.style={-latex,very thick},local bounding box=chain]
+ \path node (A0) {$A$} node (A1) {$A$} node (A2) {$A$} node[xshift=2em] (At)
+ {$A$};
+ \end{scope}
+ \node[left=1em of chain,scale=2] (eq) {$=$};
+ \node[left=2em of eq,item] (AL) {$A$};
+ \path (AL.west) ++ (-1em,2em) coordinate (aux);
+ \draw[very thick,-latex,rounded corners] (AL.east) -| ++ (1em,2em) -- (aux) 
+ |- (AL.west);
+ \foreach \X in {0,1,2,t} 
+ {\draw[very thick,-latex] (A\X.north) -- ++ (0,2em)
+ node[above,item,fill=gray!10] (h\X) {$h_\X$};
+ \draw[very thick,latex-] (A\X.south) -- ++ (0,-2em)
+ node[below,item,fill=gray!10] (x\X) {$x_\X$};}
+ \draw[white,line width=0.8ex] (AL.north) -- ++ (0,1.9em);
+ \draw[very thick,-latex] (AL.north) -- ++ (0,2em)
+ node[above,item,fill=gray!10] {$h_t$};
+ \draw[very thick,latex-] (AL.south) -- ++ (0,-2em)
+ node[below,item,fill=gray!10] {$x_t$};
+ \path (x2) -- (xt) node[midway,scale=2,font=\bfseries] {\dots};
+\end{tikzpicture}
+\end{center}
 
 Mathematically RNNs can be represented as below: 
 \begin{equation}
 	\textbf{h}_t = \sigma (\textbf{Ux}_t + \textbf{Vh}_{t-1}) 
 \end{equation}
 
-Where \textit{U} is the input weight matrix and \textit{V} is the recurrent outputs. Time stamp denoted by \textit{t}. If we unfold the above equation and go back three time step we have,
+Where \textit{U} is the input weight matrix and \textit{V} is the recurrent outputs. Time stamp denoted by \textit{t}. \sigma represent an activation function e.g a tanh or sigmoid. If we unfold the above equation and go back three time step we have,
 
 \begin{equation}
 	\textbf{h}_t = \sigma (\textbf{Ux}_t + \textbf{V}(\sigma(\textbf{Ux}_{t-1} + \textbf{V}(\sigma(\textbf{Ux}_{t-2})))
@@ -246,28 +293,30 @@ k: Steepness of the curve \\
 
 A standard logistic function is called sigmoid when (k=1,x0=0,L=1) and can be viewed as below: \\
 
+\begin{center}
 \begin{tikzpicture}
-\begin{axis}%
-[
-grid=major,     
-xmin=-10,
-xmax=10,
-axis x line=bottom,
-ytick={0,.5,1},
-ymax=1,
-axis y line=middle,
-]
-\addplot%
-[
-blue,%
-mark=none,
-samples=200,
-domain=-6:6,
-]
-(x,{1/(1+exp(-x))});
-\end{axis}
+	\begin{axis}%
+		[
+		grid=major,     
+		xmin=-10,
+		xmax=10,
+		axis x line=bottom,
+		ytick={0,.5,1},
+		ymax=1,
+		axis y line=middle,
+		]
+		\addplot%
+		[
+		blue,%
+		mark=none,
+		samples=200,
+		domain=-6:6,
+		]
+		(x,{1/(1+exp(-x))});
+	\end{axis}
 \end{tikzpicture}
 
+\end{center}
 Sigmoid function can be re written as  \\
 \begin{equation}
 	S(x) = (1+e^{-x})^{-1}
@@ -279,6 +328,7 @@ And by taking the derivative \\
 \end{equation}
 
 Plotting the derivative of the sigmoid activation function as below, we notice that 
+\begin{center}
 
 \begin{tikzpicture}
 \begin{axis}%
@@ -301,6 +351,7 @@ domain=-10:10,
 (x,{exp(-x)/((1+exp(-x)) * (1+exp(-x)))});
 \end{axis}
 \end{tikzpicture}
+\end{center}
 
 the sigmoid derivative is well below the 1.0 in the whole range of input values. And this makes the gradients vanishing quite fast as, multiplying this value \footnote{value less than 1} several times for several layer \textit{ back propagation} brings the value close to 0.
 
