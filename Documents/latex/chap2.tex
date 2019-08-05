@@ -260,11 +260,24 @@ itemc/.style={item,on chain,join}]
 \end{center}
 
 Mathematically RNNs can be represented as below: 
+
 \begin{equation}
+	\textbf{h}_t = f_W(\textbf{h}_{t-1} + \textbf{x}_{t}) 
+\end{equation}
+
+Where \textbf{\textit{ f}} is some function with parameter \textbf{W}. \\
+This same function \textbf{\textit{ f}} and same weight matrix \textbf{W} is used at every step of the computation. \\
+\textit{$h_t$} is new state \\
+\textit{$h_{t-1}$} is old state \\
+\textit{$x_t$} input vector at time step \textit{t}\\
+
+In a more simplified form we can have the above function as:
+
+\begin{equation}\label{hidden_state}
 	\textbf{h}_t = \sigma (\textbf{Ux}_t + \textbf{Vh}_{t-1}) 
 \end{equation}
 
-Where \textit{U} is the input weight matrix and \textit{V} is the recurrent outputs. Time stamp denoted by \textit{t}. \sigma represent an activation function e.g a tanh or sigmoid. If we unfold the above equation and go back three time step we have,
+Where \textit{U} is the input weight matrix and \textit{V} is the recurrent outputs. Time stamp denoted by \textit{t}. $\sigma$ represent an activation function e.g a \textit{tanh} or \textit{sigmoid}. If we unfold the above equation and go back three time step we have,
 
 \begin{equation}
 	\textbf{h}_t = \sigma (\textbf{Ux}_t + \textbf{V}(\sigma(\textbf{Ux}_{t-1} + \textbf{V}(\sigma(\textbf{Ux}_{t-2})))
@@ -275,6 +288,13 @@ And in general, if we unfold in n time slot back,
 \begin{equation}
 \textbf{h}_t = \sigma (\textbf{Ux}_t + ...( \textbf{V}(\sigma(\textbf{Ux}_{t-n+2} + \textbf{V}(\sigma(\textbf{Ux}_{t-n+1})..)))
 \end{equation}
+
+\begin{equation}
+	\textbf{y}_t = (\textbf{W}_{hy}  \textbf{h}_{t}) 
+\end{equation}
+
+Where \textbf{$y_t$}  represents output at a time stamp \textit{t} \\
+\textbf{$h_t$} is the hidden state, computed as in equation \ref{hidden_state}
 
 The problem in general suffered by a plain RNN is over a large period of time the back propagation gradients either exploding or vanishing. During a \textit{vanishing gradient } problem, the gradients of the network output with respect to the early layer of the network becomes extremely small, which indicates a large change in the parameters for the early layers does not have a big effect on network output. Usually this happens when the activation function such as \textit{sigmoid} or \textit{tanh} squash their input into a small output range non-linearly. Considering the activation function sigmoid which is defined as below,
 
@@ -287,9 +307,9 @@ Sigmoid is a special case of standard Logistic function defined as
 f(x) = \frac{L}{ 1+ e^{-k(x-x_0)}}
 \end{equation}
 Where \\
-L: Curve’s maximum value \\
+L: Curve's maximum value \\
 k: Steepness of the curve \\
-(x0 - x): value of Sigmoid’s midpoint \\
+(x0 - x): value of Sigmoid's midpoint \\
 
 A standard logistic function is called sigmoid when (k=1,x0=0,L=1) and can be viewed as below: \\
 
@@ -355,3 +375,5 @@ domain=-10:10,
 
 the sigmoid derivative is well below the 1.0 in the whole range of input values. And this makes the gradients vanishing quite fast as, multiplying this value \footnote{value less than 1} several times for several layer \textit{ back propagation} brings the value close to 0.
 
+\section{JAAD}
+\cite{rasouli2017agreeing} JAAD contains 650 samples of pedestrian behavior under various street and weather condition.. 
