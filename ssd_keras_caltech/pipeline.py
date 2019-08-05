@@ -40,7 +40,9 @@ intensity_range = 127.5  # Set this to your preference (maybe `None`). The curre
 n_classes = 1  # Number of positive classes pepole, person, person-fa, person?
 scales = [0.08, 0.16, 0.32, 0.64,
           0.96]  # An explicit list of anchor box scaling factors. If this is passed, it will override `min_scale` and `max_scale`.
+#aspect_ratios = [0.1, 0.2, 0.33, 0.413, 0.418, 0.8]#width/height
 aspect_ratios = [0.1, 0.2, 0.33, 0.413, 0.418, 0.8]#width/height
+
 #aspect_ratios = [0.5, 1.0, 2.0]  # The list of aspect ratios for the anchor boxes
 two_boxes_for_ar1 = True  # Whether or not you want to generate two anchor boxes for aspect ratio 1
 steps = None  # In case you'd like to set the step sizes for the anchor box grids manually; not recommended
@@ -58,7 +60,7 @@ def build_prediction_model():
 
     # Loss function
     ssd_loss = SSDLoss(neg_pos_ratio=3, alpha=1.0)
-    model_path = '/home/kara9147/ML/ssd_keras_caltech/ssd7_epoch-01_loss-3.0443_val_loss-2.9963.h5'
+    model_path = '/home/kara9147/ML/ssd_keras_caltech/ssd7_epoch-03_loss-2.4693_val_loss-2.4097.h5'
 
 
     # 2: Load the saved model
@@ -105,8 +107,8 @@ def play():
             # 4: Decode the raw prediction `y_pred`
 
             y_pred_decoded = decode_detections(y_pred,
-                                               confidence_thresh=0.5,
-                                               iou_threshold=0.4,
+                                               confidence_thresh=0.25,
+                                               iou_threshold=0.1,
                                                top_k=200,
                                                normalize_coords=normalize_coords,
                                                img_height=img_height,
