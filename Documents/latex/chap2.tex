@@ -11,7 +11,14 @@ complex problems. To detect the action or intention one must first detect the ob
 Before the dominance of convolutional neural network (CNN) and Deep Learning which has outperformed other traditional methods in the recent times. Several researchers found some interesting and great methods, some such nice work done by researchers in these area shall be presented and discussed in the subsequent sections. In general we can think of two types activity prediction, (i) early activity detection (ii) future activity prediction. In the case of early activity detection, the class label of an action is inferred at the point when the activity starts or shortly after the activity started. Where as in the future activity prediction, the class label of the action that will happen next is predicted and also the starting time in the future is also predicted.
  
 \section{DPM model based on Manual feature extraction}
-\newpara HOG related
+\subsection{HOG }
+In year 2005 Dalal \& Triggs found a method which is superior to Haar wavelets descriptor and other state-of-the-art method based on edge and gradient, at that time for the task of pedestrian detection. HOG descriptors are comparable with edge orientation histogram, SIFT \footnote{Scale Invariant Feature Transform, by transforming image data into scale invariant co-ordinates relative to local features \cite{lowe2004distinctive}} descriptors and shape context, however these are computed on a dense grid of uniformly spaced cell and use overlapping local contrast normalization. Which they named as Histograms of Oriented Gradient (HOG) features\cite{dalal2005histograms}. The gradient is computed by applying a filter kernel \\
+\begin{center}
+$[-1,0,1] \, and \, [-1,0,1] ^{T}$
+\end{center}
+
+\newpara After computation of the gradient they are gradient values are used to update a 9 histogram channel which are evenly spread over 0-180 degrees or 0-360 degrees. They tried peson/non-person classification using this robust feature descriptor and Linear SVM and got state-of-the-art result of that time.
+
 \newpara
 Pedro F. Felzenszwalb and team proposed deformable part model (DPM) \cite{felzenszwalb2009object} which is based on pictorial structures that represent objects by means of a collection of object parts arranged in a deformable configuration. Each object part captures local appearance properties of
 an object and the deformable configuration is identified  by spring-like connections between certain pairs of such parts. They use a variation of Support Vector Machine(SVM) which they named as latent SVM (LSVM) is used for the training of the model and  histogram of oriented gradients (HOG) used for features vector. After the success of usages of CNNs in tasks like image classification, CNNs are used to extract the feature sets instead of manual extraction. CNNs found to be outperform manual feature extraction as they are principally designed Neural net \textbf{architecture which preserves local connections and shares weights}.
