@@ -4,11 +4,17 @@
 %% You can process specific files by typing their names in at the 
 %% \files=
 %% prompt when you run the file main.tex through LaTeX.
-\chapter{Proposal and Methodology}
 
+\chapter{Proposal and Methodology}
 
 \section{Terminology}
 In the current work and by other authors also training and learning is used interchangeably. Let me loosely define some frequently used terms and concepts in the Machine Learning arena.
+
+\section{Data Augmentation}
+Data augmentation  is a key in image based deep leaning application. This make the model robust to different object sizes, logically possible  additional training image generation via appkiaction of various image modification such as flipping horizontally \footnote{Many time flipping image vertically does not make sense in real world scenarios, wherever it makes sense, it can be done as well.}, shear, distortion, change in color intensity. In \cite{liu2016ssd} authors mentioned application of flipping each image randomly horizontally with probability of 0.5, this ensures objects appear on left and right with similar likelihood.
+
+\section{Non-Maximum Suppression (NMS)}
+During inference time, SSD predicts, a large number of boxes in a cluttered manner. To prune most of them, a technique called \textit{non-maximum suppression} is applied. This technique discards those boxes having lebel confidence less than a threshold and IoU less than a defined threshold. \footnote{Usually 0.45 is used as IoU threshold}. After discarding such boxes, only top \textit{N} predictions are returned which ensures most likely predictions.
 \\*\textbf{Epoch:}
 During the learning the network sees the set of samples several times. During the training, presenting the network entire set of sample once is known as an epoch. So an epoch represents one iteration over entire dataset.
 \\*\textbf{Batch and batch size:}
@@ -104,6 +110,3 @@ There are 72933 BB whose height is less than 50. As per \cite{walk2010new}, they
 %df_with_height = df[(df['height'] >= 50) == True]
 %df_with_width = df[(df['width'] <= 10) == True], gave us 519 such BBs where the width of the BB is less than or equals to 10 pixel. We also discarded such labels from our input training data set. We are finally left with 79831 BBs in 37081 unique frames.
 
-
-\section{JAAD}
-\cite{rasouli2017agreeing} JAAD contains 650 samples of pedestrian behavior under various street and weather condition.. 
