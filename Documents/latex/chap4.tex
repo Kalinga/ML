@@ -18,11 +18,40 @@ Brief summary
 \subsection{Graphs and results}
 
 \section{JAAD Dataset}
-JAAD \cite{rasouli2017agreeing} contains 346 video clips of pedestrian behavior under various street and weather condition. The annotations include vehicle actions, appearance of the pedestrian pedestrian BB coordinates, occlusion information and activities. Rasouli et al. provided a supporting GitHub code for easier interaction with JAAD data. The videos can be downloaded by running the script \colorbox{lightgray}{download\textunderscore clips.sh}. The video clips are downloaded into JAAD\textunderscore clips and the clips are named as below.\\
+
+JAAD \cite{rasouli2017agreeing} is a publicly available large scale data set that includes data for pedestrian detection with behavioral and contextual information. It contains 346 video clips of pedestrian data that includes occlusion label, temporal correlation, behavioral aspect, contextual information weather related data. Rasouli et al. provided a supporting GitHub code for easier interaction with JAAD data. The videos can be downloaded by running the script \colorbox{lightgray}{download\textunderscore clips.sh}. The video clips are downloaded into JAAD\textunderscore clips and the clips are named as below.\\
 \colorbox{lightgray} {JAAD\textunderscore clips/video\textunderscore  0001.mp4} \\
 \colorbox{lightgray} {JAAD\textunderscore clips/video\textunderscore  0002.mp4}
 
 Using \colorbox{lightgray}{split\textunderscore clips\textunderscore to\textunderscore .sh} the frames are extracted to corresponding video id directory with in a floder called \textit{images}
 \colorbox{lightgray} {images/video\textunderscore  0001/0000.png} \\
 \colorbox{lightgray} {images/video\textunderscore  0001/0001.png} \\
+
+In JAAD annotations are divided into 5 groups:
+\begin{itemize}
+	\item Annotations: Information about pedestrian bounding box, occlusion information, activities. These annotations are one per frame per label.
+	\item Attribute: Contains information regarding pedestrian’s crossing points, crossing characteristics. These annotations are one per pedestrian.
+	\item Appearance: Information regarding pedestrian pose, clothing, objects they carry. These information are one per frame per pedestrian.
+	\item Traffic: Includes information about traffic signs, traffic light for each frame.
+	\item Vehicle: Per frame vehicle speed information e.g moving fast, speeding up.
+\end{itemize}
+
+
+The early work includes prediction of road users behavior by employing dynamic factors e.g trajectory prediction, velocity prediction or predicting final goal of the pedestrian. Recently behavioral aspect such as awareness by estimating head orientation along with other contextual information such as sign, weather condition, visibility and individual characteristics of the pedestrian such as things he carry, age and sex, size of the group he is associated with influence crossing behavior.
+
+TODO:  pedestrian to identify the pedestrians with behavioral tags (i.e. the ones demonstrating the intention of crossing or located close to the curb). 
+Occlusion information is provided in the form of tags for
+each bounding box: partial occlusion (between 25 and 75%
+visible) and full occlusion (less than 25% visible).
+ 654 unique pedestrian samples (out of 2.2k samples) with behavioral tags in the
+dataset. 
+The
+pedestrians’ actions are categorized into 3 groups: Precondition- this refers to the state of the pedestrian prior to crossing and can be either standing, moving slow or fast. Attention- the way the pedestrian becomes aware of the approaching vehicle. These actions, depending on their duration, are looking ( > 1s) or glancing (≤ 1s). Response- this
+includes the behaviors that pedestrians exhibit in response
+to the action of the approaching vehicle, namely, stop, clear path, slow down, speed up, hand gesture and nod.
+
+Weakly supervised learning!
+Sigmoid cross entropy vs  softmax
+
+
 
