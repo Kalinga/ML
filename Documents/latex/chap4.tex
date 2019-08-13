@@ -5,10 +5,61 @@
 %% \files=
 %% prompt when you run the file main.tex through LaTeX.
 \chapter{Implementation and Results}
+During the exploration and implementation of the Pedestrian intention prediction pipeline, SSD was chosen as the first block which acts as Pedestrian detector. In this chapter, how SSD was trained on large dataset, acquisition of data set and several aspect of Machine learning and Deep learning shall be discussed.
 
-Brief summary
+\section{Data Acqusition}
+Challenges are there while just considering image data, the verities of image sources for example we can get photos that are taken by professionals, synthetic photos drawn by image generators and real life photos that we see and capture in our day to day life. So the results of these benchmarks and 
+observation across these aforementioned classes of data set does not transfer to the other scenarios.
+As recommended always for machine learning tasks, we should consider real data as close as possible to the environment where the designed system is expected to work. And luckily there exist some excellent data set in the public domain. I chose Caltech Data set \cite{dollar2009pedestrian}, which is one of the latest data set available in the public till today. 
 
-\section{Caltech Dataset}
+\newpara
+This data set contains highly annotated video, recorded from a moving vehicle in a normal trafic situation. It contains pedestrians vary largely in appearance, pose and scale. It also includes occlusion information. It contains close to 10 hours of recording at 30 fps with a video resolution 640 x 480. As seen and mentioned by the authors the overall image quality lower than that of same image resolution. The data set includes ~350,000  pedestrian bounding boxes (BB) labeled in 250,000frames and remains the largest such data set to  date. As already mentioned by \cite{walk2010new} Caltech data set is difficult for various reasons.
+\begin{itemize}
+	\item Many small pedestrians
+	\item realistic occlusion frequency
+	\item image quality is poor
+	\item includes blur
+	\item visible JPEG artifacts
+\end{itemize}
+
+\section{Data preparation}
+After the video data got acquired, with help of a publicly available python project \cite{shuntasaito2015}, the original annotations in \textit{MATLAB} compatible \textit{vbb} format is converted to a JSON structure for easier consumption. The generated json file further processed and required data is extracted into a csv file using a python script located at \href{ https://github.com/Kalinga/ML/blob/master/ssd_keras_caltech/json_anno_csv_conversion.ipynb} {GitHub}. As mentioned by \cite{dollar2009pedestrian} the video set from 00-05 is expected for training purpose and 06-10 is for testing purpose.
+For simplicity purpose below data are discarded from the training set.
+\begin{itemize}
+	\item Class label with \textit{people}, \textit{person-fa}, \textit{person?}
+	\item occluded \textit{person} label
+	\item images below 50 pixel in height
+	\item images below 5 pixel in width
+\end{itemize}
+
+In our training data we had total 153234 number of BB for Person as a label and 
+sample data looks as below:
+%frame,xmin,xmax,ymin,ymax,class_id
+%set00_V000_1213.png,573,591,169,211,1
+%set00_V000_1213.png,473,484,170,193,1
+%set00_V000_166.png,406,418,164,187,1
+%set00_V000_166.png,435,442,167,181,1
+%set00_V000_166.png,233,241,120,134,1
+%set00_V000_744.png,564,588,153,218,1
+%set00_V000_744.png,565,587,173,206,1
+%set00_V000_654.png,406,417,162,194,1
+In 61439 unique images.
+There are 72933 BB whose height is less than 50. As per \cite{walk2010new}, they considered 50-pixel-or-taller, unoccluded pedestrians, as they are not clear. Removing those BB where the height is less than 5o pixel, we are left with 80301 BBs in 37181 unique frames.
+%df_with_height = df[(df['height'] >= 50) == True]
+%df_with_width = df[(df['width'] <= 10) == True], gave us 519 such BBs where the width of the BB is less than or equals to 10 pixel. We also discarded such labels from our input training data set. We are finally left with 79831 BBs in 37081 unique frames.
+
+Observation: While using SSD7, i observed that the algorithm is very sensitive to the list of aspect ratios for the anchor boxes. To begin with, the values for aspect\textunderscore ratios = $[0.5, 1.0, 2.0]$ were used and that lead to very poor result in the evaluation phase.
+
+Caltech test data set 06 - 10
+The bounding box, label are extracted into labels\textunderscore test \textunderscore full.csv using a python script. labels\textunderscore test \textunderscore full.csv consists of total 154436 records.
+After removing occluded and other classes except person, remaining number of records were 73218 , where the unique number of images are 42910. After discarding records with less than 50 pixel for height or 5 pixel for width we are left with 29620. Randomly chosen 1000 records were taken for test purpose for recording the \textit{mAP}.
+
+
+
+After epoch-03 the accuracy was
+
+
+  
 \subsection{SSD}
 \subsection{Training using Keras}
 \section{Parameters}
@@ -52,6 +103,7 @@ to the action of the approaching vehicle, namely, stop, clear path, slow down, s
 
 Weakly supervised learning!
 Sigmoid cross entropy vs  softmax
+batch normalization
 
 
 

@@ -93,7 +93,7 @@ TODO  describe object localisation using sliding window, scale, pyramid and exis
 \newpara  R-CNN discussion
 
 \section{Model based on R-CNN }
-\newpara Estimating pedestrian future using pedestrian dynamic model were done in the past and these models are difficult to adjust and to achieve robustness, they require high quality stereo data, dense optical flow and ego-motion compensation which requires vehicle data.  Using the 2D pose estimation method, that is applied to the still images in sliding window manner, a state of-the-art result has been obtained\cite{fang2018pedestrian} for the C/NC task with Daimler dataset. In the pipeline of their task they used below components.
+\newpara Estimating pedestrian future using pedestrian dynamic model were done in the past and these models are difficult to adjust and to achieve robustness, they require high quality stereo data, dense optical flow and ego-motion compensation which requires vehicle data.  Using the 2D pose estimation method, that is applied to the still images in sliding window manner, a state of-the-art result has been obtained\cite{fang2018pedestrian} for the C/NC task with Daimler dataset. In the pipeline of their task they used below components. They have used generic off-theshelf CNN modules as Detector, Tracker and Pose Estimator in their pipeline.
 
 \begin{itemize}
 	\item Detection: Fine tuned Faster R-CNN \cite{ren2015faster} based on VGG16 CNN architecture. 
@@ -409,6 +409,8 @@ S number of rows for an action segment
 \textit{P(O|Ap, d)} measures the similarity between the video observation and the activity \textit{$A_{p}$} with progress level \textit{d}. This \textit{integral bag-of-words} uses 3-D space-time local features and detect motion changes in the video and generates descriptors representing local movements in the video. These are cuboid feature descriptors \cite{dollar2005behavior}. After the features are extracted, \textit{k-means} clustering was applied and the clusters are knows as visual words. Every feature detected is now belong to one of this k-visual words. Then the activities are model as an integral histogram of visual-words. The similarity between a video and activity model was done by comparing their histogram representation. And finally dynamic programming was used to predict the ongoing activities from videos.
 
 \section{LSTM Introduction}
+no of nodes in the hidden layer within  LSTM cell.
+
 \subsection{Models based on LSTM }
 
 
