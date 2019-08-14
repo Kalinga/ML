@@ -23,8 +23,18 @@ This data set contains highly annotated video, recorded from a moving vehicle in
 \end{itemize}
 
 \section{Data preparation}
-After the video data got acquired, with help of a publicly available python project \cite{shuntasaito2015}, the original annotations in \textit{MATLAB} compatible \textit{vbb} format is converted to a JSON structure for easier consumption. The generated json file further processed and required data is extracted into a csv file using a python script located at \href{ https://github.com/Kalinga/ML/blob/master/ssd_keras_caltech/json_anno_csv_conversion.ipynb} {GitHub}. As mentioned by \cite{dollar2009pedestrian} the video set from 00-05 is expected for training purpose and 06-10 is for testing purpose.
-For simplicity purpose below data are discarded from the training set.
+After the video data got acquired, with help of a publicly available python project \cite{shuntasaito2015}, the original annotations in \textit{MATLAB} compatible \textit{vbb} format is converted to a JSON structure for easier consumption. The generated json file further processed and required data is extracted into a csv file using a python script located at \url{ https://github.com/Kalinga/ML/blob/master/ssd_keras_caltech/json_anno_csv_conversion.ipynb}. As mentioned by \cite{dollar2009pedestrian} the video set from 00-05 is expected for training purpose and 06-10 is for testing purpose.
+
+In the Caltech data group of people are separately label as \textit{people}. With the intention, the ML model should learn individual person and identify persons rather than people, when there are several persons close by, i decided to remove \textit{people} class label from the training data set. And also the number of samples for \textit{people} and \textit{person} was disproportionately varying. This was another reason to exclude \textit{people }label from  the training. The frequency for the both classes are shown as below.
+
+\begin{figure}[H]
+\includegraphics[scale=0.4]{classid_distribution1_2}
+\begin{center}
+\caption{Class 'person' and 'pedestrian' distribution}
+\end{center}
+\end{figure}
+
+As per \cite{walk2010new}, unoccluded pedestrians with 50-pixel-or-taller are considered , as they are not clear. For simplicity purpose below data are discarded from the training set.
 \begin{itemize}
 	\item Class label with \textit{people}, \textit{person-fa}, \textit{person?}
 	\item occluded \textit{person} label
@@ -32,33 +42,47 @@ For simplicity purpose below data are discarded from the training set.
 	\item images below 5 pixel in width
 \end{itemize}
 
-In our training data we had total 153234 number of BB for Person as a label and 
-sample data looks as below:
-%frame,xmin,xmax,ymin,ymax,class_id
-%set00_V000_1213.png,573,591,169,211,1
-%set00_V000_1213.png,473,484,170,193,1
-%set00_V000_166.png,406,418,164,187,1
-%set00_V000_166.png,435,442,167,181,1
-%set00_V000_166.png,233,241,120,134,1
-%set00_V000_744.png,564,588,153,218,1
-%set00_V000_744.png,565,587,173,206,1
-%set00_V000_654.png,406,417,162,194,1
-In 61439 unique images.
-There are 72933 BB whose height is less than 50. As per \cite{walk2010new}, they considered 50-pixel-or-taller, unoccluded pedestrians, as they are not clear. Removing those BB where the height is less than 5o pixel, we are left with 80301 BBs in 37181 unique frames.
-%df_with_height = df[(df['height'] >= 50) == True]
-%df_with_width = df[(df['width'] <= 10) == True], gave us 519 such BBs where the width of the BB is less than or equals to 10 pixel. We also discarded such labels from our input training data set. We are finally left with 79831 BBs in 37081 unique frames.
+After the above mentioned clean up, our training data contains total 48194 number of BB with person as a label in 26902 unique frames and sample data looks as below:
+\begin{center}
+\texttt{  \\
+frame,xmin,xmax,ymin,ymax,class\textunderscore id \\
+set00\textunderscore V000\textunderscore 1213.png,573,591,169,211,1 \\
+set00\textunderscore V000\textunderscore 1213.png,473,484,170,193,1 \\
+set00\textunderscore V000\textunderscore 166.png,406,418,164,187,1 \\
+set00\textunderscore V000\textunderscore 166.png,435,442,167,181,1 \\
+set00\textunderscore V000\textunderscore 166.png,233,241,120,134,1 \\
+set00\textunderscore V000\textunderscore 744.png,564,588,153,218,1 \\
+set00\textunderscore V000\textunderscore 744.png,565,587,173,206,1 \\
+set00\textunderscore V000\textunderscore 654.png,406,417,162,194,1 \\
+}
+\end{center}
+ 
+\cite{dollar2009pedestrian} defines pedestrians with 80 pixels or taller as in the near scale and 30 pixel or less
+are in the far scale and rest in the medium scale. Most pedestrians are observed in medium scale. A person with 1.8m tall is 1.5s away from the vehicle for the mentioned set up and speed of 55km\/h. \cite{dollar2011pedestrian} shows that average aspect ratio \textit{$w \approx 0.41h$}. After above mentioned cleaning steps, a re calculation for the aspect ration distribution shows, it does not vary much from the original distribution, as shown below.
 
-Observation: While using SSD7, i observed that the algorithm is very sensitive to the list of aspect ratios for the anchor boxes. To begin with, the values for aspect\textunderscore ratios = $[0.5, 1.0, 2.0]$ were used and that lead to very poor result in the evaluation phase.
+\begin{figure}[h]
+\includegraphics[scale=0.4]{aspect_ratio_distribution}
+\begin{center}
+\caption{Pedestrian aspect ratio distribution}
+\end{center}
+\end{figure}
 
-Caltech test data set 06 - 10
-The bounding box, label are extracted into labels\textunderscore test \textunderscore full.csv using a python script. labels\textunderscore test \textunderscore full.csv consists of total 154436 records.
-After removing occluded and other classes except person, remaining number of records were 73218 , where the unique number of images are 42910. After discarding records with less than 50 pixel for height or 5 pixel for width we are left with 29620. Randomly chosen 1000 records were taken for test purpose for recording the \textit{mAP}.
+From Caltech data set video set 06 - 10 was used as test data. The bounding box, label are extracted into labels\textunderscore test \textunderscore full.csv using a python script. labels\textunderscore test \textunderscore full.csv consists of total 154436 records. After removing occluded and other classes except person, remaining number of records were 73218 , where the unique number of images are 42910. After discarding records with less than 50 pixel for height or 5 pixel for width we are left with 29620. Randomly chosen 1000 records were taken for test purpose for recording the \textit{mAP}. These test 1000 records consists of unique 902 images.
 
+\newpara
+\textbf{Observation:} While using SSD7, i observed that the algorithm is very sensitive to the list of aspect ratios for the anchor boxes. To begin with, the values for aspect\textunderscore ratios = $[0.5, 1.0, 2.0]$ were used and that lead to very poor result in the evaluation phase. After modifying aspect\textunderscore ratios = $[0.1, 0.2, 0.33, 0.413, 0.418, 0.5, 0.6, 0.7, 0.8, 1.0]$, recorded accuracy as below table.
 
-
-After epoch-03 the accuracy was
-
-
+\begin{center}
+ \begin{tabular}{||c c||} 
+ \hline
+ No. epoch & mAP \\ [0.8ex] 
+ \hline\hline
+ 3 & 0.426 7 \\ 
+ \hline
+ 10 & 33333333 \\
+ \hline
+\end{tabular}
+\end{center}
   
 \subsection{SSD}
 \subsection{Training using Keras}
