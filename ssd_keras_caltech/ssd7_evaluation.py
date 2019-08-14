@@ -32,12 +32,12 @@ model = load_model(model_path,
 images_dir = '/home/kara9147/ML/caltech-pedestrian-dataset-converter/data/images/'
 
 # Ground truth
-val_labels_filename  = '/home/kara9147/ML/ssd_keras_caltech/labels_val.csv'
+val_labels_filename  = '/home/kara9147/ML/ssd_keras_caltech/labels_test.csv'
 
 h5 = False
 
 if h5:
-    val_dataset = DataGenerator(load_images_into_memory=False, hdf5_dataset_path="./dataset_caltech_val.h5")
+    val_dataset = DataGenerator(load_images_into_memory=False, hdf5_dataset_path="./dataset_caltech_test.h5")
 else:
     val_dataset = DataGenerator(load_images_into_memory=False, hdf5_dataset_path=None)
 
@@ -48,7 +48,7 @@ else:
                           #include_classes=[1, 2]
                           )
 
-    val_dataset.create_hdf5_dataset(file_path='./dataset_caltech_val.h5',
+    val_dataset.create_hdf5_dataset(file_path='./dataset_caltech_test.h5',
                                     resize=False,
                                     variable_image_size=True,
                                     verbose=True)
