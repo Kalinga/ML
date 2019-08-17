@@ -32,7 +32,7 @@ In the Caltech data group of people are separately label as \textit{people}. Wit
 \begin{figure}[H]
 \includegraphics[scale=0.4]{classid_distribution1_2}
 \begin{center}
-\caption{Class 'person' and 'pedestrian' distribution}
+\caption{Class 'person' and 'people' distribution}
 \end{center}
 \end{figure}
 
@@ -61,9 +61,9 @@ set00\textunderscore V000\textunderscore 654.png,406,417,162,194,1 \\
 
 During the training an NVIDIA GeForce GTX 1080 GPU with 8GB of video memory was used, while using a validation data size equals to standard 10\% of training data, the training time was equals to unusable, as training of a single epoch was taking nearly ~30-40 hours. The experiment was run on a shared Linux server hosted within the University Network and the computing resource was shared with other students. Keeping this in view, i decided to reduce the size of the validation data set size to great extent and get an approximate impression about the model's training efficiency. Below table show the training and validation data partition.
 
-\begin{figure}[h]
+\begin {table}[H]
 \begin{center}
- \begin{tabular}{||c c c||} 
+ \begin{tabular}{||c c c||}
  \hline
  Data Set & Bounding Box & Frames\\ [0.8ex] 
  \hline\hline
@@ -76,12 +76,12 @@ During the training an NVIDIA GeForce GTX 1080 GPU with 8GB of video memory was 
 \end{tabular}
 \caption{Training and Validation sample numbers}
 \end{center}
-\end{figure}
+\end {table}
 
 \cite{dollar2009pedestrian} defines pedestrians with 80 pixels or taller as in the near scale and 30 pixel or less
 are in the far scale and rest in the medium scale. Most pedestrians are observed in medium scale. A person with 1.8m tall is 1.5s away from the vehicle for the mentioned set up and speed of 55km\/h. \cite{dollar2011pedestrian} shows that average aspect ratio \textit{$w \approx 0.41h$}. After above mentioned cleaning steps, a re calculation for the aspect ration distribution shows, it does not vary much from the original distribution, as shown below.
 
-\begin{figure}[h]
+\begin{figure}[H]
 \includegraphics[scale=0.4]{aspect_ratio_distribution}
 \begin{center}
 \caption{Pedestrian aspect ratio distribution}
@@ -93,7 +93,7 @@ As SSD has predictors at multiple level, before the model training step, a pre-p
 
 \subsection{Framework parameters}
 
-
+\begin {table}[H]
 \begin{center}
  \begin{tabular}{||c c||} 
  \hline
@@ -110,16 +110,36 @@ As SSD has predictors at multiple level, before the model training step, a pre-p
  scales & $[0.08,0.16, 0.32, 0.64, 0.96]$ \\
  \hline
 \end{tabular}
+\caption{SSD framework parameters}
 \end{center}
-
+\end{table}
 
 \subsection{Model parameters}
 \textbf{Model Architecture:}
 A 7 layers convnet with was used for modeling using keras \footnote{Keras is a high-level neural networks API, written in Python and capable of running on top of TensorFlow, CNTK, or Theano.}.
 
 \subsection{Hyper Parameters}
+
 \section{Testing}
+
 \subsection{Graphs and results}
+
+After training for 10 epochs the training error gradually reduces and the validation error revolves around training error as shown in the below graph. As the training of single epoch takes significant time the statistics were taken with small epochs.
+
+\begin{figure}[H]
+\includegraphics[scale=0.4]{conf0_loss-val_loss_0_10epochs}
+\begin{center}
+\caption{Training and Validation error after 10 epochs}
+\end{center}
+\end{figure}
+As the training error has not converged after 10 epochs it was decided to training for another 10 epoch and the graph as follows.
+
+\begin{figure}[H]
+\includegraphics[scale=0.4]{conf0_loss-val_loss_0_10epochs}
+\begin{center}
+\caption{Training and Validation error after 10 epochs}
+\end{center}
+\end{figure}
 
 \textbf{Validation:}
 
@@ -127,18 +147,22 @@ A 7 layers convnet with was used for modeling using keras \footnote{Keras is a h
 \textbf{Observation:} While using SSD7, i observed that the algorithm is very sensitive to the list of aspect ratios for the anchor boxes. To begin with, the values for aspect\textunderscore ratios = $[0.5, 1.0, 2.0]$ were used and that lead to very poor result in the evaluation phase. After modifying aspect\textunderscore ratios = $[0.1, 0.2, 0.33, 0.413, 0.418, 0.5, 0.6, 0.7, 0.8, 1.0]$, recorded accuracy as below table.
 From Caltech data set video set 06 - 10 was used as test data. The bounding box, label are extracted into labels\textunderscore test\textunderscore full.csv using a python script. labels\textunderscore test\textunderscore full.csv consists of total 154436 records. After removing occluded and other classes except person, remaining number of records were 73218 , where the unique number of images are 42910. After discarding records with less than 50 pixel for height or 5 pixel for width we are left with 29620. Randomly chosen 1000 records were taken for test purpose for recording the \textit{mAP}. These test 1000 records consists of unique 902 images.
 
+\begin{table}[H]
 \begin{center}
- \begin{tabular}{||c c||} 
+ \begin{tabular}{||c c c||} 
  \hline
- No. epoch & mAP \\ [0.8ex] 
+ No. epoch & mAP & fps\\ [0.8ex] 
  \hline\hline
- 3 & 0.426 \\ 
+ 10 & 0.661 & 10.22\\ 
  \hline
- 10 & 0.622 \\
+ 20  & TBD & TBD \\
+\hline
+ 20  & TBD & TBD \\
  \hline
 \end{tabular}
+\caption{Average Precision and fps with number of epochs}
 \end{center}
-
+\end{table}
 
 \section{JAAD Dataset}
 
