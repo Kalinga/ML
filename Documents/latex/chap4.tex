@@ -107,7 +107,7 @@ As SSD has predictors at multiple level, before the model training step, a pre-p
  \hline
  n\textunderscore  classes & 1 \\
  \hline
- scales & $[0.08,0.16, 0.32, 0.64, 0.96]$ \\
+ scales & $[0.08, 0.16, 0.32, 0.64, 0.96]$ \\
  \hline
 \end{tabular}
 \caption{SSD framework parameters}
@@ -116,7 +116,7 @@ As SSD has predictors at multiple level, before the model training step, a pre-p
 
 \subsection{Model parameters}
 \textbf{Model Architecture:}
-A 7 layers convnet with was used for modeling using keras \footnote{Keras is a high-level neural networks API, written in Python and capable of running on top of TensorFlow, CNTK, or Theano.}.
+SSD model consists of convolutional feature layers and some convolutional predictor layers that take input from different feature layers, making the model fully convolutional. In the presented model, 7 convolutional layers and 4 predictors layers are used. These 4 convolutional predictors layers take input from layers 4, 5, 6, and 7 respectively. convnet with was used for modeling using keras \footnote{Keras is a high-level neural networks API, written in Python and capable of running on top of TensorFlow, CNTK, or Theano.}. The model is created and initialised with Keras API Sequential (). 
 
 \subsection{Hyper Parameters}
 
@@ -203,6 +203,3 @@ to the action of the approaching vehicle, namely, stop, clear path, slow down, s
 Weakly supervised learning!
 Sigmoid cross entropy vs  softmax
 batch normalization
-
-
-
