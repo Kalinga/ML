@@ -36,7 +36,7 @@ def build_prediction_model():
     # Loss function
     ssd_loss = SSDLoss(neg_pos_ratio=3, alpha=1.0)
     #model_path = '/home/kara9147/ML/ssd_keras_caltech/ssd7_epoch-03_loss-2.4693_val_loss-2.4097.h5'
-    model_path = '/home/kara9147/ML/ssd_keras_caltech/ssd7_epoch-10_loss-2.1474_val_loss-2.2282.h5'
+    model_path = '/home/kara9147/ML/ssd_keras_caltech/conf1_ssd7_epoch-05_loss-2.4037_val_loss-2.4741.h5'
 
 
 
@@ -48,10 +48,10 @@ def build_prediction_model():
 def play():
     start_time_video = time.time()
 
-    #cap = cv2.VideoCapture("/home/kara9147/ML/caltech-pedestrian-dataset-converter/data/plots/set00_V000.avi")
+    cap = cv2.VideoCapture("/home/kara9147/ML/caltech-pedestrian-dataset-converter/data/plots/set00_V000.avi")
     #cap = cv2.VideoCapture("/home/kara9147/ML/caltech-pedestrian-dataset-converter/data/plots/set03_V008.avi")
     #cap = cv2.VideoCapture("/home/kara9147/ML/caltech-pedestrian-dataset-converter/data/plots/set08_V004.avi")
-    cap = cv2.VideoCapture("/home/kara9147/ML/JAAD/clips/video_0006.mp4")
+    #cap = cv2.VideoCapture("/home/kara9147/ML/JAAD/clips/video_0006.mp4")
 
 
     # Time to read all frames, predict and put bounding boxes around them, and show them.

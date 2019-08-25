@@ -7,6 +7,8 @@ from keras_layers.keras_layer_AnchorBoxes import AnchorBoxes
 from data_generator.object_detection_2d_data_generator import DataGenerator
 from eval_utils.average_precision_evaluator import Evaluator
 
+import time
+
 # Set a few configuration parameters.
 img_height = 480 # Height of the input images
 img_width = 640 # Width of the input images
@@ -22,7 +24,9 @@ K.clear_session() # Clear previous models from memory.
 ssd_loss = SSDLoss(neg_pos_ratio=3, alpha=1.0)
 
 
-model_path = '/home/kara9147/ML/ssd_keras_caltech/ssd7_epoch-03_loss-2.4693_val_loss-2.4097.h5'
+#model_path = '/home/kara9147/ML/ssd_keras_caltech/ssd7_epoch-18_loss-1.8889_val_loss-2.0988.h5'
+model_path = '/home/kara9147/ML/ssd_keras_caltech/conf1_ssd7_epoch-05_loss-2.4037_val_loss-2.4741.h5'
+
 
 print("Using saved model: {}".format(model_path))
 model = load_model(model_path,
@@ -34,7 +38,7 @@ images_dir = '/home/kara9147/ML/caltech-pedestrian-dataset-converter/data/images
 # Ground truth
 val_labels_filename  = '/home/kara9147/ML/ssd_keras_caltech/labels_test.csv'
 
-h5 = False
+h5 = True
 
 if h5:
     val_dataset = DataGenerator(load_images_into_memory=False, hdf5_dataset_path="./dataset_caltech_test.h5")
@@ -57,7 +61,7 @@ evaluator = Evaluator(model=model,
                       n_classes=n_classes,
                       data_generator=val_dataset,
                       model_mode=model_mode)
-
+current = time.time()
 results = evaluator(img_height=img_height,
                     img_width=img_width,
                     batch_size=1,
@@ -77,6 +81,11 @@ results = evaluator(img_height=img_height,
                     #decoding_normalize_coords = True,
                     #decoding_confidence_thresh = 0.1,
                     verbose=True)
+end = time.time()
+diff = end - current
+#print(diff )
+#print(902/diff )
+
 
 mean_average_precision, average_precisions, precisions, recalls = results
 print (mean_average_precision)
