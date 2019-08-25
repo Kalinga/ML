@@ -106,7 +106,7 @@ TODO  describe object localization using sliding window, scale, pyramid and exis
 Researcher Fang and team in their 2018 paper \cite{fang2018pedestrian} described about image based 2D pose estimation for detecting pedestrian intention: whether the pedestrian crossing the road, stopping before entering the road, starting to walk or bending towards the road. They performed their experiment with choreographed Daimler dataset. They also used publicly available, a rather new dataset (JAAD) \cite{kotseruba2016joint} that allows development of methods and experiment in a more naturalistic driving condition. They used CNN based pedestrian detection, tracking and pose estimation to predict the crossing action from monocular images. In their paper they have mentioned that without additional information such as stereo, optical-flow or ego-motion compensation, they achieved the state-of-the-art results with only image-based 2D pose estimation. The prediction of the action is based on per pedestrian multi-frame feature set extracted using last \textit{k} frames. Estimating the pose was central to the prediction of the crossing intention. In the results they have observed that classification with respect to features based on  skeleton of the pedestrian outperform the features based on CNN fc6 layer.
 
 \section{Single Shot Multi Box}
-SSD motivated by the ideas presented in \cite{szegedy2014scalable} where a convolutional network is trained to output the coordinates of the object bounding boxes. MultiBox loss is the weighted sum of \textit{confidence} loss and \textit{location} loss. Single Shot Multi Box with aforementioned inspiration attacked the problem with several small improvements and variation achieving state-of-the art results with still simpler architecture.
+SSD motivated by the ideas presented in \cite{szegedy2014scalable} where a convolutional network is trained to output the coordinates of the object bounding boxes. MultiBox loss is the weighted sum of \textit{confidence} loss and \textit{location} loss. Single Shot Multi Box with aforementioned inspiration attacked the problem with several small improvements and variation achieving state-of-the art results with still simpler architecture, in comparison to \cite{szegedy2014scalable} which uses a separate deep neural network to generate proposal for the bounding box.
 \subsection{SSD}
 Faster R-CNN, operates at only 7 frames per second (FPS) SSD aimed at improving the speed by employing some new methods which does not re-samples pixels or features for the bounding hypothesized boxes. This improves the speed substantially with out much or no decrease in accuracy. 
 
@@ -411,10 +411,34 @@ S number of rows for an action segment
 \textit{P(O|Ap, d)} measures the similarity between the video observation and the activity \textit{$A_{p}$} with progress level \textit{d}. This \textit{integral bag-of-words} uses 3-D space-time local features and detect motion changes in the video and generates descriptors representing local movements in the video. These are cuboid feature descriptors \cite{dollar2005behavior}. After the features are extracted, \textit{k-means} clustering was applied and the clusters are knows as visual words. Every feature detected is now belong to one of this k-visual words. Then the activities are model as an integral histogram of visual-words. The similarity between a video and activity model was done by comparing their histogram representation. And finally dynamic programming was used to predict the ongoing activities from videos.
 
 \section{LSTM Introduction}
+With arrival of new information, the model first decides which long term information is not needed anymore, and forgets it. Stores necessary part of the new information into long-term memory.
+A remember gate is learned that takes new input and working memory as input and outputs \textit{n} bummers between 0 and 1, each determines degree to which long-term memory element to be kept. Where 1 indicates to keep it and 0 indicates to forget it entirely. A small nueral network can model this \textbf{remember gate}. 
+$remember_t = \sigma(W_r x_t + U_r wm_{t-1})$
+
+$ltm'_t = \phi(W_l x_t + U_l wm_{t-1})$
+Phi is an activation function, commonly chosen to be  tanh .
+
+updated long-term memory:
+$ltm_t = remember_t \circ ltm_{t-1} + save_t \circ ltm'_t$
+
+$focus_t = \sigma(W_f x_t + U_f wm_{t-1})$
+
+$wm_t = focus_t \circ \phi(ltm_t)$
+
+
+Our working memory is then
+
 no of nodes in the hidden layer within  LSTM cell.
 
 \subsection{Models based on LSTM }
 
+\subsection{Tracking}
+Human trackers can be divided into motion model or appearance model. Based on appearance model trackers are further divided into generative tracker , discriminative tracker or hybrid tracker. 
+Kalman Filter, with Mean shift tracking
+Recurrent YOLO The proposed model is a deep neural network that uses raw video frames as input and its
+output is the coordinates of a bounding box of an object being tracked in each frame.
+From an initial sequence to pairs of input and output sequences
+transform a time series dataset into a supervised learning dataset.
+ transform multivariate time series data for machine learning.
 
-
-
+One-Step  Forecasting It is standard practice in time series forecasting to use lagged observations (e.g. t-1) as input variables to forecast the current time step (t).

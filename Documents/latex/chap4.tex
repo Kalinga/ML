@@ -124,24 +124,25 @@ SSD model consists of convolutional feature layers and some convolutional predic
 
 \subsection{Graphs and results}
 
-After training for 10 epochs the training error gradually reduces and the validation error revolves around training error as shown in the below graph. As the training of single epoch takes significant time the statistics were taken with small epochs.
-
 \begin{figure}[H]
 \includegraphics[scale=0.4]{conf0_loss-val_loss_0_10epochs}
 \begin{center}
-\caption{Training and Validation error after 10 epochs}
+\caption{Training and Validation error at 10 epochs}
 \end{center}
 \end{figure}
-As the training error has not converged after 10 epochs it was decided to training for another 10 epoch and the graph as follows.
+As the training error has not converged after 10 epochs it was decided to training for another 10 epoch and the graph as follows. After training for 10 epochs the training error gradually reduces and the validation error revolves around training error as shown in the below graph. As the training of single epoch takes significant time the statistics were taken with small epochs.
 
 \begin{figure}[H]
-\includegraphics[scale=0.4]{conf0_loss-val_loss_0_10epochs}
+\includegraphics[scale=0.4]{conf0_loss-val_loss_10_20epochs}
 \begin{center}
-\caption{Training and Validation error after 10 epochs}
+\caption{Training and Validation error at 20 epochs}
 \end{center}
 \end{figure}
 
 \textbf{Validation:}
+
+\newpara
+Looking at the graph which depicts training loss and validation loss drawn with several epochs, we could see training error gradually reduces with increase in the number of epochs, simultaneously we see validation loss also exhibiting same pattern and slowly decreasing with number of epochs. This trend of decrease in validation error with increase in training is a good indication of learning. The model could have trained for some more epochs until it converges, however due to long training time, it was not possible to do so, instead training with different configuration was done to see the behavior with other configuration.
 
 \newpara
 \textbf{Observation:} While using SSD7, i observed that the algorithm is very sensitive to the list of aspect ratios for the anchor boxes. To begin with, the values for aspect\textunderscore ratios = $[0.5, 1.0, 2.0]$ were used and that lead to very poor result in the evaluation phase. After modifying aspect\textunderscore ratios = $[0.1, 0.2, 0.33, 0.413, 0.418, 0.5, 0.6, 0.7, 0.8, 1.0]$, recorded accuracy as below table.
@@ -155,7 +156,7 @@ From Caltech data set video set 06 - 10 was used as test data. The bounding box,
  \hline\hline
  10 & 0.661 & 10.22\\ 
  \hline
- 20  & TBD & TBD \\
+ 20  & 0.635 & 9.73 \\
 \hline
  20  & TBD & TBD \\
  \hline
@@ -163,6 +164,11 @@ From Caltech data set video set 06 - 10 was used as test data. The bounding box,
 \caption{Average Precision and fps with number of epochs}
 \end{center}
 \end{table}
+
+conf1
+0.2, 0.33, 0.4, 0.5, 0.7, 0.8
+fps 9.84
+0.208
 
 \section{JAAD Dataset}
 
