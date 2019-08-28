@@ -18,18 +18,19 @@
 \section{Motivation}
 Deep Learning has made some significant impacts in the areas of image classification, 
 object detection, speech recognition, text-to-speech generation, machine translation,
-online recommender system, medical diagnosis and many more. With availability of high 
+online recommender system, medical diagnosis and many more. Due to the availability of high 
 computing power such as high speed CPU, high bandwidth GPU, large amount of 
-data from which actionable insights are expected further more nice and powerful ecosystem of  
+data from which actionable insights are expected, further more nice and powerful ecosystem of  
 tools such as TensorFlow and PyTorch; many researchers in the scientific community 
 starting from neurologist to computer scientist are enticed towards research in the areas 
 of Artificial Intelligence. Several interesting findings, new algorithms, record 
 breaking benchmarking results while applying Deep Learning algorithms has taken 
 AI to a different level.
 
-\newpara Apart from object detection which includes different classes of living or non-living, detection of human is considered to be of high interest for many researchers as application of human detection finds its place in several areas such as patient monitoring, security system, robot-human co-working environment, autonomous driving and many more. Specifically, knowing the motive of the pedestrian to cross the road in front of the vehicle, before the pedestrian has actually entered into the road, would empower the the ADAS to warn the driver or for autonomous vehicle to perform required maneuvers in time .
+\newpara Apart from object detection which includes different classes of living or non-living, detection of human is considered to be of high interest for many researchers as application of human detection finds its place in several areas such as patient monitoring, security system, robot-human co-working environment, autonomous driving and many more. Specifically, predicting the pedestrians future 
+location depending on his current and recent past locations, knowing the motive of the pedestrian to cross the road in front of the vehicle, before the pedestrian has actually entered into the road, would empower the the ADAS to warn the driver or for autonomous vehicle to perform required maneuvers in time.
 
-\newpara Since the success of AlexNet at the 2012 ImageNet Large-Scale Visual Recognition Challenge(ILSVRC), DL has become a standard method for image recognition tasks. Study shows that DL based models are better at image classification task than humans. However, unlike human, recognizing and localizing objects with in an image still remains a challenge for artificial 
+\newpara Since the success of AlexNet at the 2012 ImageNet Large-Scale Visual Recognition Challenge(ILSVRC), DL has become a standard method for image recognition tasks. Study shows that DL based models are better at image classification task than humans. However, unlike human, recognizing and localizing objects within an image still remains a challenge for artificial 
 systems, mainly because of two factors - view point dependent object variability and
 high in-class variability. In the human detection task, intra-class variability includes
 color of the clothing, type of clothing, appearance, pose, illumination, partial occlusions
@@ -46,7 +47,7 @@ human and track the person in several frames and predict after tracking for a ce
 
 \newpara The main idea of this thesis is to take a look at different aspect of solving such a problem, 
 starting with reliable data \footnote{There are several image and video datasets exist in the 
-public domain for research purpose} acquisition, understanding the annotation in the data, extractions of efficient features, training a neural network using extracted features for the detection of person. Evaluating various algorithm for detecting the same person in the series of subsequent frames for tracking purose. Finally prediction of pedestrian intention using another classifier. Such a classifier must have been trained with set of sequence labeled data. During the thesis various aspect of developing such a pipeline was studied and implemented in part.
+public domain for research purpose} acquisition, understanding the annotation in the data, extractions of efficient features, training a neural network using extracted features for the detection of person. Evaluating various algorithm for detecting the same person in the series of subsequent frames for tracking purpose. Finally prediction of pedestrian intention using another classifier. Such a classifier must have been trained with set of sequence labeled data. During the thesis various aspect of developing such a pipeline was studied and implemented in part.
 
 \section{Problem Statement} 
 Which model to be used for the first part of the problem, which deals with detecting the pedestrians in the scene? If the model is capable of detecting multiple pedestrians in the scene? What is the processing time, if the processing time is under a threshold for the purpose of using it in the real time scenario?

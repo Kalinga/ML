@@ -206,6 +206,17 @@ pedestrians\' actions are categorized into 3 groups: Precondition- this refers t
 includes the behaviors that pedestrians exhibit in response
 to the action of the approaching vehicle, namely, stop, clear path, slow down, speed up, hand gesture and nod.
 
+\subsection{LSTM results}
+conf1: model with epochs = 5000, MinMaxScaler(feature\textunderscore range=(0, 1)), 
+number of sequence as observation = 3
+loss: 0.0045 - val\textunderscore loss: 0.0047 
+Test RMSE: 73.064
+Training 50000
+Validation: 49846
+% git commit 17676e5
+
+conf2: With the below information from JAAD team, i decided to model the data using videos 71-346.
+
 Weakly supervised learning!
 Sigmoid cross entropy vs  softmax
 batch normalization
