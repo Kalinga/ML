@@ -207,15 +207,23 @@ includes the behaviors that pedestrians exhibit in response
 to the action of the approaching vehicle, namely, stop, clear path, slow down, speed up, hand gesture and nod.
 
 \subsection{LSTM results}
+With the below information from JAAD team, i decided to model the data using videos 71-346.
+Video data from 317-346, 30 videos data is separated and was kept for model testing purpose.
+Remaining 236 video data was used for training and validation purpose.
+During the training and validation, from total available for training 84372 bounding box information, 20000 bbs used for validation which is around 23.7\% of totaol training data.
+
+Test RMSE represents testing the model with frames extracted from one video from the test set.
 conf1: model with epochs = 5000, MinMaxScaler(feature\textunderscore range=(0, 1)), 
 number of sequence as observation = 3
 loss: 0.0045 - val\textunderscore loss: 0.0047 
-Test RMSE: 73.064
+Test RMSE: 2.038
 Training 50000
-Validation: 49846
+Validation: Using one pedestrian bounding boxes with 205 frames.
+
+
 % git commit 17676e5
 
-conf2: With the below information from JAAD team, i decided to model the data using videos 71-346.
+conf2: 
 
 Weakly supervised learning!
 Sigmoid cross entropy vs  softmax
