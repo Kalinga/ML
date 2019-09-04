@@ -110,14 +110,15 @@ Normally a fully connected layer is attached to the Network as last layer of the
 \textbf{Sliding Window:} A classifier is trained on the objects first and in the next phase a window is moved over whole image at different scales. Each window gets a score from the learned classifier and window(s) with the highest score predicts the location of an object. Sliding Window technique is computationally inefficient. Some of the improved and modern methods are presented below. 
 
 \section{R-CNN Introduction}
-In \cite{girshick2014rich} Girshick et al. combined region proposals with CNN and naming the method as R-CNN. This method generates around 2000 category independent region proposals for the input image, using a CNN a fixed length feature vector is extracted regardless of the region shape. Then each region is classified using class specific linear SVM. 
+In \cite{girshick2014rich} Girshick et al. combined region proposals with CNN and naming the method as R-CNN. This method generates around 2000 category independent region proposals for the input image, using a CNN, a fixed length feature vector is extracted regardless of the region shape. Then each region is classified using class specific linear SVM. 
 
-\newpara  R-CNN discussion
-The features for a region proposal is computed via a CNN proposed by Krizhevsky et al. This network takes men-subtracted 227 x 227 RGB image as input. Therefore image data in the region proposal is converted to 227 x 227 as required by Krizhevsky network. For this arbitrary-shaped  proposed region is dilated and warped. During the test time using selective search fast mode 2000 region proposals are generated and warped and processed through CNN to extract desired features. After that per class basis score is evaluated using the SVM trained for that class. Subsequently a greedy non-max suppression for each class independently is applied which rejects region that has IoU overlap with higher scoring selected region larger than a threshold.
-\newpara  Fast R-CNN
+\newpara \textbf{R-CNN:} \\
+The features for a region proposal is computed via a CNN proposed by Krizhevsky et al. This network takes mean-subtracted 227 x 227 RGB image as input. Therefore image data in the region proposal is converted to 227 x 227 as required by Krizhevsky network. For this arbitrary-shaped  proposed region is dilated and warped. During the test time using selective search fast mode 2000 region proposals are generated and warped and processed through CNN to extract desired features. After that per class basis score is evaluated using the SVM trained for that class. Subsequently a greedy non-max suppression for each class independently is applied which rejects region that has IoU overlap with higher scoring selected region larger than a threshold.
+
+\newpara \textbf{Fast R-CNN:} \\
 In \cite{girshick2015fast} an improved technique is discussed which is based on previously discussed R-CNN. This is computationally faster than R-CNN ans results in faster training and testing speed. R-CNN training was a multi-stage pipeline. It first fine tunes a ConvNet on object proposal and then fits SVMs to ConvNet features. Because of feature extraction from each object proposal, without sharing computation in each test image, object detection was relatively slow in R-CNN. Based on the concept described in SPPnets, a convolutional feature map is generated for entire input image and subsequent classification is done by extracting features from the shared feature map for each object proposal. Features for the object proposal is extracted by max-pooling the portion of feature map inside the  object proposal region into a fixed size output. During the training, Fast R-CNN takes an entire image and set of object proposals, for each object proposal an RoI layer extract a fixed length feature vector from the feature map. Each feature vector is further fed into fully connected layers which produces a feature vector that is branched into two output layers, one outputs softmax probability over K object classes and other layer produces four real numbers for each of the K object classes termed as bbox regressor. The architecture is trained with multi-task loss function via back propagation. Fast R-CNN uses softmax classifier instead of linear SVM that was used in R-CNN.
 
-\newpara  Faster R-CNN
+\newpara \textbf{Faster R-CNN:} \\  
 Another enhanced proposal came from Author of previously discussed R-CNN methods with a goal of sharing computation with a Fast R-CNN for the task of region proposal. In \cite{ren2015faster}, a new Region Proposal Network (RPN) is introduced that shares full image convolutional features with the detection network, thus almost eliminating the cost for the region proposals. RPN is a fully convolutional network that simultaneously predicts object bounds and objectness scores at each position. This RPN is trained to generate high quality region proposals, which are used by Fast R-CNN for detection. By sharing convolutional layers with the object detection network, RPN has marginal cost for computing proposal is small \footnote{in the order of 10 ms per image}. For the very deep VGG-16 model this methodology achieved 5fps on GPU and accuracy of 73.2\%mAP for PASCAL VOC 2007 using 300 proposals per image. 
 
 \section{Model based on R-CNN}
@@ -418,8 +419,6 @@ domain=-10:10,
 
 the sigmoid derivative is well below the 1.0 in the whole range of input values. And this makes the gradients vanishing quite fast as, multiplying this value \footnote{value less than 1} several times for several layer \textit{ back propagation} brings the value close to 0.
 
-
-
 \subsection{Models based RNN }
 \newpara Abu Farha and team presented \cite{abu2018will} a similar work, where they discussed methods to predicts action that are considerably in future and their duration. And they tried to anticipate all activities within a horizon of 5 minutes. After inferring the activities from the observed part of the video using an RNN-HMM \cite{richard2017weakly}, they proposed two approaches to predict the future actions and their durations, in the first approach they used RNN, where the anticipated activities are fed to the RNN to predict the remaining duration of the on going activities and duration of the next activity along with its class.
 In the second approach the proposed CNN based single pass model which predicts length and label of the future action. They have found that these both approach have outperformed both grammar based baseline and nearest neighbor baseline. RNN and CNN found to be performing similarly for time horizon more than 40 seconds and RNN performs better for lesser than 20 seconds time horizon. The task is more formally defined as,
@@ -450,7 +449,8 @@ S number of rows for an action segment
 
 \newpara Row-wise $\textit{l}_2$-normalization \footnote{$l_2$-norm of a real vector $x=(x_1,x_2,x_3)$ is given by $|x|=sqrt(x_1^2+x_2^2+x_3^2)$} of the output found to be more robust than softmax output with cross-entropy loss. \cite{abu2018will} did not elaborate the 'input sequence always end 1 second before the next action segment start'. What is the purpose of this and results if the input sequence is provided till the next action segment starts.
 
-\newpara For the task of early detection, the goal is to recognize the activity with least possible amount of input observation \cite{ryoo2011human}. In \cite{ryoo2011human} they modeled the feature distribution over the course of observation by integral histogram representation of activities, and named the prediction algorithm as \textit{dynamic bag-of-words} as the prediction algorithm considers the sequential structure formed by video features. And they formulated the activity prediction process probabilistically as:
+\subsection{Dynamic bag-of-words} 
+For the task of early detection, the goal is to recognize the activity with least possible amount of input observation \cite{ryoo2011human}. In \cite{ryoo2011human} they modeled the feature distribution over the course of observation by integral histogram representation of activities, and named the prediction algorithm as \textit{dynamic bag-of-words} as the prediction algorithm considers the sequential structure formed by video features. And they formulated the activity prediction process probabilistically as:
 %\hat{f}(x,y) = \underset{(s,t)\in S_{xy}}{\mathrm{median}} \{g(s,t)\}
 %\begin{equation}
 %\begin{multlined}
@@ -471,7 +471,7 @@ S number of rows for an action segment
 
 \section{LSTM Introduction}
 With arrival of new information, the model first decides which long term information is not needed anymore, and forgets it. Stores necessary part of the new information into long-term memory.
-A remember gate is learned that takes new input and working memory as input and outputs \textit{n} bummers between 0 and 1, each determines degree to which long-term memory element to be kept. Where 1 indicates to keep it and 0 indicates to forget it entirely. A small nueral network can model this \textbf{remember gate}. 
+A remember gate is learned that takes new input and working memory as input and outputs \textit{n} bummers between 0 and 1, each determines degree to which long-term memory element to be kept. Where 1 indicates to keep it and 0 indicates to forget it entirely. A small neural network can model this \textbf{remember gate}. 
 $remember_t = \sigma(W_r x_t + U_r wm_{t-1})$
 
 $ltm'_t = \phi(W_l x_t + U_l wm_{t-1})$

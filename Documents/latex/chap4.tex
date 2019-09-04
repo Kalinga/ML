@@ -120,9 +120,7 @@ SSD model consists of convolutional feature layers and some convolutional predic
 
 \subsection{Hyper Parameters}
 
-\section{Testing}
-
-\subsection{Graphs and results}
+\subsection{ Validation: Graphs and results}
 
 \begin{figure}[H]
 \includegraphics[scale=0.4]{conf0_loss-val_loss_0_10epochs}
@@ -139,15 +137,22 @@ As the training error has not converged after 10 epochs it was decided to traini
 \end{center}
 \end{figure}
 
-\textbf{Validation:}
-
 \newpara
 Looking at the graph which depicts training loss and validation loss drawn with several epochs, we could see training error gradually reduces with increase in the number of epochs, simultaneously we see validation loss also exhibiting same pattern and slowly decreasing with number of epochs. This trend of decrease in validation error with increase in training is a good indication of learning. The model could have trained for some more epochs until it converges, however due to long training time, it was not possible to do so, instead training with different configuration was done to see the behavior with other configuration.
 
-\newpara
-\textbf{Observation:} While using SSD7, i observed that the algorithm is very sensitive to the list of aspect ratios for the anchor boxes. To begin with, the values for aspect\textunderscore ratios = $[0.5, 1.0, 2.0]$ were used and that lead to very poor result in the evaluation phase. After modifying aspect\textunderscore ratios = $[0.1, 0.2, 0.33, 0.413, 0.418, 0.5, 0.6, 0.7, 0.8, 1.0]$, recorded accuracy as below table.
-From Caltech data set video set 06 - 10 was used as test data. The bounding box, label are extracted into labels\textunderscore test\textunderscore full.csv using a python script. labels\textunderscore test\textunderscore full.csv consists of total 154436 records. After removing occluded and other classes except person, remaining number of records were 73218 , where the unique number of images are 42910. After discarding records with less than 50 pixel for height or 5 pixel for width we are left with 29620. Randomly chosen 1000 records were taken for test purpose for recording the \textit{mAP}. These test 1000 records consists of unique 902 images.
+\section{Testing} 
+For the testing of the generated model below steps were followed to prepare the test data and conduct the experiment.
+\begin{enumerate}
+	\item video set 06 - 10 was selected as test data and bounding box, label are extracted into labels\textunderscore test\textunderscore full.csv which contains total 154436 records
+	\item Rows with occluded and other classes except person were removed and remaining number of records were 73218, which consists of 42910 unique images 
+	\item records with less than 50 pixel for height or 5 pixel for width were discarded and data set left with 29620 records
+	\item From the above data 1000 records were randomly chosen for test purpose which consists of 902 unique images
+\end{enumerate}
 
+\newpara
+While using SSD7, it was observed that, the algorithm is very sensitive to the list of aspect ratios for the anchor boxes. To begin with, the values for aspect\textunderscore ratios = $[0.5, 1.0, 2.0]$ were used and that lead to very poor result in the evaluation phase. Subsequently the model was trained with several different configuration and results are noted as below.
+
+for aspect\textunderscore ratios = $[0.1, 0.2, 0.33, 0.413, 0.418, 0.5, 0.6, 0.7, 0.8, 1.0]$
 \begin{table}[H]
 \begin{center}
  \begin{tabular}{||c c c||} 
@@ -158,17 +163,26 @@ From Caltech data set video set 06 - 10 was used as test data. The bounding box,
  \hline
  20  & 0.635 & 9.73 \\
 \hline
- 20  & TBD & TBD \\
- \hline
 \end{tabular}
 \caption{Average Precision and fps with number of epochs}
 \end{center}
 \end{table}
+From the above result, it can be observed that training the data for more epochs actually not resulting a better model as both mAP and fps is lowered for the model trained with 20 epochs, this could be sign of \textit{over-fitting.}
+
 
 conf1
-0.2, 0.33, 0.4, 0.5, 0.7, 0.8
-fps 9.84
-0.208
+0.2, 0.33, 0.413, 0.418, 0.5, 0.6, 0.7, 0.8, 1.0
+fps 
+
+conf 2
+epoch 5
+0.1, 0.2, 0.33, 0.413, 0.418, 0.5, 0.6, 0.7, 0.8
+fps: 75.58 
+mAP:0.471
+
+
+
+With the increase in number of values in the list of aspect ratio, the number of predictor boxes increases. Increase in number of predictor boxes increases both training time as well as prediction time.
 
 \section{JAAD Dataset}
 
@@ -213,18 +227,32 @@ Remaining 236 video data was used for training and validation purpose.
 During the training and validation, from total available for training 84372 bounding box information, 20000 bbs used for validation which is around 23.7\% of totaol training data.
 
 Test RMSE represents testing the model with frames extracted from one video from the test set.
-conf1: model with epochs = 5000, MinMaxScaler(feature\textunderscore range=(0, 1)), 
+conf1: model with epochs = 1000, MinMaxScaler(feature\textunderscore range=(0, 1)), 
 number of sequence as observation = 3
 loss: 0.0045 - val\textunderscore loss: 0.0047 
-Test RMSE: 2.038
-Training 50000
+Test RMSE: 2.363
 Validation: Using one pedestrian bounding boxes with 205 frames.
-
-
-% git commit 17676e5
+% git commit 789d6e6
 
 conf2: 
+model with epochs = 200, early stopping after epoch 33
+number of sequence as observation = 15
+loss: 0.0087 - val\textunderscore loss: 0.0089
+Test RMSE: 4.749
+%9c88a25
 
-Weakly supervised learning!
+conf3:
+model with epochs = 200, early stopping after epoch 88
+loss-0.0062 val\textunderscore loss-0.0070.h5
+model with epochs = 200
+number of sequence as observation = 30
+Test RMSE: 4.625
+
+
+Annotations for the video can be extracted as below
+anno = imdb.\textunderscore get\textunderscore annotations(vid), this results in a dictionary which contains below keys ['height', 'ped\textunderscore annotations', 'num\textunderscore frames', 'width']
+
+TODO
+\newpara Weakly supervised learning!
 Sigmoid cross entropy vs  softmax
 batch normalization
