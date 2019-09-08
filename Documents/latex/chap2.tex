@@ -9,8 +9,9 @@ The problem of human action classification or pedestrian intent prediction from 
 This problem is inherently complex as it is based on other 
 complex problems. To detect the action or intention one must first detect the object in an image and classify it. Track the same object over several continuous frames to identify the intention. There are several proposals proposed for person detection, many of them try to achieve high accuracy at the expense of high computational cost. This leads many of such proposal not useful for real time application such driver-less cars.   
 Before the dominance of convolutional neural network (CNN) and Deep Learning which has outperformed other traditional methods in the recent times. Several researchers found some interesting and great methods, some such nice work done by researchers in these area shall be presented and discussed in the subsequent sections. In general we can think of two types activity prediction, (i) early activity detection (ii) future activity prediction. In the case of early activity detection, the class label of an action is inferred at the point when the activity starts or shortly after the activity started. Where as in the future activity prediction, the class label of the action that will happen next is predicted and also the starting time in the future is also predicted. For any of such prediction task we need efficient and robust object detection, object localization and object tracking model working seamlessly together to enable last phase of the Intent prediction task. Object detection and localization constitute the back bone of this pipe line and takes maximum share of the run time in the entire pipeline. To build a real time pedestrian intention prediction pipeline, it is utmost important to find a model that performs real time object detection and localization reliably. In this chapter some of the state-of-the-art models for such task is explored.
- 
-\section{DPM model based on manual feature extraction}
+
+\section{Object detection} 
+\subsection{DPM model based on manual feature extraction}
 Pedro F. Felzenszwalb and team proposed deformable part model (DPM) \cite{felzenszwalb2009object} which is based on pictorial structures that represent objects by means of a collection of object parts arranged in a deformable configuration. Each object part captures local appearance properties of
 an object and the deformable configuration is identified by spring-like connections between certain pairs of such parts. They use a variation of Support Vector Machine(SVM) which they named as latent SVM (LSVM) is used for the training of the model and  histogram of oriented gradients (HOG) used for features vector. After the success of usages of CNNs in tasks like image classification, CNNs are used to extract the feature sets instead of manual extraction.
 
@@ -22,7 +23,7 @@ $[-1,0,1] \, and \, [-1,0,1] ^{T}$
 
 \newpara After computation of the gradient they are gradient values are used to update a 9 histogram channel which are evenly spread over 0-180 degrees or 0-360 degrees. They tried peson/non-person classification using this robust feature descriptor and Linear SVM and got state-of-the-art result of that time.
 
-\section{CNN based feature extraction}
+\subsection{CNN based feature extraction}
 \newpara CNNs found to be outperform manual feature extraction as they are principally designed Neural net \textbf{architecture which preserves local connections and shares weights}. CNN are special type of multilayer perceptrons, based shared weight architecture and inspired by biological connectivity between neurons in human visual cortex. A particular neuron respond to stimuli only in a restricted region of the visual field called receptive field. CNNs employs a special kind of linear operation called convolution. CNN is characterized by series of several convolution, non-linearity, pooling operation and finally followed by one or more fully connected layers. Initial convolutional layers are used as feature extraction and final layers as fully connected. Fully connected layer takes the input from convolutional network and produces a an N-dimensional vector, where N is the number of classes model is intended to select.
 
 \begin{figure}[h]
@@ -105,11 +106,11 @@ Normally a fully connected layer is attached to the Network as last layer of the
 
 \newpara CNN learns the filters that traditional image classification algorithm hand crafts. This makes CNN little pre-processing compared to other traditional algorithm and results superior results. There are many evolution of CNNs starting from LeNet (LeCun et al., 1989) for zip code recognition, LeNet-5 (1998) a 7 layer CNN \ref{fig:traditional-convolutional-network} by LeCun et al. for hand written numbers on the check recognition, AlexNet by Alex Krizhevsky et al. in 2012 used deeper layers and more filters per layer than leNet-5. It also used ReLU activation, max pooling, dropout, data agumentation and SGD with momentum during training. \footnote{These terms shall be discussed in the subsequent chapter.} This achieved a record breaking result at that time. ZFNet in 2013 winner of ILSVRC 2013 with a small tweaking to AlexNet. 2014, GoogleNet otherwise known as Inception V1 from Google achieved human level performance. Another net in the same year got the attention known as VGGNet. It uses only 3x3 convolution, 16 layers and with lots of filters. It consists of 138 million parameters and one of major disadvantage and required more time to train. And weight configuration of this is publicly available and used as baseline feature extractor.
 
-\subsection {Object Localization } Object localization is one step forward when compared to object recognition. Identifying whether an object is present in the image or not is the task of object recognition, however object localization deals with locating where the object is located in an image. There are several approaches used for localization as discussed below. And it is complex in comparison to image classification because huge number of candidate object locations must be processed during the localization process. \\
+\section {Object Localization } Object localization is one step forward when compared to object recognition. Identifying whether an object is present in the image or not is the task of object recognition, however object localization deals with locating where the object is located in an image. There are several approaches used for localization as discussed below. And it is complex in comparison to image classification because huge number of candidate object locations must be processed during the localization process. \\
 
 \textbf{Sliding Window:} A classifier is trained on the objects first and in the next phase a window is moved over whole image at different scales. Each window gets a score from the learned classifier and window(s) with the highest score predicts the location of an object. Sliding Window technique is computationally inefficient. Some of the improved and modern methods are presented below. 
 
-\section{R-CNN Introduction}
+\subsection{R-CNN Introduction}
 In \cite{girshick2014rich} Girshick et al. combined region proposals with CNN and naming the method as R-CNN. This method generates around 2000 category independent region proposals for the input image, using a CNN, a fixed length feature vector is extracted regardless of the region shape. Then each region is classified using class specific linear SVM. 
 
 \newpara \textbf{R-CNN:} \\
@@ -121,7 +122,7 @@ In \cite{girshick2015fast} an improved technique is discussed which is based on 
 \newpara \textbf{Faster R-CNN:} \\  
 Another enhanced proposal came from Author of previously discussed R-CNN methods with a goal of sharing computation with a Fast R-CNN for the task of region proposal. In \cite{ren2015faster}, a new Region Proposal Network (RPN) is introduced that shares full image convolutional features with the detection network, thus almost eliminating the cost for the region proposals. RPN is a fully convolutional network that simultaneously predicts object bounds and objectness scores at each position. This RPN is trained to generate high quality region proposals, which are used by Fast R-CNN for detection. By sharing convolutional layers with the object detection network, RPN has marginal cost for computing proposal is small \footnote{in the order of 10 ms per image}. For the very deep VGG-16 model this methodology achieved 5fps on GPU and accuracy of 73.2\%mAP for PASCAL VOC 2007 using 300 proposals per image. 
 
-\section{Model based on R-CNN}
+\subsection{Model based on R-CNN}
 \newpara Estimating pedestrian future using pedestrian dynamic model were done in the past and these models are difficult to adjust and to achieve robustness, they require high quality stereo data, dense optical flow and ego-motion compensation which requires vehicle data.  Using the 2D pose estimation method, that is applied to the still images in sliding window manner, a state of-the-art result has been obtained\cite{fang2018pedestrian} for the C/NC task with Daimler dataset. In the pipeline of their task they used below components. They have used generic off-the-shelf CNN modules as Detector, Tracker and Pose Estimator in their pipeline.
 
 \begin{itemize}
@@ -134,9 +135,9 @@ Another enhanced proposal came from Author of previously discussed R-CNN methods
 \newpara
 Researcher Fang and team in their 2018 paper \cite{fang2018pedestrian} described about image based 2D pose estimation for detecting pedestrian intention: whether the pedestrian crossing the road, stopping before entering the road, starting to walk or bending towards the road. They performed their experiment with choreographed Daimler dataset. They also used publicly available, a rather new dataset (JAAD) \cite{kotseruba2016joint} that allows development of methods and experiment in a more naturalistic driving condition. They used CNN based pedestrian detection, tracking and pose estimation to predict the crossing action from monocular images. In their paper they have mentioned that without additional information such as stereo, optical-flow or ego-motion compensation, they achieved the state-of-the-art results with only image-based 2D pose estimation. The prediction of the action is based on per pedestrian multi-frame feature set extracted using last \textit{k} frames. Estimating the pose was central to the prediction of the crossing intention. In the results they have observed that classification with respect to features based on  skeleton of the pedestrian outperform the features based on CNN fc6 layer.
 
-\section{Single Shot Multi Box}
+\subsection{Single Shot Multi Box}
 SSD motivated by the ideas presented in \cite{szegedy2014scalable} where a convolutional network is trained to output the coordinates of the object bounding boxes. MultiBox loss is the weighted sum of \textit{confidence} loss and \textit{location} loss. Single Shot Multi Box with aforementioned inspiration attacked the problem with several small improvements and variation achieving state-of-the art results with still simpler architecture, in comparison to \cite{szegedy2014scalable} which uses a separate deep neural network to generate proposal for the bounding box.
-\subsection{SSD}
+\subsubsection{SSD}
 Faster R-CNN, operates at only 7 frames per second (FPS) SSD aimed at improving the speed by employing some new methods which does not re-samples pixels or features for the bounding hypothesized boxes. This improves the speed substantially with out much or no decrease in accuracy. 
 
 \newpara The central principle on which SSD \cite{liu2016ssd} is based on is, discretizing the output space of bounding boxes into a set of pre-determined default boxes consisting of different aspect ratios and scale per feature map location. The principle used as part of SSD overcomes the challenge faced in \cite{ren2015faster} and its predecessors which includes multi phase training and slow inference time. SSD does this by doing both the task of object localization and classification in a single forward pass. It uses a \textit{MultiBox} approach, which pre-computes priors \footnote{Alternatively known as anchors in Faster R-CNN}, fixed size bounding boxes. In MultiBox based approach, prediction starts with priors and try to regress closer to the ground truth bounding boxes.
@@ -161,14 +162,14 @@ m x n is the shape of the feature map \\
  Additional point to note is, more the number of default boxes, the more accurate is the detection at the cost of speed.
 Predicting category scores for multiple classes and box offsets for pre-computed bounding boxes using a small convolutional filters applied to feature maps lead to a faster single pass object classification and localization system. And prediction of different scales from feature maps of different scales and separate prediction by aspect ratio leads to higher accuracy. \cite{liu2016ssd} With same VGG-16 base architecture SSD300 model runs at 59 FPS. The mentioned result from SSD paper is very interesting and suitable for application of recurrent neural network to detect and track object in video simultaneously in real time.
 
-\subsection{YOLO}
+\subsubsection{YOLO}
 Another variation of single shot detection during the same time achieving the state-of-the-art result was YOLO. Single network based detection pipeline. YOLO divides the image into a grid of cells and predicts the coordinates and confidences of objects contained in the cells. Authors like Szegedy et.al in \cite{szegedy2014scalable} has expressed uncertainty about its performance in the situation where there are significantly more objects in a data set. As SSD seems to performs better with respect to run time and performance, YOLO was not studied further during Thesis period.
 
-\section{Network architectures}
+\subsection{Network architectures}
 
-Standard CNN architectures, over the last 2 decades uses set of standard layer that can be graphically \ref{tomepel} represented as below.
+Standard CNN architectures, over the last 2 decades uses set of standard layer that can be graphically \ref{tomepel} represented as below. 
 
-\begin{figure}[t!]
+\begin{figure}[h]
 \begin{align*}
 \begin{tikzpicture}[baseline=-3pt]
 \node[] at (0,0) {\includegraphics[scale=0.5]{input_layer}};
@@ -213,7 +214,7 @@ Standard CNN architectures, over the last 2 decades uses set of standard layer t
 \end{figure}
 
 \newpara Based on these schematic layers, a simple graphical \footnote{\label{tomepel} Images source: Thomas Epelbaum GitHub: https:\textbackslash github.com\textbackslash tomepel\textbackslash Technical\_Book\_DLaccessed on 07th August 2019 } representation of VGG-Net is shown below.
-\begin{figure}[t!]
+\begin{figure}[h]
 \begin{center}
 \begin{tikzpicture}
 \node[] at (0,0) {\includegraphics[scale=1]{VGG}};
@@ -221,8 +222,17 @@ Standard CNN architectures, over the last 2 decades uses set of standard layer t
 \caption{VGG-Net}
 \end{center}
 \end{figure} 
- 
-\section{RNN}
+
+\section{Tracking}
+Visual object tracking is also a very active area of research, increasing number of algorithms are being proposed.
+In \cite{fiaz2019handcrafted} Fiaz et. al broadly categorized trackers into o Correlation Filter based Trackers (CFTs) and Non-CFTs. Human trackers can be divided into motion model or appearance model. They experimented with 24 recent trackers and found that trackers using deep features performed better than handcrafted. In some cases fusion of both increases performances significantly. Based on their study they have concluded that Discriminative Correlation Filter (DCF) based trackers perform better than others. There are some notable implementation e.g. 
+Kalman Filter with Mean shift tracking, Recurrent YOLO, a deep neural network that uses raw video frames as input and its output is the coordinates of a bounding box of an object being tracked in each frame.
+More in-depth research was out of the scope of the Thesis topic, so no much study was done in this area.
+
+\section{Prediction}
+The last stage of the pipeline which actually predicts the future location of the visual object. Predicting  bounding box for a tracked pedestrian. Predicting intention of the pedestrian, whether pedestrian wants to cross in near future or not. Subsequent section shall discuss about some of the state-of-the art methodology that address this.
+
+\subsection{RNN}
 Recurrent neural network primarily are densely connected neural network similar to feed forward network with a key difference; introduction of \textit{time} component in RNN. The output of a hidden layer in an RNN is \textit{fed back } into itself. With this we can model the data which is time dependent or sequence dependent in nature. In programming terms this can be represented by a fixed program taking certain inputs and some internal variable.
 \begin{center}
 
@@ -419,7 +429,7 @@ domain=-10:10,
 
 the sigmoid derivative is well below the 1.0 in the whole range of input values. And this makes the gradients vanishing quite fast as, multiplying this value \footnote{value less than 1} several times for several layer \textit{ back propagation} brings the value close to 0.
 
-\subsection{Models based RNN }
+\subsubsection{Models based RNN }
 \newpara Abu Farha and team presented \cite{abu2018will} a similar work, where they discussed methods to predicts action that are considerably in future and their duration. And they tried to anticipate all activities within a horizon of 5 minutes. After inferring the activities from the observed part of the video using an RNN-HMM \cite{richard2017weakly}, they proposed two approaches to predict the future actions and their durations, in the first approach they used RNN, where the anticipated activities are fed to the RNN to predict the remaining duration of the on going activities and duration of the next activity along with its class.
 In the second approach the proposed CNN based single pass model which predicts length and label of the future action. They have found that these both approach have outperformed both grammar based baseline and nearest neighbor baseline. RNN and CNN found to be performing similarly for time horizon more than 40 seconds and RNN performs better for lesser than 20 seconds time horizon. The task is more formally defined as,
 given the first t frames $X_{\text{1}}^t$ \\
@@ -449,7 +459,7 @@ S number of rows for an action segment
 
 \newpara Row-wise $\textit{l}_2$-normalization \footnote{$l_2$-norm of a real vector $x=(x_1,x_2,x_3)$ is given by $|x|=sqrt(x_1^2+x_2^2+x_3^2)$} of the output found to be more robust than softmax output with cross-entropy loss. \cite{abu2018will} did not elaborate the 'input sequence always end 1 second before the next action segment start'. What is the purpose of this and results if the input sequence is provided till the next action segment starts.
 
-\subsection{Dynamic bag-of-words} 
+\subsubsection{Dynamic bag-of-words} 
 For the task of early detection, the goal is to recognize the activity with least possible amount of input observation \cite{ryoo2011human}. In \cite{ryoo2011human} they modeled the feature distribution over the course of observation by integral histogram representation of activities, and named the prediction algorithm as \textit{dynamic bag-of-words} as the prediction algorithm considers the sequential structure formed by video features. And they formulated the activity prediction process probabilistically as:
 %\hat{f}(x,y) = \underset{(s,t)\in S_{xy}}{\mathrm{median}} \{g(s,t)\}
 %\begin{equation}
@@ -469,10 +479,41 @@ For the task of early detection, the goal is to recognize the activity with leas
 \textit{$A_{p}$}  \textit{ P(t|d)} represents the similarity between the observation length \textit{t} and that of the activity progress \textit{d}
 \textit{P(O|Ap, d)} measures the similarity between the video observation and the activity \textit{$A_{p}$} with progress level \textit{d}. This \textit{integral bag-of-words} uses 3-D space-time local features and detect motion changes in the video and generates descriptors representing local movements in the video. These are cuboid feature descriptors \cite{dollar2005behavior}. After the features are extracted, \textit{k-means} clustering was applied and the clusters are knows as visual words. Every feature detected is now belong to one of this k-visual words. Then the activities are model as an integral histogram of visual-words. The similarity between a video and activity model was done by comparing their histogram representation. And finally dynamic programming was used to predict the ongoing activities from videos.
 
-\section{LSTM Introduction}
+\subsection{LSTM}
+LSTM has a chain like structure as in RNN but the repeating module has a different structure. There are four neural network layer as contrast with RNN that has a single neural network layer. The four neural network layers interact in a very special way.
+
+\begin{figure}[h]
+\begin{align*}
+\begin{tikzpicture}[baseline=-3pt]
+\node[] at (0,0) {\includegraphics[scale=0.5]{LSTM3-chain}};
+\end{tikzpicture}&
+\end{align*}
+\begin{center}
+\caption{LSTM schematic diagram, diagram source:\cite{christopherolah}}
+\end{center}
+\end{figure} 
+
+The core idea to LSTM is the cell state, it run through the entire chain and performs some minor linear interaction. LSTM adds or removes information to the cell state with the help of regulated structure called gates. Gates are composed with sigmoid neural network and a point-wise multiplication operation.
+A sigmoid outputs how much of a component should be let through. A value of 0 blocks the whole component and a value of 1 let entire component through. In a basic LSTM, there are four such gates.
 With arrival of new information, the model first decides which long term information is not needed anymore, and forgets it. Stores necessary part of the new information into long-term memory.
-A remember gate is learned that takes new input and working memory as input and outputs \textit{n} bummers between 0 and 1, each determines degree to which long-term memory element to be kept. Where 1 indicates to keep it and 0 indicates to forget it entirely. A small neural network can model this \textbf{remember gate}. 
-$remember_t = \sigma(W_r x_t + U_r wm_{t-1})$
+A \textbf{remember gate} is learned that takes new input and working memory as input and outputs \textit{n} bummers between 0 and 1, each determines degree to which long-term memory element to be kept. Where 1 indicates to keep it and 0 indicates to forget it entirely. A small neural network can model this \textbf{remember gate} given below. In the literature this is also known as \textbf{forget gate}.
+
+\begin{equation}
+f_t = \sigma(W_f. [h_{t-1}, x_t  ] + b_f)
+\end{equation}
+Where $W_f$ is the weight matrix for the forget gate \\
+$h_{t-1}$ is the cell state at time (t-1) \\
+$b_f$ is the bais for the forget gate
+
+After forgetting the unnecessary information, LSTM is interested in storing the new required information in the cell state. This involves two step, with a \textbf{input } sigmoid layer values that needs to be updated is decided. And then a tanh layer creates a vector for new candidate values for cell state that could be added to the cell state. 
+
+\begin{equation}
+i_t = \sigma(W_i. [h_{t-1}, x_t  ] + b_i)
+\end{equation}
+
+\begin{equation}
+C_t\textasciitilde = tanh(W_C. [h_{t-1}, x_t ] + b_C)
+\end{equation}
 
 $ltm'_t = \phi(W_l x_t + U_l wm_{t-1})$
 Phi is an activation function, commonly chosen to be  tanh .
@@ -491,13 +532,4 @@ no of nodes in the hidden layer within  LSTM cell.
 
 \subsection{Models based on LSTM }
 
-\subsection{Tracking}
-Human trackers can be divided into motion model or appearance model. Based on appearance model trackers are further divided into generative tracker , discriminative tracker or hybrid tracker. 
-Kalman Filter, with Mean shift tracking
-Recurrent YOLO The proposed model is a deep neural network that uses raw video frames as input and its
-output is the coordinates of a bounding box of an object being tracked in each frame.
-From an initial sequence to pairs of input and output sequences
-transform a time series dataset into a supervised learning dataset.
- transform multivariate time series data for machine learning.
 
-One-Step  Forecasting It is standard practice in time series forecasting to use lagged observations (e.g. t-1) as input variables to forecast the current time step (t).

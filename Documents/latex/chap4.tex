@@ -228,7 +228,7 @@ to the action of the approaching vehicle, namely, stop, clear path, slow down, s
 \subsection{LSTM results}
 With the below information from JAAD team, i decided to model the data using videos 71-346.
 Video data from 317-346, 30 videos data is separated and was kept for model testing purpose.
-Remaining 236 video data was used for training and validation purpose.
+Remaining 246 (71-316) video data was used for training and validation purpose.
 During the training and validation, from total available for training 84372 bounding box information, 20000 bbs used for validation which is around 23.7\% of totaol training data.
 
 Test RMSE represents testing the model with frames extracted from one video from the test set.
@@ -252,6 +252,28 @@ loss-0.0062 val\textunderscore loss-0.0070.h5
 model with epochs = 200
 number of sequence as observation = 30
 Test RMSE: 4.625
+
+
+%model.add(LSTM(50, input\textunderscoreshape=(train\textunderscoreX.shape[1], train\textunderscoreX.shape[2])))
+vid = "video\textunderscore0318"
+total \#prediction: 179
+total time: 2.909117
+avg prediction speed: 0.016252
+total positive: 113
+accuracy: 0.631285
+
+%model.add(LSTM(30, input\textunderscoreshape=(train\textunderscoreX.shape[1], train\textunderscoreX.shape[2])))
+total \#prediction: 179
+total time: 3.122547
+avg prediction speed: 0.017444
+total positive: 57
+accuracy: 0.318436
+
+total \#prediction: 180
+total time: 3.063958
+avg prediction speed: 0.017022
+total positive: 57
+accuracy: 0.316667
 
 
 Annotations for the video can be extracted as below
