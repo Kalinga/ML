@@ -503,9 +503,9 @@ f_t = \sigma(W_f. [h_{t-1}, x_t  ] + b_f)
 \end{equation}
 Where $W_f$ is the weight matrix for the forget gate \\
 $h_{t-1}$ is the cell state at time (t-1) \\
-$b_f$ is the bais for the forget gate
+$b_f$ is the bias for the forget gate
 
-After forgetting the unnecessary information, LSTM is interested in storing the new required information in the cell state. This involves two step, with a \textbf{input } sigmoid layer values that needs to be updated is decided. And then a tanh layer creates a vector for new candidate values for cell state that could be added to the cell state. 
+After forgetting the unnecessary information, LSTM is interested in storing the new required information in the cell state. This involves two step, with a \textbf{input} sigmoid layer values that needs to be updated is decided. And then a tanh layer creates a vector for new candidate values for cell state that could be added to the cell state. 
 
 \begin{equation}
 i_t = \sigma(W_i. [h_{t-1}, x_t  ] + b_i)
@@ -515,20 +515,22 @@ i_t = \sigma(W_i. [h_{t-1}, x_t  ] + b_i)
 C_t\textasciitilde = tanh(W_C. [h_{t-1}, x_t ] + b_C)
 \end{equation}
 
-$ltm'_t = \phi(W_l x_t + U_l wm_{t-1})$
-Phi is an activation function, commonly chosen to be  tanh .
+Both $i_t$ and $C_t\textasciitilde$ is combined to update the cell state as below.
 
-updated long-term memory:
-$ltm_t = remember_t \circ ltm_{t-1} + save_t \circ ltm'_t$
+\begin{equation}
+C_t = f_t * C_{t-1} + i_t * C_t\textasciitilde
+\end{equation}
 
-$focus_t = \sigma(W_f x_t + U_f wm_{t-1})$
+Next, output is decided based on cell state and a output gate, that decides what part of the cell state are going to output. Mathematically this can be represented as below.
 
-$wm_t = focus_t \circ \phi(ltm_t)$
+\begin{equation}
+o_t = \sigma(W_o. [h_{t-1}, x_t  ] + b_o)
+\end{equation}
+\begin{equation}
+h_t = o_t  * tanh(C_t)
+\end{equation}
 
-
-Our working memory is then
-
-no of nodes in the hidden layer within  LSTM cell.
+There are several variants of LSTM, but basic variant was explored and used in the scope of the Thesis.
 
 \subsection{Models based on LSTM }
 
