@@ -71,3 +71,43 @@ Intersection Over Union (IOU) is a measure similar to Jaccard Index that measure
 % beginning of the line, and insert your own information in the call.
 %
 %\tagrind[htbp]{code/pmn.s.tex}{Post Multiply Normalization}{opt:pmn}
+
+\section{SSD }
+To better understand SSD framework, lets look at a flowchart that details it workings.
+
+\begin{figure}[H]
+\begin{center}
+\begin{tikzpicture}[
+    node distance = 7mm and -3mm,
+every node/.style = {draw=black, fill=gray!30, 
+                     minimum width=2cm, minimum height=1.0cm,
+                     align=center},
+every path/.style = {draw, -latex}
+                        ]
+\node[rounded corners=.55cm] (start) {Start};
+\node (0) [below=10mm of start]{Image data is prepared with data augmentation}; 
+\node (1) [below=10mm of 0]{A set of default bounding boxes associated with each feature map cell}; 
+\node (2) [below=10mm of 1]{ At each feature map cell, offsets relative to default box shapes in the cell is predicted}; 
+\node (3) [below=10mm of 2]{ Per-class score that indicates class instance is predicted}; 
+\node (4) [below=10mm of 3]{ Each ground truth box is matched with the default box with best jaccard overlap};
+\node (5) [below=10mm of 4]{ Match default box to any ground truth with jaccard overlap greater than 0.5}; 
+\node (6) [below=10mm of 5]{ A combined loss function and back propagation applied end-to-end}; 
+\node (7) [below=10mm of 6]{ Validate and save the neural network model}; 
+\node[rounded corners=.55cm] (end) [below=15mm of 7]  {END};
+
+\draw   (start) -- (0);
+\draw   (0) -- (1);
+\draw   (1) -- (2);
+\draw   (2) -- (3);
+\draw   (3) -- (4);
+\draw   (4) -- (5);
+\draw   (5) -- (6);
+\draw   (6) -- (7);
+\draw   (7) -- (end);
+
+\end{tikzpicture}
+\begin{center}
+\caption{SSD network training}
+\end{center}
+\end{center}
+\end{figure}[H]
