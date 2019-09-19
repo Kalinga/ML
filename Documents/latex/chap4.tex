@@ -276,8 +276,34 @@ avg prediction speed: 0.017022
 total positive: 57
 accuracy: 0.316667
 
+conf 4 Test data set (30 videos)
 avg prediction speed 0.0161
 Avg accuracy 0.39
+
+IoU > 0.45
+avg prediction 0.0163
+Avg accuracy 0.4416
+
+IoU > 0.25
+avg prediction 0.0163
+Avg accuracy 0.6603
+%************************************
+conf 4 Train data set
+IoU > 0.45
+0.0164
+0.4483
+
+IoU > 0.45
+0.0162
+0.5106
+
+IoU > 0.25
+0.74
+
+They can change their walking direction in an instance,
+or start/stop walking abruptly. As a consequence, sensible prediction horizons
+are typical short (we consider < 2s in this paper).
+
 
 %ls cm-pm | wc -l 185      *2  370
 %ls cm-ps | wc -l 142 145  *3  335
