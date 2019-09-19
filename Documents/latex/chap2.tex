@@ -533,5 +533,14 @@ h_t = o_t  * tanh(C_t)
 There are several variants of LSTM, but basic variant was explored and used in the scope of the Thesis.
 
 \subsection{Models based on LSTM }
+In \cite{saleh2017intent} Saleh et.al presented a data driven approach which is different from older approach which employs dynamical motion modelling and motion planning. They have formulated the the intent prediction problem as a time-series problem. They proposed the method by observing a short window sequence of the pedestrian motion trajectory, a prediction about their future latent position can be done up to 4 secs ahead. With a deep stacked LSTM network they achieved competent results on Diamler testing data set. In their work, three LSTM layers are stacked. The input layer takes 2-dimension sequence with a window size 10 of lateral position of pedestrian motion trajectory. Last LSTM layer connected to a fully connected layer which has only one neuron and predicts lateral position at the next time step. A linear activation function is used in the fully connected layer. In this method, only the next time step value was predicted. At the inference time recursive prediction was used to predict any window sized sequence. Prediction with different size input sequence was achieved by this.
+As part of training this LSTM  model, which is an optimization problem, Mean Squared Error (MSE) was used as loss function.
+
+\begin{equation}
+MSE= \frac{1}{N}\sum_{i=1}^{N}(\hat{Y_i} - Y_i)^2
+\end{equation}
+
+They presented their work on Daimler pedestrian path prediction benchmark dataset, that consists of 68 stereo image sequences. These sequence includes four scenarios 'Crossing', 'Stopping', 'Starting' and 'Bending In'. These sequences are annotated with frame-wise pedestrian bounding boxes, median disparity of the upper body area of the pedestrian, position of the pedestrian in the vehicle coordinate system and time to event information. This method achieved a superior results in both short and long term prediction for the four scenarios with the test data.
+
 
 
