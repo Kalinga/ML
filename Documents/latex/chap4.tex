@@ -362,7 +362,12 @@ After L iteration of refinement in the SR module the updated equations would be
 \end{equation}
 $ \hat{h}^{t+1}$ in the left side of the equation represents the bounding box height.
 
+In this case the message passing can be formulated as below 
+\begin{equation}
+\hat{C}^{t, l+1}={W}^{vp}V_v +  \hat{C}^{t, l}
+\end{equation}
 
+Where $V_v$ is the velocity (speed and direction) of the vehicle and ${W}^{vp}$ is a linear transformation used for the transmission of message from vehicle to pedestrian.
 
 %--------AS IS---------------
 %Creating a layer of LSTM memory units allows you to specify the number of memory units within the layer.

@@ -26,7 +26,7 @@ $[-1,0,1] \, and \, [-1,0,1] ^{T}$
 \subsection{CNN based feature extraction}
 \newpara CNNs found to be outperform manual feature extraction as they are principally designed Neural net \textbf{architecture which preserves local connections and shares weights}. CNN are special type of multilayer perceptrons, based shared weight architecture and inspired by biological connectivity between neurons in human visual cortex. A particular neuron respond to stimuli only in a restricted region of the visual field called receptive field. CNNs employs a special kind of linear operation called convolution. CNN is characterized by series of several convolution, non-linearity, pooling operation and finally followed by one or more fully connected layers. Initial convolutional layers are used as feature extraction and final layers as fully connected. Fully connected layer takes the input from convolutional network and produces a an N-dimensional vector, where N is the number of classes model is intended to select.
 
-\begin{figure}[h]
+\begin{figure}[H]
 	\centering
 	\begin{tikzpicture}
 		\node at (0.5,-1){\begin{tabular}{c}input image\\layer $l = 0$\end{tabular}};
@@ -169,7 +169,7 @@ Another variation of single shot detection during the same time achieving the st
 
 Standard CNN architectures, over the last 2 decades uses set of standard layer that can be graphically \ref{tomepel} represented as below. 
 
-\begin{figure}[h]
+\begin{figure}[H]
 \begin{align*}
 \begin{tikzpicture}[baseline=-3pt]
 \node[] at (0,0) {\includegraphics[scale=0.5]{input_layer}};
@@ -214,7 +214,7 @@ Standard CNN architectures, over the last 2 decades uses set of standard layer t
 \end{figure}
 
 \newpara Based on these schematic layers, a simple graphical \footnote{\label{tomepel} Images source: Thomas Epelbaum GitHub: https:\textbackslash github.com\textbackslash tomepel\textbackslash Technical\_Book\_DLaccessed on 07th August 2019 } representation of VGG-Net is shown below.
-\begin{figure}[h]
+\begin{figure}[H]
 \begin{center}
 \begin{tikzpicture}
 \node[] at (0,0) {\includegraphics[scale=1]{VGG}};
@@ -234,8 +234,9 @@ The last stage of the pipeline which actually predicts the future location of th
 
 \subsection{RNN}
 Recurrent neural network primarily are densely connected neural network similar to feed forward network with a key difference; introduction of \textit{time} component in RNN. The output of a hidden layer in an RNN is \textit{fed back } into itself. With this we can model the data which is time dependent or sequence dependent in nature. In programming terms this can be represented by a fixed program taking certain inputs and some internal variable.
-\begin{center}
 
+\begin{figure}[H]
+\begin{center}
 \begin{tikzpicture}[item/.style={circle,draw,thick,align=center},
 itemc/.style={item,on chain,join}]
  \begin{scope}[start chain=going right,nodes=itemc,every
@@ -250,13 +251,14 @@ itemc/.style={item,on chain,join}]
  \draw[very thick,latex-] (AL.south) -- ++ (0,-2em)
  node[below,item,fill=gray!10] {$x_t$};
 \end{tikzpicture}
-
+\caption{Compact RNN loop}
 \end{center}
+\end{figure}
 
 \newpara The above diagram depicts a compact loop form of an RNN showing a loop. An RNN can be thought as a multiple copies of the same network, each previous network passing a message to it successor. By unrolling the compact for we can visualize the RNN as below. 
 
-\begin{center}
 
+\begin{center}
 \begin{tikzpicture}[item/.style={circle,draw,thick,align=center},
 itemc/.style={item,on chain,join}]
  \begin{scope}[start chain=going right,nodes=itemc,every
@@ -336,7 +338,7 @@ k: Steepness of the curve \\
 (x0 - x): value of Sigmoid's midpoint \\
 
 A standard logistic function is called sigmoid when (k=1,x0=0,L=1) and can be viewed as below: \\
-\begin{figure}[h]
+\begin{figure}[H]
 	\centering
 	\begin{tikzpicture}
 		\begin{axis}%
@@ -374,8 +376,8 @@ And by taking the derivative \\
 \end{equation}
 
 Plotting the derivative of the sigmoid activation function as below, we notice that 
+\begin{figure}[H]
 \begin{center}
-
 \begin{tikzpicture}
 \begin{axis}%
 [
@@ -397,9 +399,11 @@ domain=-10:10,
 (x,{exp(-x)/((1+exp(-x)) * (1+exp(-x)))});
 \end{axis}
 \end{tikzpicture}
+\caption{Derivative of the sigmoid activation function}
 \end{center}
+\end{figure}
 
-\begin{figure}[h]
+\begin{figure}[H]
 	\centering
 	\begin{tikzpicture}
 		\begin{axis}%
@@ -482,7 +486,7 @@ For the task of early detection, the goal is to recognize the activity with leas
 \subsection{LSTM}
 LSTM has a chain like structure as in RNN but the repeating module has a different structure. There are four neural network layer as contrast with RNN that has a single neural network layer. The four neural network layers interact in a very special way. LSTM networks have gained acceptance for time sequence data processing, such as image captioning, action recognition, speech recognition, language translation etc. An LSTM visually can be shown as below. 
 
-\begin{figure}[h]
+\begin{figure}[H]
 \begin{align*}
 \begin{tikzpicture}[baseline=-3pt]
 \node[] at (0,0) {\includegraphics[scale=0.5]{LSTM3-chain}};
