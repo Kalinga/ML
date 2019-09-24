@@ -352,14 +352,14 @@ ${h}^{t, l}$ is the hidden state at time stamp t
 
 After L iteration of refinement in the SR module the updated equations would be
 
-\begin{eqnarray*}
-\hat{C}^{t}=\hat{C}^{t, L} \\
-\hat{h}^{t}={g}^{o,t} \odot  tanh(\hat{C}^{t}) 
-\end{eqnarray*}
-
 \begin{equation}
-[ \hat{x}^{t+1}, \hat{y}^{t+1}, \hat{w}^{t+1}, \hat{h}^{t+1} ] ^ T = W_p\hat{h}^{t}
+\begin{array}{l@{}}
+\hat{C}^{t}=\hat{C}^{t, L} \\
+\hat{h}^{t}={g}^{o,t} \odot  tanh(\hat{C}^{t}) \\
+\left[ \hat{x}^{t+1}, \hat{y}^{t+1}, \hat{w}^{t+1}, \hat{h}^{t+1} \right] ^ T = W_p\hat{h}^{t}
+\end{array}
 \end{equation}
+
 $ \hat{h}^{t+1}$ in the left side of the equation represents the bounding box height.
 
 In this case the message passing can be formulated as below 

@@ -257,7 +257,7 @@ itemc/.style={item,on chain,join}]
 
 \newpara The above diagram depicts a compact loop form of an RNN showing a loop. An RNN can be thought as a multiple copies of the same network, each previous network passing a message to it successor. By unrolling the compact for we can visualize the RNN as below. 
 
-
+\begin{figure}[H]
 \begin{center}
 \begin{tikzpicture}[item/.style={circle,draw,thick,align=center},
 itemc/.style={item,on chain,join}]
@@ -283,8 +283,9 @@ itemc/.style={item,on chain,join}]
  node[below,item,fill=gray!10] {$x_t$};
  \path (x2) -- (xt) node[midway,scale=2,font=\bfseries] {\dots};
 \end{tikzpicture}
+\caption{Unrolling RNN loop}
 \end{center}
-
+\end{figure}
 Mathematically RNNs can be represented as below: 
 
 \begin{equation}
@@ -548,14 +549,19 @@ They presented their work on Daimler pedestrian path prediction benchmark datase
 
 In \cite{zhang2019sr}, Zhang et.al presented a work, which includes current intention of the neighbors and iteratively refines the current states of all participants in the crowd using a message passing mechanism. Social behaviors are stressed upon and learned using LSTM, but \cite{zhang2019sr} tries to look at neglected factor such as current states of neighbors and adapting selected information from neighbors based on their motions and locations. 
 
+\begin{equation}
+	\begin{array}{l@{}}
+	g_i^{u,t} = \delta(W^u e_i^t + U^uh_i^{t-1} + b^u ) \\
+	g_i^{f,t} = \delta(W^f e_i^t + U^fh_i^{t-1} + b^f ) \\
+	g_i^{o,t} = \delta(W^o e_i^t + U^oh_i^{t-1} + b^o ) \\
+	g_i^{c,t} = \delta(W^c e_i^t + U^ch_i^{t-1} + b^c ) \\
+	c_i^{t} = g_i^{f,t} \odot c_i^{t-1} + g_i^{u,t} \odot g_i^{c,t} \\
+	h_i^{t} = g_i^{o,t} \odot  tanh(c_i^{t}) \\
+	\end{array}
+\end{equation}
 
-\begin{eqnarray*}
-g_i^{u,t} = \delta(W^u e_i^t + U^uh_i^{t-1} + b^u ) \\
-g_i^{f,t} = \delta(W^f e_i^t + U^fh_i^{t-1} + b^f ) \\
-g_i^{o,t} = \delta(W^o e_i^t + U^oh_i^{t-1} + b^o ) \\
-g_i^{c,t} = \delta(W^c e_i^t + U^ch_i^{t-1} + b^c ) \\
-c_i^{t} = g_i^{f,t} \odot c_i^{t-1} + g_i^{u,t} \odot g_i^{c,t} \\
-h_i^{t} = g_i^{o,t} \odot  tanh(c_i^{t}) \\
-\end{eqnarray*}
-
-
+In their work they introduced a State Refined module as an subnetwork of the LSTM cells. This subnetwork aligns pedestrian together and updates their current state. Formulation for the cell state was given by 
+\begin{equation}
+\hat{C}^{t, l+1}= \sum_{j\in N(i)}M(\hat{h_j}^{t, l}, {h}^{t, l}) + \hat{C}^{t, l}
+\end{equation}
+Where M is the message passing function, and used to calculate social information from the neighboring pedestrian. They also used \textbf{Pedestrian-wise }attention and \textbf{Motion gate} to select important information from neighboring pedestrian for message passing. However in this paper they have not described its usefulness in the vehicle and Pedestrian context. This motivated me to explore vehicle and pedestrian social awareness use that information.
