@@ -368,6 +368,59 @@ In this case the message passing can be formulated as below
 \end{equation}
 
 Where $V_v$ is the velocity (speed and direction) of the vehicle and ${W}^{vp}$ is a linear transformation used for the transmission of message from vehicle to pedestrian.
+Consider a person represented as a bounding box in a frame by (x,y,w,h), where (x,y) is the top left corner co-ordinate and \textit{w} is the width of the bounding box and \textit{h} is the height of the bounding box. The position of the the pedestrian bounding box in the next frame is given by the below relation
+
+\begin{equation}
+\begin{array}{l@{}}
+{P}_{t}=(x_t,y_t,w_t,h_t) \\
+{P}_{\hat{t}}=(x_{\hat{t}},y_{\hat{t}},w_{\hat{t}},h_{\hat{t}})
+\end{array}
+\end{equation}
+
+where $\hat{t}$ is time stamp at which the next frame is captured and can be given by below expression
+\begin{equation}
+\begin{array}{l@{}}
+\hat{t} = t +  \Delta t \\
+\Delta t = \frac{1}{fps}
+\end{array}
+\end{equation}
+
+Where \textit{fps} is a measure of how many frames captured by the camera in one second
+
+$(x_{\hat{t}},y_{\hat{t}},w_{\hat{t}},h_{\hat{t}})$ in the equation depends on basically three factors speed of the vehicle, speed of the pedestrian and the angle between vehicle camera and pedestrian. Also it is necessary to be noted that other social aspect such as obstacle, neighborhood pedestrian  , sudden change in pedestrian's own decision for the destination and displacement of the camera will have erroneous impact.
+
+A vehicle moving with a speed of $V_c$ shall travel a distance within a frame time duration is given by the below equation.
+
+\begin{equation}
+\Delta d_v = \Delta t * V_c
+\end{equation}
+
+A person moving with a speed of $V_p$ shall travel a distance within a frame time duration is given by the below equation.
+
+\begin{equation}
+\Delta d_p = \Delta t * V_p
+\end{equation}
+
+The new coordinates $(\hat{x}, \hat{y})$ for the pedestrian it shall be
+
+\begin{equation}
+\begin{array}{l@{}}
+\hat{x} =x + \Delta d_p cos\theta \\
+\hat{y} =x + \Delta d_p sin\theta
+\end{array}			
+\end{equation}
+
+Due to this change of distance $\Delta d_v$ and $\Delta d_p$, the resultant distance and angle between vehicle and pedestrian shall be changed and given by below relation. Considering the car camera coordinate in the previous frame at the origin, it moves always in the direction of \textit{y-axis}, its new co-ordinate at $\hat{t}$ shall be $(0, \Delta d)$
+
+\begin{equation}
+\begin{array}{l@{}}
+d =\sqrt{(0 - x)^2 + (\Delta d - y)^2} \\
+	=\sqrt{(x)^2 + (\Delta d - y)^2} \\
+\hat{\theta }= tan^-1\frac{(y-\Delta d)}{(x-0)} \\
+			 = tan^-1\frac{(y-\Delta d)}{x} 
+\end{array}			
+\end{equation}
+
 
 %--------AS IS---------------
 %Creating a layer of LSTM memory units allows you to specify the number of memory units within the layer.
