@@ -230,53 +230,33 @@ to the action of the approaching vehicle, namely, stop, clear path, slow down, s
 With the below information from JAAD team, i decided to model the data using videos 71-346.
 Video data from 317-346, 30 videos data is separated and was kept for model testing purpose.
 Remaining 246 (71-316) video data was used for training and validation purpose.
-During the training and validation, from total available for training 84372 bounding box information, 20000 bbs used for validation which is around 23.7\% of totaol training data.
+During the training and validation, from total available for training 84372 bounding box information, 20000 bbs used for validation which is around 23.7\% of total training data.
 
-Test RMSE represents testing the model with frames extracted from one video from the test set.
-conf1: model with epochs = 1000, MinMaxScaler(feature\textunderscore range=(0, 1)), 
-number of sequence as observation = 3
-loss: 0.0045 - val\textunderscore loss: 0.0047 
-Test RMSE: 2.363
-Validation: Using one pedestrian bounding boxes with 205 frames.
+%Test RMSE represents testing the model with frames extracted from one video from the test set.
+%conf1: model with epochs = 1000, MinMaxScaler(feature\textunderscore range=(0, 1)), 
+%number of sequence as observation = 3
+%loss: 0.0045 - val\textunderscore loss: 0.0047 
+%Test RMSE: 2.363
+%Validation: Using one pedestrian bounding boxes with 205 frames.
 % git commit 789d6e6
 
-conf2: 
-model with epochs = 200, early stopping after epoch 33
-number of sequence as observation = 15
-loss: 0.0087 - val\textunderscore loss: 0.0089
-Test RMSE: 4.749
+%conf2: 
+%model with epochs = 200, early stopping after epoch 33
+%number of sequence as observation = 15
+%loss: 0.0087 - val\textunderscore loss: 0.0089
+%Test RMSE: 4.749
 %9c88a25
 
-conf3:
-model with epochs = 200, early stopping after epoch 88
-loss-0.0062 val\textunderscore loss-0.0070.h5
-model with epochs = 200
-number of sequence as observation = 30
-Test RMSE: 4.625
+%conf3:
+%model with epochs = 200, early stopping after epoch 88
+%loss-0.0062 val\textunderscore loss-0.0070.h5
+%model with epochs = 200
+%number of sequence as observation = 30
+%Test RMSE: 4.625
 
 
-%model.add(LSTM(50, input\textunderscoreshape=(train\textunderscoreX.shape[1], train\textunderscoreX.shape[2])))
-vid = "video\textunderscore0318"
-total \#prediction: 179
-total time: 2.909117
-avg prediction speed: 0.016252
-total positive: 113
-accuracy: 0.631285
-
-%model.add(LSTM(30, input\textunderscoreshape=(train\textunderscoreX.shape[1], train\textunderscoreX.shape[2])))
-total \#prediction: 179
-total time: 3.122547
-avg prediction speed: 0.017444
-total positive: 57
-accuracy: 0.318436
-
-total \#prediction: 180
-total time: 3.063958
-avg prediction speed: 0.017022
-total positive: 57
-accuracy: 0.316667
-
-conf 4 Test data set (30 videos)
+conf 4  single layer, epochs 200 without early stopping
+Test data set (30 videos)
 IoU > 0.5
 avg prediction speed 0.0161
 Avg accuracy 0.39
@@ -314,6 +294,28 @@ IoU > 0.45 0.0626 0.444
 
 IoU > 0.50 0.062 0.389
 
+conf 6 Test data set (30 videos)
+trained for 1000epochs
+IoU > 0.50
+0.016 0.351
+
+IoU > 0.45
+0.016 0.410
+
+IoU > 0.25
+0.016 0.636
+
+
+Conf7:
+epoch 1000
+input seq 15
+predicting 15th future frame
+
+ETHhotel, ETHuniv, UCYuniv,
+zara01 and zara02
+
+
+
 They can change their walking direction in an instance,
 or start/stop walking abruptly. As a consequence, sensible prediction horizons
 are typical short (we consider < 2s in this paper).
@@ -342,13 +344,13 @@ batch normalization
 MinMax scalar at a global scale introduce the error, for that reason MinMax scalar for every video clip was crated and the data sequence is transformed and fit in accordance to that.
  
 \subsection{State Refinement}
-The position of the Pedestrian bounding box largely depends upon speed of the vehicle, pedestrian own speed and the direction pedestrian makes with the camera and ignoring the other social social behavior such neighboring pedestrian, stationary obstacle etc. It is also important to note that pedestrian and vehicle always want to remain at safe distance from each other. A car lowers its speed greatly and within the safe distance slowly keeps moving without halting when pedestrians are moving in front of it.
-It is also noticed at pedestrian moves with natural speed when vehicle is not near and he feels confident that he is in safe zone. When vehicle approaches and he increases his speed. So there exists a social relationship between vehicle and pedestrian and we attempted at extracting this information and make refinement to the LSTM state. With the motivation from \cite{zhang2019sr}, we constructed a message passing mechanism to to refine features of pedestrian by the current vehicle speed and the direction between pedestrian and vehicle(camera mounted on the vehicle). The SR module takes vehicle current speed, pedestrian movement information with respect to vehicle, cell states and hidden states from the LSTM as input and outputs the refined cell state. This can be expressed as 
+The position of the pedestrian bounding box largely depends upon speed of the vehicle, pedestrian own speed and the direction pedestrian makes with the camera and ignoring the other social behavior such neighboring pedestrians, stationary obstacles etc. It is also important to note that pedestrian and vehicle always want to remain at safe distance from each other. A car lowers its speed greatly when moving at high speed and finds a pedestrian near the curb waiting to cross or crossing the road. With a lesser speed and within the safe distance from pedestrian, it keeps moving slowly without halting even though pedestrians are moving in front of it.
+It is also noticed, as pedestrian moves with natural speed when a vehicle is not near and he feels confident that he is in safe zone, in contrast he increases his speed when vehicle approaches. So there exists a social relationship between vehicle and pedestrian and we attempted at extracting this information and make refinement to the LSTM state. With the motivation from \cite{zhang2019sr}, we constructed a message passing mechanism to refine the features of pedestrian by the current vehicle speed and the direction between pedestrian and vehicle(camera mounted on the vehicle). The SR module takes vehicle current speed, pedestrian movement information with respect to vehicle, cell states and hidden states from the LSTM as input and outputs the refined cell state. This can be expressed as 
 \begin{equation}
 \hat{C}^{t, l+1}= M(V^t, {h}^{t, l}) + \hat{C}^{t, l}
 \end{equation}
-Where $V^t$ is the vehicle speed at time t and rate of pedestrian location change in X-Y \\
-${h}^{t, l}$ is the hidden state at time stamp t
+Where $\hat{C}^{t, l+1}$ represents refined cell state at time stamp t and refined iteration l, $V^t$ is the vehicle speed at time t and rate of pedestrian location change in X-Y \\
+${h}^{t, l}$ is the hidden state of the Pedestrian at time stamp t
 
 After L iteration of refinement in the SR module the updated equations would be
 
@@ -377,6 +379,8 @@ Consider a person represented as a bounding box in a frame by (x,y,w,h), where (
 \end{array}
 \end{equation}
 
+Where ${P}_{\hat{t}}$ is the position of the pedestrian at time stamp $(t+\Delta t)$, and $\Delta t$ is given by below equation.
+
 where $\hat{t}$ is time stamp at which the next frame is captured and can be given by below expression
 \begin{equation}
 \begin{array}{l@{}}
@@ -387,21 +391,21 @@ where $\hat{t}$ is time stamp at which the next frame is captured and can be giv
 
 Where \textit{fps} is a measure of how many frames captured by the camera in one second
 
-$(x_{\hat{t}},y_{\hat{t}},w_{\hat{t}},h_{\hat{t}})$ in the equation depends on basically three factors speed of the vehicle, speed of the pedestrian and the angle between vehicle camera and pedestrian. Also it is necessary to be noted that other social aspect such as obstacle, neighborhood pedestrian  , sudden change in pedestrian's own decision for the destination and displacement of the camera will have erroneous impact.
+$(x_{\hat{t}},y_{\hat{t}},w_{\hat{t}},h_{\hat{t}})$ in the equation depends on basically three factors speed of the vehicle, speed of the pedestrian and the angle between vehicle camera and pedestrian. Also it is necessary to be noted that other social aspect such as obstacle, neighborhood pedestrian, sudden change in pedestrian's own decision for the destination and displacement of the camera will have impact.
 
-A vehicle moving with a speed of $V_c$ shall travel a distance within a frame time duration is given by the below equation.
+A vehicle moving with a speed of $V_c$ shall travel a distance within \textit{a frame }time duration is given by the below equation.
 
 \begin{equation}
 \Delta d_v = \Delta t * V_c
 \end{equation}
 
-A person moving with a speed of $V_p$ shall travel a distance within a frame time duration is given by the below equation.
+A person moving with a speed of $V_p$ shall travel a distance within \textit{a frame }time duration is given by the below equation.
 
 \begin{equation}
 \Delta d_p = \Delta t * V_p
 \end{equation}
 
-The new coordinates $(\hat{x}, \hat{y})$ for the pedestrian it shall be
+The new coordinates $(\hat{x}, \hat{y})$ for the pedestrian is given by
 
 \begin{equation}
 \begin{array}{l@{}}
@@ -421,7 +425,18 @@ d =\sqrt{(0 - x)^2 + (\Delta d - y)^2} \\
 \end{array}			
 \end{equation}
 
-NOTE:The above equations holds true for both the objects in a single frame of reference. However in our case the pedestrian bounding box is captured using camera frame of reference. And car and pedestrian actually moves in ground plane. So more investigation is still needed.
+The distance between camera and object in the scene can be derived by below equation.
+\begin{equation}
+d = \frac{w * f}{p}
+\end{equation}
+where d is the distance between camera and object, w corresponds to width of the object, f represents the focal length of the camera and p is the perceived width in number of pixel in the image.
+So with a moving camera, modified perceived width in pixel given by
+
+\begin{equation}
+\hat{p} = \frac{w * f}{d_{\hat{t}}}
+\end{equation}
+Where $d_{\hat{t}}$ is the distance between camera and object at $\hat{t}$.
+
 %--------AS IS---------------
 %Creating a layer of LSTM memory units allows you to specify the number of memory units within the layer.
 %Each unit or cell within the layer has an internal cell state, often abbreviated as “c“, and outputs a hidden state, often abbreviated as “h“.

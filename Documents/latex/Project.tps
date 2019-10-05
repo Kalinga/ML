@@ -17,8 +17,8 @@ Class=LaTeXView
 Document=main.tex
 
 [Frame0_View0,0]
-TopLine=40
-Cursor=1562
+TopLine=42
+Cursor=1600
 
 [Frame1]
 Flags=0
@@ -53,8 +53,8 @@ Class=BibTeXView
 Document=main.bib
 
 [Frame2_View0,0]
-TopLine=122
-Cursor=4953
+TopLine=144
+Cursor=5558
 
 [Frame3]
 Flags=0
@@ -89,8 +89,8 @@ Class=LaTeXView
 Document=chap3.tex
 
 [Frame4_View0,0]
-TopLine=0
-Cursor=883
+TopLine=100
+Cursor=7195
 
 [Frame5]
 Flags=0
@@ -107,10 +107,28 @@ Class=LaTeXView
 Document=chap2.tex
 
 [Frame5_View0,0]
-TopLine=143
-Cursor=9155
+TopLine=554
+Cursor=28639
+
+[Frame6]
+Flags=0
+ShowCmd=1
+MinPos.x=-1
+MinPos.y=-1
+MaxPos.x=-1
+MaxPos.y=-1
+NormalPos.left=4
+NormalPos.top=26
+NormalPos.right=1004
+NormalPos.bottom=509
+Class=LaTeXView
+Document=chap4.tex
+
+[Frame6_View0,0]
+TopLine=50
+Cursor=3991
 
 [SessionInfo]
-FrameCount=6
+FrameCount=7
 ActiveFrame=5
 

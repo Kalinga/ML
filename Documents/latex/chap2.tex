@@ -565,3 +565,6 @@ In their work they introduced a State Refined module as an subnetwork of the LST
 \hat{C}^{t, l+1}= \sum_{j\in N(i)}M(\hat{h_j}^{t, l}, {h}^{t, l}) + \hat{C}^{t, l}
 \end{equation}
 Where M is the message passing function, and used to calculate social information from the neighboring pedestrian. They also used \textbf{Pedestrian-wise }attention and \textbf{Motion gate} to select important information from neighboring pedestrian for message passing. However in this paper they have not described its usefulness in the vehicle and Pedestrian context. This motivated me to explore vehicle and pedestrian social awareness use that information.
+
+In \cite{xue2018ss}, Xue et. al used a hierarchical LSTM model for Pedestrian Trajectory Prediction. They have considered the influence of social neighborhood and scene layouts. In their model they used three different LSTMs to capture person, social and scene scale information in a circular shape neighborhood. The dataset and scenarios described in this paper are humans in a crowded place. And it has not explored pedestrian crossing or trying to cross in a traffic scenario. However some of the findings still applicable in the pedestrian-moving vehicle scenario as well.
+
