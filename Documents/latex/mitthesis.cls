@@ -204,6 +204,13 @@
 
 \usepackage{setspace}
 
+\usepackage{graphicx}
+\def\LOGO{%
+\begin{picture}(0,0)\unitlength=1cm
+\put (1,-1) {\includegraphics[width=15em]{tu-logo}}
+\end{picture}
+}
+
 % Note - doublespace.sty has some float-related troubles in
 % combination with graphics or color, and is not officially compliant
 % with 2e.  setspace is a replacement which is 2e-compliant.
@@ -421,6 +428,9 @@ reserved.\par\permission}}
 \fi
 
 \def\thesisdate#1{\gdef\@thesisdate{#1}}
+\def\dateofbirth#1{\gdef\@dateofbirth{#1}}
+\def\matrikel#1{\gdef\@matrikel{#1}}
+
 
 % typically just a month and year
 \def\degreemonth#1{\gdef\@degreemonth{#1}}
@@ -438,7 +448,7 @@ reserved.\par\permission}}
 \def\supervisor#1#2{\setbox\@titlesupervisor\vbox
   {\unvbox\@titlesupervisor \vskip 10pt% plus 1fil minus 1fil
   \def\baselinestretch{1}\large
-  \signature{Certified by}{#1 \\ #2 \\ Thesis Supervisor}}
+  \signature{Certified by}{#1 \\ #2}}
   \setbox\@abstractsupervisor\vbox{\unvbox\@abstractsupervisor
   \vskip\baselineskip \def\baselinestretch{1}\@normalsize 
   \par\noindent Thesis Supervisor: #1 \\ Title: #2}}
@@ -448,7 +458,11 @@ reserved.\par\permission}}
 
 %% `upcase' documentclass option: \choosecase is defined either as a dummy or
 %% a macro to change the (expanded) argument to uppercase.
+
 \def\maketitle{\begin{titlepage}
+\LOGO
+\par
+\vskip 1\baselineskip
 \large
 {\def\baselinestretch{1.2}\Large\bf \choosecase{\@title} \par}
 by\par
@@ -468,7 +482,7 @@ at the
 \@degreemonth\ \@degreeyear
 
 \vskip 1\baselineskip
-\signature{Author}{\@department \\ \@thesisdate}
+\signature{Author}{\@department \\ \@dateofbirth \\ \@matrikel}
 \par
 \vfill
 \unvbox\@titlesupervisor

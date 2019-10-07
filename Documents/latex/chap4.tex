@@ -396,44 +396,51 @@ $(x_{\hat{t}},y_{\hat{t}},w_{\hat{t}},h_{\hat{t}})$ in the equation depends on b
 A vehicle moving with a speed of $V_c$ shall travel a distance within \textit{a frame }time duration is given by the below equation.
 
 \begin{equation}
-\Delta d_v = \Delta t * V_c
+d_v = \Delta t \times V_c
 \end{equation}
 
 A person moving with a speed of $V_p$ shall travel a distance within \textit{a frame }time duration is given by the below equation.
 
 \begin{equation}
-\Delta d_p = \Delta t * V_p
+d_p = \Delta t \times V_p
 \end{equation}
 
 The new coordinates $(\hat{x}, \hat{y})$ for the pedestrian is given by
 
 \begin{equation}
 \begin{array}{l@{}}
-\hat{x} =x + \Delta d_p cos\theta \\
-\hat{y} =x + \Delta d_p sin\theta
+\hat{x} =x + d_p cos\theta \\
+\hat{y} =x + d_p sin\theta
 \end{array}			
 \end{equation}
 
-Due to this change of distance $\Delta d_v$ and $\Delta d_p$, the resultant distance and angle between vehicle and pedestrian shall be changed and given by below relation. Considering the car camera coordinate in the previous frame at the origin, it moves always in the direction of \textit{y-axis}, its new co-ordinate at $\hat{t}$ shall be $(0, \Delta d)$
+Due to this change of distance $\Delta d_v$ and $\Delta d_p$, the resultant distance and angle between vehicle and pedestrian shall be changed and given by below relation. Considering the car camera coordinate in the previous frame at the origin, it moves always in the direction of \textit{y-axis}, its new co-ordinate at $\hat{t}$ shall be $(x_0, \Delta d)$
 
 \begin{equation}
 \begin{array}{l@{}}
-d =\sqrt{(0 - x)^2 + (\Delta d - y)^2} \\
-	=\sqrt{(x)^2 + (\Delta d - y)^2} \\
-\hat{\theta }= tan^-1\frac{(y-\Delta d)}{(x-0)} \\
-			 = tan^-1\frac{(y-\Delta d)}{x} 
+d =\sqrt{(x_0 - x)^2 + (d_v - y)^2} \\
+	=\sqrt{(x)^2 + (d_v - y)^2} \\
+\hat{\theta }= tan^-1\frac{(y-d_v)}{(x-x_0)} \\
+\end{array}
+\end{equation}
+
+\begin{equation}
+\begin{array}{l@{}}
+\theta =\hat{\theta } + {\theta }_f\\
 \end{array}			
 \end{equation}
 
+Where ${\theta }_f$ is the focal angle made by change in vehicle angle.
+
 The distance between camera and object in the scene can be derived by below equation.
 \begin{equation}
-d = \frac{w * f}{p}
+d = \frac{w \times f}{p}
 \end{equation}
 where d is the distance between camera and object, w corresponds to width of the object, f represents the focal length of the camera and p is the perceived width in number of pixel in the image.
 So with a moving camera, modified perceived width in pixel given by
 
 \begin{equation}
-\hat{p} = \frac{w * f}{d_{\hat{t}}}
+\hat{p} = \frac{w \times f}{d_{\hat{t}}}
 \end{equation}
 Where $d_{\hat{t}}$ is the distance between camera and object at $\hat{t}$.
 
