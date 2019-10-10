@@ -8,229 +8,6 @@
 During the exploration and implementation of the Pedestrian intention prediction pipeline, SSD was chosen as the first block which acts as Pedestrian detector. In this chapter, how SSD was trained on large dataset, acquisition of data set and several aspect of Machine learning and Deep learning shall be discussed.
 
 \section{LSTM with bonding box only}
-\section{LSTM with refinement}
-\section{Discussion}
-
-
-\section{Data Acquisition}
-Challenges are there while just considering image data, the verities of image sources for example we can get photos that are taken by professionals, synthetic photos drawn by image generators and real life photos that we see and capture in our day to day life. So the results of these benchmarks and 
-observation across these aforementioned classes of data set does not transfer to the other scenarios.
-As recommended always for machine learning tasks, we should consider real data as close as possible to the environment where the designed system is expected to work. And luckily there exist some excellent data set in the public domain. I chose Caltech Data set \cite{dollar2009pedestrian}, which is one of the latest data set available in the public till today. 
-
-\newpara
-This data set contains highly annotated video, recorded from a moving vehicle in a normal traffic situation. It contains pedestrians vary largely in appearance, pose and scale. It also includes occlusion information. It contains close to 10 hours of recording at 30 fps with a video resolution 640 x 480. As seen and mentioned by the authors the overall image quality lower than that of same image resolution. The data set includes ~350,000  pedestrian bounding boxes (BB) labeled in 250,000frames and remains the largest such data set to  date. As already mentioned by \cite{walk2010new} Caltech data set is difficult for various reasons.
-
-\begin{itemize}
-	\setlength\itemsep{-1em}
-	\item Many small pedestrians
-	\item realistic occlusion frequency
-	\item image quality is poor
-	\item includes blur
-	\item visible JPEG artifacts
-\end{itemize}
-
-\subsection{Data preparation}
-After the video data got acquired, with help of a publicly available python project \cite{shuntasaito2015}, the original annotations in \textit{MATLAB} compatible \textit{vbb} format is converted to a JSON structure for easier consumption. The generated json file further processed and required data is extracted into a csv file using a python script located at \url{ https://github.com/Kalinga/ML/blob/master/ssd_keras_caltech/json_anno_csv_conversion.ipynb}. As mentioned by \cite{dollar2009pedestrian} the video set from 00-05 is expected for training purpose and 06-10 is for testing purpose.
-
-In the Caltech data group of people are separately label as \textit{people}. With the intention, the ML model should learn individual person and identify persons rather than people, when there are several persons close by, i decided to remove \textit{people} class label from the training data set. And also the number of samples for \textit{people} and \textit{person} was disproportionately varying. This was another reason to exclude \textit{people }label from  the training. The frequency for the both classes are shown as below.
-
-\begin{figure}[H]
-\includegraphics[scale=0.4]{classid_distribution1_2}
-\begin{center}
-\caption{Class 'person' and 'people' distribution}
-\end{center}
-\end{figure}
-
-As per \cite{walk2010new}, unoccluded pedestrians with 50-pixel-or-taller are considered , as they are not clear. For simplicity purpose below data are discarded from the training set.
-\begin{itemize}
-	\item Class label with \textit{people}, \textit{person-fa}, \textit{person?}
-	\item occluded \textit{person} label
-	\item images below 50 pixel in height
-	\item images below 5 pixel in width
-\end{itemize}
-
-After the above mentioned clean up, our training data contains total 48194 number of BB with person as a label in 26902 unique frames and sample data looks as below:
-\begin{center}
-\texttt{  \\
-frame,xmin,xmax,ymin,ymax,class\textunderscore id \\
-set00\textunderscore V000\textunderscore 1213.png,573,591,169,211,1 \\
-set00\textunderscore V000\textunderscore 1213.png,473,484,170,193,1 \\
-set00\textunderscore V000\textunderscore 166.png,406,418,164,187,1 \\
-set00\textunderscore V000\textunderscore 166.png,435,442,167,181,1 \\
-set00\textunderscore V000\textunderscore 166.png,233,241,120,134,1 \\
-set00\textunderscore V000\textunderscore 744.png,564,588,153,218,1 \\
-set00\textunderscore V000\textunderscore 744.png,565,587,173,206,1 \\
-set00\textunderscore V000\textunderscore 654.png,406,417,162,194,1 \\
-}
-\end{center}
-
-During the training an NVIDIA GeForce GTX 1080 GPU with 8GB of video memory was used, while using a validation data size equals to standard 10\% of training data, the training time was equals to unusable, as training of a single epoch was taking nearly ~30-40 hours. The experiment was run on a shared Linux server hosted within the University Network and the computing resource was shared with other students. Keeping this in view, i decided to reduce the size of the validation data set size to great extent and get an approximate impression about the model's training efficiency. Below table show the training and validation data partition.
-
-\begin {table}[H]
-\begin{center}
- \begin{tabular}{||c c c||}
- \hline
- Data Set & Bounding Box & Frames\\ [0.8ex] 
- \hline\hline
- Training & 47194 & 26280 \\
- \hline
- Validation & 1000 & 622 \\
- \hline
- Total & 48194 & 26902 \\
- \hline
-\end{tabular}
-\caption{Training and Validation sample numbers}
-\end{center}
-\end {table}
-
-\cite{dollar2009pedestrian} defines pedestrians with 80 pixels or taller as in the near scale and 30 pixel or less
-are in the far scale and rest in the medium scale. Most pedestrians are observed in medium scale. A person with 1.8m tall is 1.5s away from the vehicle for the mentioned set up and speed of 55km\/h. \cite{dollar2011pedestrian} shows that average aspect ratio \textit{$w \approx 0.41h$}. After above mentioned cleaning steps, a re calculation for the aspect ration distribution shows, it does not vary much from the original distribution, as shown below.
-
-\begin{figure}[H]
-\includegraphics[scale=0.4]{aspect_ratio_distribution}
-\begin{center}
-\caption{Pedestrian aspect ratio distribution}
-\end{center}
-\end{figure}
-
-\section{Training }
-As SSD has predictors at multiple level, before the model training step, a pre-processing step is required where proposed BBs are generated and compared with the ground truth and depending on IoU threshold, certain prior BBs are considered and encoded for the training purpose. There are several parameters play a role in generating bounding boxes and some of critical parameters used are given below.
-
-\subsection{Framework parameters}
-
-\begin {table}[H]
-\begin{center}
- \begin{tabular}{||c c||} 
- \hline
- Param. Name & Value\\ [0.8ex] 
- \hline\hline
- img\textunderscore  height & 480 \\ 
- \hline
- img\textunderscore  width & 640 \\
- \hline
- img\textunderscore  channels & 3 \\
- \hline
- n\textunderscore  classes & 1 \\
- \hline
- scales & $[0.08, 0.16, 0.32, 0.64, 0.96]$ \\
- \hline
-\end{tabular}
-\caption{SSD framework parameters}
-\end{center}
-\end{table}
-
-\subsection{Model parameters}
-\textbf{Model Architecture:}
-SSD model consists of convolutional feature layers and some convolutional predictor layers that take input from different feature layers, making the model fully convolutional. In the presented model, 7 convolutional layers and 4 predictors layers are used. These 4 convolutional predictors layers take input from layers 4, 5, 6, and 7 respectively. convnet with was used for modeling using keras \footnote{Keras is a high-level neural networks API, written in Python and capable of running on top of TensorFlow, CNTK, or Theano.}. The model is created and initialised with Keras API Sequential (). 
-
-\subsection{Hyper Parameters}
-
-\subsection{ Validation: Graphs and results}
-
-\begin{figure}[H]
-\includegraphics[scale=0.4]{conf0_loss-val_loss_0_10epochs}
-\begin{center}
-\caption{Training and Validation error at 10 epochs}
-\end{center}
-\end{figure}
-As the training error has not converged after 10 epochs it was decided to training for another 10 epoch and the graph as follows. After training for 10 epochs the training error gradually reduces and the validation error revolves around training error as shown in the below graph. As the training of single epoch takes significant time the statistics were taken with small epochs.
-
-\begin{figure}[H]
-\includegraphics[scale=0.4]{conf0_loss-val_loss_10_20epochs}
-\begin{center}
-\caption{Training and Validation error at 20 epochs}
-\end{center}
-\end{figure}
-
-\newpara
-Looking at the graph which depicts training loss and validation loss drawn with several epochs, we could see training error gradually reduces with increase in the number of epochs, simultaneously we see validation loss also exhibiting same pattern and slowly decreasing with number of epochs. This trend of decrease in validation error with increase in training is a good indication of learning. The model could have trained for some more epochs until it converges, however due to long training time, it was not possible to do so, instead training with different configuration was done to see the behavior with other configuration.
-
-\section{Testing} 
-For the testing of the generated model below steps were followed to prepare the test data and conduct the experiment.
-\begin{enumerate}
-	\item video set 06 - 10 was selected as test data and bounding box, label are extracted into labels\textunderscore test\textunderscore full.csv which contains total 154436 records
-	\item Rows with occluded and other classes except person were removed and remaining number of records were 73218, which consists of 42910 unique images 
-	\item records with less than 50 pixel for height or 5 pixel for width were discarded and data set left with 29620 records
-	\item From the above data 1000 records were randomly chosen for test purpose which consists of 902 unique images
-\end{enumerate}
-
-\newpara
-While using SSD7, it was observed that, the algorithm is very sensitive to the list of aspect ratios for the anchor boxes. To begin with, the values for aspect\textunderscore ratios = $[0.5, 1.0, 2.0]$ were used and that lead to very poor result in the evaluation phase. Subsequently the model was trained with several different configuration and results are noted as below.
-
-for aspect\textunderscore ratios = $[0.1, 0.2, 0.33, 0.413, 0.418, 0.5, 0.6, 0.7, 0.8, 1.0]$
-\begin{table}[H]
-\begin{center}
- \begin{tabular}{||c c c||} 
- \hline
- No. epoch & mAP & fps\\ [0.8ex] 
- \hline\hline
- 10 & 0.661 & 10.22\\ 
- \hline
- 20  & 0.635 & 9.73 \\
-\hline
-\end{tabular}
-\caption{Average Precision and fps with number of epochs}
-\end{center}
-\end{table}
-From the above result, it can be observed that training the data for more epochs actually not resulting a better model as both mAP and fps is lowered for the model trained with 20 epochs, this could be sign of \textit{over-fitting.}
-
-
-conf1
-0.2, 0.33, 0.413, 0.418, 0.5, 0.6, 0.7, 0.8, 1.0
-0.4376
-fps 73.14
-
-conf 2
-epoch 5
-0.1, 0.2, 0.33, 0.413, 0.418, 0.5, 0.6, 0.7, 0.8
-fps: 75.58 
-mAP:0.471
-
-conf 3 
-0.1, 0.2, 0.33, 0.413, 0.418, 0.5, 0.6, 0.7, 0.8, 1.0
-
-
-
-
-
-With the increase in number of values in the list of aspect ratio, the number of predictor boxes increases. Increase in number of predictor boxes increases both training time as well as prediction time.
-
-\section{JAAD Dataset}
-
-JAAD \cite{rasouli2017agreeing} is a publicly available large scale data set that includes data for pedestrian detection with behavioral and contextual information. It contains 346 video clips of pedestrian data that includes occlusion label, temporal correlation, behavioral aspect, contextual information weather related data. Rasouli et al. provided a supporting GitHub code for easier interaction with JAAD data. The videos can be downloaded by running the script \colorbox{lightgray}{download\textunderscore clips.sh}. The video clips are downloaded into JAAD\textunderscore clips and the clips are named as below.\\
-\colorbox{lightgray} {JAAD\textunderscore clips/video\textunderscore  0001.mp4} \\
-\colorbox{lightgray} {JAAD\textunderscore clips/video\textunderscore  0002.mp4}
-
-Using \colorbox{lightgray}{split\textunderscore clips\textunderscore to\textunderscore .sh} the frames are extracted to corresponding video id directory with in a floder called \textit{images} \\
-\begin{center}
-\colorbox{lightgray} {images/video\textunderscore  0001/0000.png} \\
-\colorbox{lightgray} {images/video\textunderscore  0001/0001.png} \\
-\colorbox{lightgray} {....}
-\end{center}
-
-In JAAD annotations are divided into 5 groups:
-\begin{itemize}
-	\item Annotations: Information about pedestrian bounding box, occlusion information, activities. These annotations are one per frame per label.
-	\item Attribute: Contains information regarding pedestrian's crossing points, crossing characteristics. These annotations are one per pedestrian.
-	\item Appearance: Information regarding pedestrian pose, clothing, objects they carry. These information are one per frame per pedestrian.
-	\item Traffic: Includes information about traffic signs, traffic light for each frame.
-	\item Vehicle: Per frame vehicle speed information e.g moving fast, speeding up.
-\end{itemize}
-
-
-The early work includes prediction of road users behavior by employing dynamic factors e.g trajectory prediction, velocity prediction or predicting final goal of the pedestrian. Recently behavioral aspect such as awareness by estimating head orientation along with other contextual information such as sign, weather condition, visibility and individual characteristics of the pedestrian such as things he carry, age and sex, size of the group he is associated with influence crossing behavior.
-
-TODO:  pedestrian to identify the pedestrians with behavioral tags (i.e. the ones demonstrating the intention of crossing or located close to the curb). 
-Occlusion information is provided in the form of tags for
-each bounding box: partial occlusion (between 25\% and 75\%
-visible) and full occlusion (less than 25\% visible).
- 654 unique pedestrian samples (out of 2.2k samples) with behavioral tags in the
-dataset. 
-The
-pedestrians\' actions are categorized into 3 groups: Precondition- this refers to the state of the pedestrian prior to crossing and can be either standing, moving slow or fast. Attention- the way the pedestrian becomes aware of the approaching vehicle. These actions, depending on their duration, are looking ( > 1s) or glancing ($\leq$ 1s). Response- this
-includes the behaviors that pedestrians exhibit in response
-to the action of the approaching vehicle, namely, stop, clear path, slow down, speed up, hand gesture and nod.
-
 \subsection{LSTM results}
 With the below information from JAAD team, i decided to model the data using videos 71-346.
 Video data from 317-346, 30 videos data is separated and was kept for model testing purpose.
@@ -343,113 +120,71 @@ TODO
 \newpara Weakly supervised learning!
 Sigmoid cross entropy vs  softmax
 batch normalization
+\section{LSTM with refinement}
+\section{Discussion}
 
+\section{SSD results}
+\subsection{Validation}
+Below graphs depicts the validation error when SSD model was trained for 10 epochs.
+\begin{figure}[H]
+\includegraphics[scale=0.4]{conf0_loss-val_loss_0_10epochs}
+\begin{center}
+\caption{Training and Validation error at 10 epochs}
+\end{center}
+\end{figure}
+As the training error has not converged after 10 epochs it was decided to training for another 10 epoch and the graph as follows. After training for 10 epochs the training error gradually reduces and the validation error revolves around training error as shown in the below graph. As the training of single epoch takes significant time the statistics were taken with small epochs.
 
-\subsection{Problem}
-MinMax scalar at a global scale introduce the error, for that reason MinMax scalar for every video clip was crated and the data sequence is transformed and fit in accordance to that.
- 
-\subsection{State Refinement}
-The position of the pedestrian bounding box largely depends upon speed of the vehicle, pedestrian own speed and the direction pedestrian makes with the camera and ignoring the other social behavior such neighboring pedestrians, stationary obstacles etc. It is also important to note that pedestrian and vehicle always want to remain at safe distance from each other. A car lowers its speed greatly when moving at high speed and finds a pedestrian near the curb waiting to cross or crossing the road. With a lesser speed and within the safe distance from pedestrian, it keeps moving slowly without halting even though pedestrians are moving in front of it.
-It is also noticed, as pedestrian moves with natural speed when a vehicle is not near and he feels confident that he is in safe zone, in contrast he increases his speed when vehicle approaches. So there exists a social relationship between vehicle and pedestrian and we attempted at extracting this information and make refinement to the LSTM state. With the motivation from \cite{zhang2019sr}, we constructed a message passing mechanism to refine the features of pedestrian by the current vehicle speed and the direction between pedestrian and vehicle(camera mounted on the vehicle). The SR module takes vehicle current speed, pedestrian movement information with respect to vehicle, cell states and hidden states from the LSTM as input and outputs the refined cell state. This can be expressed as 
-\begin{equation}
-\hat{C}^{t, l+1}= M(V^t, {h}^{t, l}) + \hat{C}^{t, l}
-\end{equation}
-Where $\hat{C}^{t, l+1}$ represents refined cell state at time stamp t and refined iteration l, $V^t$ is the vehicle speed at time t and rate of pedestrian location change in X-Y \\
-${h}^{t, l}$ is the hidden state of the Pedestrian at time stamp t
+\begin{figure}[H]
+\includegraphics[scale=0.4]{conf0_loss-val_loss_10_20epochs}
+\begin{center}
+\caption{Training and Validation error at 20 epochs}
+\end{center}
+\end{figure}
 
-After L iteration of refinement in the SR module the updated equations would be
+\newpara
+Looking at the graph which depicts training loss and validation loss drawn with several epochs, we could see training error gradually reduces with increase in the number of epochs, simultaneously we see validation loss also exhibiting same pattern and slowly decreasing with number of epochs. This trend of decrease in validation error with increase in training is a good indication of learning. The model could have trained for some more epochs until it converges, however due to long training time, it was not possible to do so, instead training with different configuration was done to see the behavior with other configuration.
 
-\begin{equation}
-\begin{array}{l@{}}
-\hat{C}^{t}=\hat{C}^{t, L} \\
-\hat{h}^{t}={g}^{o,t} \odot  tanh(\hat{C}^{t}) \\
-\left[ \hat{x}^{t+1}, \hat{y}^{t+1}, \hat{w}^{t+1}, \hat{h}^{t+1} \right] ^ T = W_p\hat{h}^{t}
-\end{array}
-\end{equation}
+\subsection{Testing} 
+For the testing of the generated model below steps were followed to prepare the test data and conduct the experiment.
+\begin{enumerate}
+	\item video set 06 - 10 was selected as test data and bounding box, label are extracted into labels\textunderscore test\textunderscore full.csv which contains total 154436 records
+	\item Rows with occluded and other classes except person were removed and remaining number of records were 73218, which consists of 42910 unique images 
+	\item records with less than 50 pixel for height or 5 pixel for width were discarded and data set left with 29620 records
+	\item From the above data 1000 records were randomly chosen for test purpose which consists of 902 unique images
+\end{enumerate}
 
-$ \hat{h}^{t+1}$ in the left side of the equation represents the bounding box height.
+\newpara
+While using SSD7, it was observed that, the algorithm is very sensitive to the list of aspect ratios for the anchor boxes. To begin with, the values for aspect\textunderscore ratios = $[0.5, 1.0, 2.0]$ were used and that lead to very poor result in the evaluation phase. Subsequently the model was trained with several different configuration and results are noted as below.
 
-In this case the message passing can be formulated as below 
-\begin{equation}
-\hat{C}^{t, l+1}={W}^{vp}V_v +  \hat{C}^{t, l}
-\end{equation}
+for aspect\textunderscore ratios = $[0.1, 0.2, 0.33, 0.413, 0.418, 0.5, 0.6, 0.7, 0.8, 1.0]$
+\begin{table}[H]
+\begin{center}
+ \begin{tabular}{||c c c||} 
+ \hline
+ No. epoch & mAP & fps\\ [0.8ex] 
+ \hline\hline
+ 10 & 0.661 & 10.22\\ 
+ \hline
+ 20  & 0.635 & 9.73 \\
+\hline
+\end{tabular}
+\caption{Average Precision and fps with number of epochs}
+\end{center}
+\end{table}
+From the above result, it can be observed that training the data for more epochs actually not resulting a better model as both mAP and fps is lowered for the model trained with 20 epochs, this could be sign of \textit{over-fitting.}
 
-Where $V_v$ is the velocity (speed and direction) of the vehicle and ${W}^{vp}$ is a linear transformation used for the transmission of message from vehicle to pedestrian.
-Consider a person represented as a bounding box in a frame by (x,y,w,h), where (x,y) is the top left corner co-ordinate and \textit{w} is the width of the bounding box and \textit{h} is the height of the bounding box. The position of the the pedestrian bounding box in the next frame is given by the below relation
+%conf1
+%0.2, 0.33, 0.413, 0.418, 0.5, 0.6, 0.7, 0.8, 1.0
+%0.4376
+%fps 73.14
 
-\begin{equation}
-\begin{array}{l@{}}
-{P}_{t}=(x_t,y_t,w_t,h_t) \\
-{P}_{\hat{t}}=(x_{\hat{t}},y_{\hat{t}},w_{\hat{t}},h_{\hat{t}})
-\end{array}
-\end{equation}
+%conf 2
+%epoch 5
+%0.1, 0.2, 0.33, 0.413, 0.418, 0.5, 0.6, 0.7, 0.8
+%fps: 75.58 
+%mAP:0.471
 
-Where ${P}_{\hat{t}}$ is the position of the pedestrian at time stamp $(t+\Delta t)$, and $\Delta t$ is given by below equation.
+%conf 3 
+%0.1, 0.2, 0.33, 0.413, 0.418, 0.5, 0.6, 0.7, 0.8, 1.0
 
-where $\hat{t}$ is time stamp at which the next frame is captured and can be given by below expression
-\begin{equation}
-\begin{array}{l@{}}
-\hat{t} = t +  \Delta t \\
-\Delta t = \frac{1}{fps}
-\end{array}
-\end{equation}
-
-Where \textit{fps} is a measure of how many frames captured by the camera in one second
-
-$(x_{\hat{t}},y_{\hat{t}},w_{\hat{t}},h_{\hat{t}})$ in the equation depends on basically three factors speed of the vehicle, speed of the pedestrian and the angle between vehicle camera and pedestrian. Also it is necessary to be noted that other social aspect such as obstacle, neighborhood pedestrian, sudden change in pedestrian's own decision for the destination and displacement of the camera will have impact.
-
-A vehicle moving with a speed of $V_c$ shall travel a distance within \textit{a frame }time duration is given by the below equation.
-
-\begin{equation}
-d_v = \Delta t \times V_c
-\end{equation}
-
-A person moving with a speed of $V_p$ shall travel a distance within \textit{a frame }time duration is given by the below equation.
-
-\begin{equation}
-d_p = \Delta t \times V_p
-\end{equation}
-
-The new coordinates $(\hat{x}, \hat{y})$ for the pedestrian is given by
-
-\begin{equation}
-\begin{array}{l@{}}
-\hat{x} =x + d_p cos\theta \\
-\hat{y} =x + d_p sin\theta
-\end{array}			
-\end{equation}
-
-Due to this change of distance $\Delta d_v$ and $\Delta d_p$, the resultant distance and angle between vehicle and pedestrian shall be changed and given by below relation. Considering the car camera coordinate in the previous frame at the origin, it moves always in the direction of \textit{y-axis}, its new co-ordinate at $\hat{t}$ shall be $(x_0, \Delta d)$
-
-\begin{equation}
-\begin{array}{l@{}}
-d =\sqrt{(x_0 - x)^2 + (d_v - y)^2} \\
-	=\sqrt{(x)^2 + (d_v - y)^2} \\
-\hat{\theta }= tan^-1\frac{(y-d_v)}{(x-x_0)} \\
-\end{array}
-\end{equation}
-
-\begin{equation}
-\begin{array}{l@{}}
-\theta =\hat{\theta } + {\theta }_f\\
-\end{array}			
-\end{equation}
-
-Where ${\theta }_f$ is the focal angle made by change in vehicle angle.
-
-The distance between camera and object in the scene can be derived by below equation.
-\begin{equation}
-d = \frac{w \times f}{p}
-\end{equation}
-where d is the distance between camera and object, w corresponds to width of the object, f represents the focal length of the camera and p is the perceived width in number of pixel in the image.
-So with a moving camera, modified perceived width in pixel given by
-
-\begin{equation}
-\hat{p} = \frac{w \times f}{d_{\hat{t}}}
-\end{equation}
-Where $d_{\hat{t}}$ is the distance between camera and object at $\hat{t}$.
-
-%--------AS IS---------------
-%Creating a layer of LSTM memory units allows you to specify the number of memory units within the layer.
-%Each unit or cell within the layer has an internal cell state, often abbreviated as “c“, and outputs a hidden state, often abbreviated as “h“.
-%-----------------------
+With the increase in number of values in the list of aspect ratio, the number of predictor boxes increases. Increase in number of predictor boxes increases both training time as well as prediction time.
