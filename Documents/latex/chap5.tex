@@ -7,13 +7,18 @@
 \chapter{Simulation, Results and Discussion}
 During the exploration and implementation of the Pedestrian intention prediction pipeline, SSD was chosen as the first block which acts as Pedestrian detector. In this chapter, how SSD was trained on large dataset, acquisition of data set and several aspect of Machine learning and Deep learning shall be discussed.
 
+\section{LSTM with bonding box only}
+\section{LSTM with refinement}
+\section{Discussion}
+
+
 \section{Data Acquisition}
 Challenges are there while just considering image data, the verities of image sources for example we can get photos that are taken by professionals, synthetic photos drawn by image generators and real life photos that we see and capture in our day to day life. So the results of these benchmarks and 
 observation across these aforementioned classes of data set does not transfer to the other scenarios.
 As recommended always for machine learning tasks, we should consider real data as close as possible to the environment where the designed system is expected to work. And luckily there exist some excellent data set in the public domain. I chose Caltech Data set \cite{dollar2009pedestrian}, which is one of the latest data set available in the public till today. 
 
 \newpara
-This data set contains highly annotated video, recorded from a moving vehicle in a normal trafic situation. It contains pedestrians vary largely in appearance, pose and scale. It also includes occlusion information. It contains close to 10 hours of recording at 30 fps with a video resolution 640 x 480. As seen and mentioned by the authors the overall image quality lower than that of same image resolution. The data set includes ~350,000  pedestrian bounding boxes (BB) labeled in 250,000frames and remains the largest such data set to  date. As already mentioned by \cite{walk2010new} Caltech data set is difficult for various reasons.
+This data set contains highly annotated video, recorded from a moving vehicle in a normal traffic situation. It contains pedestrians vary largely in appearance, pose and scale. It also includes occlusion information. It contains close to 10 hours of recording at 30 fps with a video resolution 640 x 480. As seen and mentioned by the authors the overall image quality lower than that of same image resolution. The data set includes ~350,000  pedestrian bounding boxes (BB) labeled in 250,000frames and remains the largest such data set to  date. As already mentioned by \cite{walk2010new} Caltech data set is difficult for various reasons.
 
 \begin{itemize}
 	\setlength\itemsep{-1em}

@@ -57,7 +57,62 @@ What kind of algorithm to be used for the problem, that deals with predicting th
 
 
 \section{Proposed solution}
-The future location or bounding box prediction problem can be viewed as two step related problems. First detect the human and track the person in several frames and the second step builds a model for prediction. Such sequential observation of the data is identical to time-series data. As time-series data is a good fit for modeling with a Recurrent Neural Network(RNN/LSTM \footnote{LSTM is a variation of RNN and described in details in future chapter}). Predict the pedestrian location as a bounding box annotation after tracking it for a certain time window with help of a previously trained model. We also proposed a novel method of introducing a state-refined module that shall enhance the performance in comparison to the usage of a individual LSTM model. We propose that there is a feeling of confidence factor with both the driver/vehicle(in case of autonomous driving) and pedestrian, depending on the speed at which both pedestrian and vehicle are moving. For example in a typical scenario when a pedestrian with awareness sees a fast moving vehicle coming, he would not enter into the road or if he is confident that he would cross the road before vehicle is in vicinity, then he shall try to cross the road. In case a pedestrian is not aware and enters into the road, the vehicle reduces its speed if vehicle is not confident that it can maintain a safe distance in future from the pedestrian. After reaching a certain speed and a confidence level, vehicle keeps moving if it is not a designated traffic post where it is supposed to stop. By modeling such confidence from the vehicle and pedestrian speed can refine the LSTM cell state which is used for prediction.
+The future location or bounding box prediction problem can be viewed as two step related problems. First detect the human and track the person in several frames and the second step builds a model for prediction. Such sequential observation of the data is identical to time-series data. As time-series data is a good fit for modeling with a Recurrent Neural Network(RNN/LSTM \footnote{LSTM is a variation of RNN and described in details in future chapter}). Predict the pedestrian location as a bounding box annotation after tracking it for a certain time window with help of a previously trained model. 
+\newpara
+We also proposed a novel method of introducing a state-refined module that shall enhance the performance in comparison to the usage of a individual LSTM model. 
+We propose that there is a feeling of confidence factor with both the driver/vehicle(in case of autonomous driving) and pedestrian, depending on the speed at which both pedestrian and vehicle are moving. For example in a typical scenario when a pedestrian with awareness sees a fast moving vehicle coming, he would not enter into the road or if he is confident that he would cross the road before vehicle is in vicinity, then he shall try to cross the road. In case a pedestrian is not aware and enters into the road, the vehicle reduces its speed if vehicle is not confident that it can maintain a safe distance in future from the pedestrian. After reaching a certain speed and a confidence level, vehicle keeps moving if it is not a designated traffic post where it is supposed to stop. By modeling such confidence from the vehicle and pedestrian speed, we can refine the LSTM cell state which is used for prediction.
+
+Considering ${t_p}$ represents vehicle time to reach pedestrian and \\
+${t_c}$ is the time pedestrian needs to cross the road and reaches a safer location,
+${t_p}$ and ${t_v}$  can be calculated as below.
+
+\begin{equation}
+\begin{array}{l@{}}
+  t_p = \frac{d_p}{s_v} \\
+	t_c = \frac{d_c}{s_p}
+\end{array}
+\end{equation}
+
+Where ${d_p},{s_v}$ represent distance between vehicle and pedestrian and speed of the vehicle\\
+${d_c}, {s_p}$ represent distance between pedestrian and safe destination(eg. other side of the road)and speed of the pedestrian respectively \\
+
+Considering $\alpha_p$ and $\alpha_v$ are awareness factors of pedestrian and vehicle respectively, which are related by below relation for a safe driving scenario and they are dependent on ${t_c}$ and ${t_c}$ in a certain way \\
+\begin{equation}
+  \alpha_p + \alpha_v = 1
+\end{equation}
+
+And $\alpha_p$ is given by a linear function $f(t_p, t_c)$ 
+
+Now let's consider three scenarios:
+
+\begin{itemize}
+\item 
+For ${t_p}>>{t_c}$ vehicle is at far away and both pedestrian and vehicle can just maintain their current speed. $\alpha_p$ = $\gamma,$ where $\gamma$ is considered to be fairly safe value for the system
+
+\item 
+For ${t_c}>>{t_p}$ this is undesirable and is a catastrophic scenario and not expected if the system is operational. $\alpha_p = 0$
+
+\item
+Now considering some positive value $\beta_1$ and $\beta_2$ for which below equation holds good
+
+\begin{equation}
+\begin{array}{l@{}}
+	\beta_1 \times {t_c} < {t_p} \\
+	\beta_2 \times {t_c} > {t_p}
+\end{array}
+\end{equation}
+
+$f(t_p, t_c)$ is defined as follows, where $\hat{t}$ is given by $\frac{t_p}{t_c}$\\
+(i) $\hat{t}$ < $\beta_1$, $f(t_p, t_c)$ = 0 \\
+(ii) $\hat{t}$ > $\beta_2$, $f(t_p, t_c)$ = $\gamma$ \\
+(iii) $\beta_1$ > $\hat{t}$ > $\beta_1$
+
+\begin{equation}
+	f(t_p, t_c) = \gamma \times \frac{\frac{t_p}{t_c}}{\beta_2 - \beta_1}  
+\end{equation}
+\end {itemize}
+
+Considering the pedestrian and vehicle system always expected to be safe, LSTM cell state may be refined with calculated value for $\alpha_v$
 
 \section{Objectives}
 \newpara The main objective of this thesis is to predict pedestrian's future location with help of bounding box annotations. To build a neural network based model for this. Such a model must be trained with set of sequence labeled data.
