@@ -5,6 +5,28 @@
 %% \files=
 %% prompt when you run the file main.tex through LaTeX.
 \chapter{State of the Art}
+% object detection, pedestrain detection
+%\cite{felzenszwalb2009object, walk2010new, liu2016ssd, szegedy2014scalable, dollar2009pedestrian, dollar2011pedestrian}
+
+% feature extraction
+%\cite{dalal2005histograms, lowe2004distinctive}
+
+% Region Proposal
+%\cite{girshick2014rich, girshick2015fast, ren2015faster}
+
+% Trackers
+%\cite{fiaz2019handcrafted,xu2005pedestrian,ning2017spatially}
+
+% Activity prediction
+%\cite{ryoo2011human, richard2017weakly }
+
+
+% Intention prediction
+%\cite{saleh2017intent, fang2018pedestrian, abu2018will, dollar2005behavior, cao2017realtime, rasouli2017agreeing }
+
+% Trajectory prediction
+%\cite{saleh2017intent, zhang2019sr, xue2018ss, lipton2015critical}
+
 The problem of human action classification or pedestrian intent prediction from a sequence of images has got huge attention from the researchers in recent years. This problem is inherently complex as it is based on other complex problems. To predict future location, detect the action or intention one must first detect the object in an image and classify it, track the same object over several continuous frames. Before the dominance of convolutional neural network (CNN) and Deep Learning which has outperformed other traditional methods in the recent times. For any of such prediction task we need an efficient and robust object detection, object localization and object tracking model working seamlessly together to enable last phase of the prediction task. Object detection and localization constitute the back bone of this pipe line and takes maximum share of the run time in the entire pipeline. To build a real time pedestrian future bounding box prediction pipeline, it is utmost important to find a model that performs real time object detection and localization reliably. In this chapter some of the state-of-the-art models for such tasks is explored.
 
 \section{Pedestrian intention on roads}
@@ -137,20 +159,20 @@ Predicting category scores for multiple classes and box offsets for pre-computed
 \subsubsection{YOLO}
 Another variation of single shot detection during the same time achieving the state-of-the-art result was YOLO. Single network based detection pipeline. YOLO divides the image into a grid of cells and predicts the coordinates and confidences of objects contained in the cells. Authors like Szegedy et.al in \cite{szegedy2014scalable} has expressed uncertainty about its performance in the situation where there are significantly more objects in a data set. As SSD seems to performs better with respect to run time and performance, YOLO was not studied further during thesis period.
 
-
 \section{Tracking methods}
+Visual object tracking is also a very active area of research, several algorithms are discussed in \cite{fiaz2019handcrafted,xu2005pedestrian,ning2017spatially}.
+In \cite{fiaz2019handcrafted} Fiaz et. al broadly categorized trackers into o Correlation Filter based Trackers (CFTs) and Non-CFTs. Human trackers can be divided into motion model or appearance model. They experimented with 24 recent trackers and found that trackers using deep features performed better than handcrafted. In some cases fusion of both increases performances significantly. Based on their study they have concluded that Discriminative Correlation Filter (DCF) based trackers perform better than others. There are some notable implementation e.g. 
+Kalman Filter with Mean shift tracking, Recurrent YOLO based spatially supervised RCNN \cite{ning2017spatially}, a deep neural network that uses raw video frames as input and its output is the coordinates of a bounding box of an object being tracked in each frame. Single night vision camera can also be used in the night for tracking tracking of the pedestrian with help of Kalman filter and mean shift. Some of sensor fusion techniques improves the tracking as well as detection result when IR sensor, RADAR, laser output are processed together with camera image. Fang et.al discussed in their survey paper In \cite{gonzalez2016pedestrian}, combination of visible and non-visible imaging techniques increasing detection accuracy. More in-depth research was out of the scope of the Thesis topic, so no much study was done in this area.
 
 \section{Prediction (estimation) methods }
-
-
-\section{Tracking}
-Visual object tracking is also a very active area of research, increasing number of algorithms are being proposed.
-In \cite{fiaz2019handcrafted} Fiaz et. al broadly categorized trackers into o Correlation Filter based Trackers (CFTs) and Non-CFTs. Human trackers can be divided into motion model or appearance model. They experimented with 24 recent trackers and found that trackers using deep features performed better than handcrafted. In some cases fusion of both increases performances significantly. Based on their study they have concluded that Discriminative Correlation Filter (DCF) based trackers perform better than others. There are some notable implementation e.g. 
-Kalman Filter with Mean shift tracking, Recurrent YOLO, a deep neural network that uses raw video frames as input and its output is the coordinates of a bounding box of an object being tracked in each frame.
-More in-depth research was out of the scope of the Thesis topic, so no much study was done in this area.
-
-\section{Prediction}
 The last stage of the pipeline which actually predicts the future location of the visual object. Predicting  bounding box for a tracked pedestrian. Predicting intention of the pedestrian, whether pedestrian wants to cross in near future or not. Subsequent section shall discuss about some of the state-of-the art methodology that address this.
+In \cite{saleh2017intent} Saleh et.al presented a data driven approach which is different from older approach which employs dynamical motion modeling and motion planning. They have formulated the the intent prediction problem as a time-series problem. They proposed the method by observing a short window sequence of the pedestrian motion trajectory, a prediction about their future latent position can be done up to 4 secs ahead. With a deep stacked LSTM network they achieved competent results on Daimler testing data set. In their work, three LSTM layers are stacked. The input layer takes 2-dimension sequence with a window size 10 of lateral position of pedestrian motion trajectory. Last LSTM layer connected to a fully connected layer which has only one neuron and predicts lateral position at the next time step. A linear activation function is used in the fully connected layer. In this method, only the next time step value was predicted. At the inference time recursive prediction was used to predict any window sized sequence. Prediction with different size input sequence was achieved by this.
+As part of training this LSTM  model, which is an optimization problem, Mean Squared Error (MSE) was used as loss function.
+\begin{equation}
+MSE= \frac{1}{N}\sum_{i=1}^{N}(\hat{Y_i} - Y_i)^2
+\end{equation}
+They presented their work on Daimler pedestrian path prediction benchmark dataset, that consists of 68 stereo image sequences. These sequence includes four scenarios 'Crossing', 'Stopping', 'Starting' and 'Bending In'. These sequences are annotated with frame-wise pedestrian bounding boxes, median disparity of the upper body area of the pedestrian, position of the pedestrian in the vehicle coordinate system and time to event information. This method achieved a superior results in both short and long term prediction for the four scenarios with the test data.
+In \cite{zhang2019sr}, Zhang et.al presented a work, which includes current intention of the neighbors and iteratively refines the current states of all participants in the crowd using a message passing mechanism. Social behaviors are stressed upon and learned using LSTM, but \cite{zhang2019sr} tries to look at neglected factor such as current states of neighbors and adapting selected information from neighbors based on their motions and locations.
 
 
 
