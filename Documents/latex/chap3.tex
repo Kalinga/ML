@@ -8,248 +8,6 @@
 \chapter{Methodology}
 This chapter describes the approaches that are planned and outlined before starting of the actual implementation. The primary goal of the thesis was to identify various stages of the pipeline which can be employed at prediction of pedestrian's future location. After the literature review i was motivated by the SSD for identification of pedestrian and locating with help of bounding box and usage of LSTM as \textit{future prediction} by considering pedestrian past move sequence as a time-series data. Also this chapter describes some of the key concepts and terminology used in the next chapter. These are some of the key concept in the area of machine learning with image data. Though the list of such concepts are exhaustive, the minimal terminologies and concepts are presented here.
 
-\section{Object detection: SSD}
-After image data acquisition and data preparation, the challenging task remains, how to train the model. 
-To better understand the SSD framework and training steps, a flowchart is prepared that detailed it's workings. In the current work and by other authors also the term \textit{training }and \textit{learning}is used interchangeably. 
-
-\begin{figure}[H]
-\begin{center}
-\begin{tikzpicture}[
-    node distance = 8mm and 20mm,
-      start chain = going below,
-     arrow/.style = {thick,-stealth},
-      base/.style = {% common features of all nodes
-            draw, thick, 
-            minimum width=30mm, minimum height=10mm, align=center,
-            inner sep=1mm, outer sep=0mm,
-            on chain, join=by arrow},
-  decision/.style = {diamond, base,
-            aspect=1.5, inner xsep=0mm},
-   process/.style = {rectangle, base},
- startstop/.style = {rectangle, rounded corners, base},
- stop/.style = {rectangle, rounded corners},
-                        ]
-\node (start) [startstop] {Start};
-\node (0) [process]{Image data is prepared with data augmentation}; 
-\node (1) [process]{A set of default bounding boxes associated with each feature map cell}; 
-\node (2) [process]{ At each feature map cell, offsets relative to default box shapes in the cell is predicted}; 
-\node (3) [process]{ Per-class score that indicates class instance is predicted}; 
-\node (4) [process]{ Each ground truth box is matched with the default box with best jaccard overlap};
-\node (5) [process]{ Match default box to any ground truth with jaccard overlap greater than 0.5}; 
-\node (6) [process]{ A combined loss function and back propagation applied end-to-end}; 
-\node (sevralepocs) [process]{ Train it for several epochs}; 
-\node (7) [process]{ Validate and save the neural network model};
-\node [decision] (validation) { Is validation error accepted?};
-\node (end)  [startstop, below=10mm of validation]  {END};
-
-\draw [arrow] (validation.west) to node [] {No} + (-3,0) |-  (sevralepocs.west);
-\path (validation) to node []{Yes} (end);
-
-\end{tikzpicture}
-\begin{center}
-\caption{Flowchart for SSD network training}
-\end{center}
-\end{center}
-\end{figure}
-
-After the model is trained, its accuracy and performance needs be measured and that is described in detailed in the subsequent chapter.
-
-\subsection{Network architectures}
-Below depicted the details of convolution in image and CNN building blocks.
-\begin{figure}[H]
-	\centering
-	\begin{tikzpicture}
-		\node at (0.5,-1){\begin{tabular}{c}input image\\layer $l = 0$\end{tabular}};
-		
-		\draw (0,0) -- (1,0) -- (1,1) -- (0,1) -- (0,0);
-		
-		\node at (3,3.5){\begin{tabular}{c}convolutional layer\\with non-linearities\\layer $l = 1$\end{tabular}};
-		
-		\draw[fill=black,opacity=0.2,draw=black] (2.75,1.25) -- (3.75,1.25) -- (3.75,2.25) -- (2.75,2.25) -- (2.75,1.25);
-		\draw[fill=black,opacity=0.2,draw=black] (2.5,1) -- (3.5,1) -- (3.5,2) -- (2.5,2) -- (2.5,1);
-		\draw[fill=black,opacity=0.2,draw=black] (2.25,0.75) -- (3.25,0.75) -- (3.25,1.75) -- (2.25,1.75) -- (2.25,0.75);
-		\draw[fill=black,opacity=0.2,draw=black] (2,0.5) -- (3,0.5) -- (3,1.5) -- (2,1.5) -- (2,0.5);
-		\draw[fill=black,opacity=0.2,draw=black] (1.75,0.25) -- (2.75,0.25) -- (2.75,1.25) -- (1.75,1.25) -- (1.75,0.25);
-		\draw[fill=black,opacity=0.2,draw=black] (1.5,0) -- (2.5,0) -- (2.5,1) -- (1.5,1) -- (1.5,0);
-		
-		\node at (4.5,-1){\begin{tabular}{c}subsampling layer\\layer $l = 3$\end{tabular}};
-		
-		\draw[fill=black,opacity=0.2,draw=black] (5,1.25) -- (5.75,1.25) -- (5.75,2) -- (5,2) -- (5,1.25);
-		\draw[fill=black,opacity=0.2,draw=black] (4.75,1) -- (5.5,1) -- (5.5,1.75) -- (4.75,1.75) -- (4.75,1);
-		\draw[fill=black,opacity=0.2,draw=black] (4.5,0.75) -- (5.25,0.75) -- (5.25,1.5) -- (4.5,1.5) -- (4.5,0.75);
-		\draw[fill=black,opacity=0.2,draw=black] (4.25,0.5) -- (5,0.5) -- (5,1.25) -- (4.25,1.25) -- (4.25,0.5);
-		\draw[fill=black,opacity=0.2,draw=black] (4,0.25) -- (4.75,0.25) -- (4.75,1) -- (4,1) -- (4,0.25);
-		\draw[fill=black,opacity=0.2,draw=black] (3.75,0) -- (4.5,0) -- (4.5,0.75) -- (3.75,0.75) -- (3.75,0);
-		
-		\node at (7,3.5){\begin{tabular}{c}convolutional layer\\with non-linearities\\layer $l = 4$\end{tabular}};
-		
-		\draw[fill=black,opacity=0.2,draw=black] (7.5,1.75) -- (8.25,1.75) -- (8.25,2.5) -- (7.5,2.5) -- (7.5,1.75);
-		\draw[fill=black,opacity=0.2,draw=black] (7.25,1.5) -- (8,1.5) -- (8,2.25) -- (7.25,2.25) -- (7.25,1.5);
-		\draw[fill=black,opacity=0.2,draw=black] (7,1.25) -- (7.75,1.25) -- (7.75,2) -- (7,2) -- (7,1.25);
-		\draw[fill=black,opacity=0.2,draw=black] (6.75,1) -- (7.5,1) -- (7.5,1.75) -- (6.75,1.75) -- (6.75,1);
-		\draw[fill=black,opacity=0.2,draw=black] (6.5,0.75) -- (7.25,0.75) -- (7.25,1.5) -- (6.5,1.5) -- (6.5,0.75);
-		\draw[fill=black,opacity=0.2,draw=black] (6.25,0.5) -- (7,0.5) -- (7,1.25) -- (6.25,1.25) -- (6.25,0.5);
-		\draw[fill=black,opacity=0.2,draw=black] (6,0.25) -- (6.75,0.25) -- (6.75,1) -- (6,1) -- (6,0.25);
-		\draw[fill=black,opacity=0.2,draw=black] (5.75,0) -- (6.5,0) -- (6.5,0.75) -- (5.75,0.75) -- (5.75,0);
-		
-		\node at (9.5,-1){\begin{tabular}{c}subsampling layer\\layer $l = 6$\end{tabular}};
-		
-		\draw[fill=black,opacity=0.2,draw=black] (10,1.75) -- (10.5,1.75) -- (10.5,2.25) -- (10,2.25) -- (10,1.75);
-		\draw[fill=black,opacity=0.2,draw=black] (9.75,1.5) -- (10.25,1.5) -- (10.25,2) -- (9.75,2) -- (9.75,1.5);
-		\draw[fill=black,opacity=0.2,draw=black] (9.5,1.25) -- (10,1.25) -- (10,1.75) -- (9.5,1.75) -- (9.5,1.25);
-		\draw[fill=black,opacity=0.2,draw=black] (9.25,1) -- (9.75,1) -- (9.75,1.5) -- (9.25,1.5) -- (9.25,1);
-		\draw[fill=black,opacity=0.2,draw=black] (9,0.75) -- (9.5,0.75) -- (9.5,1.25) -- (9,1.25) -- (9,0.75);
-		\draw[fill=black,opacity=0.2,draw=black] (8.75,0.5) -- (9.25,0.5) -- (9.25,1) -- (8.75,1) -- (8.75,0.5);
-		\draw[fill=black,opacity=0.2,draw=black] (8.5,0.25) -- (9,0.25) -- (9,0.75) -- (8.5,0.75) -- (8.5,0.25);
-		\draw[fill=black,opacity=0.2,draw=black] (8.25,0) -- (8.75,0) -- (8.75,0.5) -- (8.25,0.5) -- (8.25,0);
-		
-		\node at (12,3.5){\begin{tabular}{c}fully connected layer\\layer $l = 7$\end{tabular}};
-		
-		\draw[fill=black,draw=black,opacity=0.5] (10.5,0) -- (11,0) -- (12.5,1.75) -- (12,1.75) -- (10.5,0);
-		
-		\node at (13,-1){\begin{tabular}{c}fully connected layer\\output layer $l = 8$\end{tabular}};
-		
-		\draw[fill=black,draw=black,opacity=0.5] (12.5,0.5) -- (13,0.5) -- (13.65,1.25) -- (13.15,1.25) -- (12.5,0.5);
-	\end{tikzpicture}
-	\caption[Architecture of a traditional convolutional neural network.]{\protect\cite{davidstutz2016} The architecture of the original convolutional neural network, as introduced by LeCun et al. (1989), alternates between convolutional layers including hyperbolic tangent non-linearities and subsampling layers. In this illustration, the convolutional layers already include non-linearities and, thus, a convolutional layer actually represents two layers. The feature maps of the final subsampling layer are then fed into the actual classifier consisting of an arbitrary number of fully connected layers. The output layer usually uses softmax activation functions.}
-	\label{fig:traditional-convolutional-network}
-\end{figure}
-
-\newpara \textbf{Convolution layer} It is the first layer to which, the input image is given. A small matrix otherwise known as a filter or kernel moves along the image and is convoluted with the input image. As a process of convolution \ref{fig:Schematic-representation} kernel elements are multiplied with the original pixel value and these values are summed up and produces a feature map as input for further layers.
- 
-\newpara \textbf{Nonlinear layer}
-A non-linearity is added to the output generated from a convolution layer in the form of an activation function in this layer. The basic idea of adding a non-linear layer is to make different layers within the network have a non-linear relationship and this ensures the network can make more complex decisions.
-Usually ReLU is used as a non-linear activation function and mathematically given as below.
-%https://machinelearningmastery.com/rectified-linear-activation-function-for-deep-learning-neural-networks/
-
-\begin{equation}
-	f(x) =max(0, x)
-\end {equation}
-Where x is the input to a neuron and output is similar to ramp function.
-Although simple, it has been demonstrated that this activation function enables better performance in deeper networks compared to widely used complex function such as \textit{sigmoid} (fig:\ref{fig:Sigmoid-function}) and \textit{hyperbolic tangent} (fig: \ref{fig:tanh-function}).
-
-\newpara \textbf{Pooling layer}
-The subsequent layer after non-linear layer. It down samples the image, as a result the processed image volume is reduced. Max-pooling is similar to convolution, but it chooses the maximum element within the area where the maxpool filter is applied. For a pooling size (2,2) the input is halved in both spatial dimensions.
-
-\newpara \textbf{Fully connected layer}
-Normally a fully connected layer is attached to the Network as last layer of the Network. Fully connected layer performs classification by taking input as features extracted and transformed in the previous conv-relu-pooing layers. This results in an N dimensional vector, where N is the number of classes the model is trained on.
-
-\newpara CNN learns the filters that traditional image classification algorithm hand crafts. This makes CNN little pre-processing compared to other traditional algorithm and results superior results. There are many evolution of CNNs starting from LeNet (LeCun et al., 1989) for zip code recognition, LeNet-5 (1998) a 7 layer CNN \ref{fig:traditional-convolutional-network} by LeCun et al. for hand written numbers on the check recognition, AlexNet by Alex Krizhevsky et al. in 2012 used deeper layers and more filters per layer than leNet-5. It also used ReLU activation, max pooling, dropout, data agumentation and SGD with momentum during training. \footnote{These terms shall be discussed in the subsequent chapter.} This achieved a record breaking result at that time. ZFNet in 2013 winner of ILSVRC 2013 with a small tweaking to AlexNet. 2014, GoogleNet otherwise known as Inception V1 from Google achieved human level performance. Another net in the same year got the attention known as VGGNet. It uses only 3x3 convolution, 16 layers and with lots of filters. It consists of 138 million parameters and one of major disadvantage and required more time to train. And weight configuration of this is publicly available and used as baseline feature extractor.
-
-Standard CNN architectures, over the last 2 decades uses set of standard layer that can be graphically \ref{tomepel} represented as below. 
-
-\begin{figure}[H]
-\begin{align*}
-\begin{tikzpicture}[baseline=-3pt]
-\node[] at (0,0) {\includegraphics[scale=0.5]{input_layer}};
-\end{tikzpicture}&=
-%
-\begin{tikzpicture}[baseline=-0pt]
-\draw (0,-1) rectangle (0+0.3,1);
-\node[align=center,scale = 0.65] at (0+0.15,0) {I \\ n \\ p \\ u \\ t};
-\end{tikzpicture}\;,&
-%
-\begin{tikzpicture}[baseline=-3pt]
-\node[] at (0,0) {\includegraphics[scale=0.5]{VGG-conv}};
-\end{tikzpicture}&=
-%
-\begin{tikzpicture}[baseline=-0pt]
-\filldraw[fill=blue!30!white] (0,-1) rectangle (0+0.3,1);
-\node[align=center,scale = 0.65] at (0+0.15,0) {C \\ o \\ n \\ v};
-\end{tikzpicture}\;,\notag\\
-%
-\begin{tikzpicture}[baseline=-3pt]
-\node[] at (0,0) {\includegraphics[scale=0.5]{VGG-pool}};
-\end{tikzpicture}&=
-%
-\begin{tikzpicture}[baseline=-0pt]
-\filldraw[fill=red!30!white] (0,-1) rectangle (0+0.3,1);
-\node[align=center,scale = 0.65] at (0+0.15,0) {P \\ o \\ o \\ l};
-\end{tikzpicture}\;,&
-%
-\begin{tikzpicture}[baseline=-3pt]
-\node[] at (0,0) {\includegraphics[scale=0.5]{VGG-fc}};
-\end{tikzpicture}&=
-%
-\begin{tikzpicture}[baseline=-0pt]
-\filldraw[fill=green!30!white] (0,-1) rectangle (0+0.3,1);
-\node[align=center,scale = 0.65] at (0+0.15,0) {F \\ u \\ l \\ l};
-\end{tikzpicture}
-\end{align*}
-\begin{center}
-\caption{CNN layers: Schematic representation}
-\label{fig:Schematic-representation}
-\end{center}
-\end{figure}
-
-\newpara Based on these schematic layers, a simple graphical \footnote{\label{tomepel} Images source: Thomas Epelbaum GitHub: https:\textbackslash github.com\textbackslash tomepel\textbackslash Technical\_Book\_DLaccessed on 07th August 2019 } representation of VGG-Net is shown below.
-\begin{figure}[H]
-\begin{center}
-\begin{tikzpicture}
-\node[] at (0,0) {\includegraphics[scale=1]{VGG}};
-\end{tikzpicture}
-\caption{VGG-Net}
-\end{center}
-\end{figure} 
-
-
-\section{Terminology}
-Some of the key concepts that are studied and useful are presented in subsequent texts.
-
-\subsection{Data Augmentation}
-Data augmentation is a key in image based deep leaning application. This make the model robust to different object sizes, logically possible  additional training image generation via application of various image modification such as flipping horizontally \footnote{Many time flipping image vertically does not make sense in real world scenarios, wherever it makes sense, it can be done as well.}, shear, distortion, change in color intensity. In \cite{liu2016ssd} authors mentioned application of flipping each image randomly horizontally with probability of 0.5, this ensures objects appear on left and right with similar likelihood.
-
-\subsection{Non-Maximum Suppression (NMS)}
-During inference time, SSD predicts, a large number of boxes in a cluttered manner. To prune most of them, a technique called \textit{non-maximum suppression} is applied. This technique discards those boxes having label confidence less than a threshold and IoU less than a defined threshold. \footnote{Usually 0.45 is used as IoU threshold}. After discarding such boxes, only top \textit{N} predictions are returned which ensures most likely predictions.
-\subsection{Epoch:}
-During the learning the network sees the set of samples several times. During the training, presenting the network entire set of sample once is known as an epoch. So an epoch represents one iteration over entire dataset.
-\subsection{Batch and batch size:}
-Mainly because of two reasons we can not pass the entire dataset to the network for the training purpose at once. Firstly, datasets by nature most of the time are huge. Let it be image data or some other textual data, in many scenarios it is not possible to feed all the data because of hardware constraints, such as not enough RAM to hold entire dataset.
-Secondly to update weight during training process, network has to wait for a very very long time to calculate the delta weight after processing all the input data. To solve this problem usually the full dataset is split into several small batches and number of samples within each small batch is known as 
-Batch and batch size.
-\subsection{Iterations:} 
-Number of batches that a neural network process to complete a single epoch.
-The number of  iterations, batch size and  number of data samples in the dataset is given by, the below expression.
-\begin{equation}
-    D = B * I
-\end{equation}
-Where D is the total number of samples in the dataset.
-\\*B is the number of samples in the mini batch that is fed to the network at once.
-\\*I is the  total number of batches the network process in a single epoch.
-
-Larger batch size requires more computational resource and achieves faster completion, in contrast smaller batch size leads to more generalization. In this regards, Yann  LeCun humorously said
-\begin{quote}
-``Training with large mini batches is bad for your health. More importantly, it's bad for your test error.  Friends, don't let friends use mini batches larger than 32.''
-\end{quote}   
-The empirical study of the performance of mini-batch stochastic gradient descent in \cite{masters2018revisiting} show that, the team obtained the best training stability and generalization performance using small batch sizes, for a given computational cost, across a wide range of experiments they conducted. In all cases they have achieved the best results with batch sizes m = 32 or smaller.
-\subsection{Intersection Over Union:}
-Intersection Over Union (IOU) is a measure similar to Jaccard Index that measures the overlap ratio between two bounding boxes. It evaluates the ratio between area of  overlapping area between two BBs and area of union between them.
-
-\begin{equation}
-    IoU = \frac{area\: of\: overlap} {area\: of\: union} =
-\end{equation}
-
-\begin{center}
-\begin{tikzpicture}
-\draw [red] (0, 0) rectangle (2, 2);
-\draw [blue] (1.0, 1.0) rectangle (3.0, 3.0);
-\begin{scope}
-	\fill[green] (1.03, 1.03) rectangle (1.97, 1.97);
-\end{scope}
-\end{tikzpicture}
-
-\begin{tikzpicture}
-    \draw[line width=5pt,fill=black] (0,2) -- (6,2);
-\end{tikzpicture}\vspace{0.2cm}%
-
-\begin{tikzpicture}
-    \filldraw [draw=red,fill=green] (0, 0) rectangle (2, 2);
-    \filldraw [draw=blue,fill=green] (1.0, 1.0) rectangle (3.0, 3.0);
-    %\begin{scope}
-			\fill[green] (0.98, 0.98) rectangle (2.0, 2.0);
-		%\end{scope}
-\end{tikzpicture}
-\end{center}
 
 \section{Bounding box prediction: RNN/LSTM}
 Recurrent neural network primarily are densely connected neural network similar to feed forward network with a key difference; introduction of \textit{time} component in RNN. The output of a hidden layer in an RNN is \textit{fed back } into itself. With this we can model the data which is time dependent or sequence dependent in nature. In programming terms this can be represented by a fixed program taking certain inputs and some internal variable.
@@ -450,7 +208,6 @@ domain=-10:10,
 	\label{fig:tanh-function}
 \end{figure}
 
-
 the sigmoid derivative is well below the 1.0 in the whole range of input values. And this makes the gradients vanishing quite fast as, multiplying this value \footnote{value less than 1} several times for several layer \textit{ back propagation} brings the value close to 0.
 
 
@@ -464,7 +221,7 @@ LSTM has a chain like structure as in RNN but the repeating module has a differe
 \end{tikzpicture}&
 \end{align*}
 \begin{center}
-\caption{LSTM schematic diagram, diagram source:\cite{christopherolah}}
+\caption{LSTM schematic diagram, source:Christopher Olah blog}
 \end{center}
 \end{figure} 
 
@@ -505,8 +262,428 @@ o_t = \sigma(W_o. [h_{t-1}, x_t  ] + b_o)
 h_t = o_t  * tanh(C_t)
 \end{equation}
 
-There are several variants of LSTM, but basic variant was explored and used in the scope of the Thesis.
+There are several variants of LSTM, but basic variant was explored and used in the scope of the thesis.
+
+\subsection{LSTM Cell refinement} \label{state_refinement}
+
+The position of the pedestrian bounding box largely depends upon speed of the vehicle, pedestrian own speed and the direction pedestrian makes with the camera and other social behavior such neighboring pedestrians, stationary obstacles etc. We propose an obvious factor which is not yet considered while predicting the future trajectory of the pedestrian by taking an important parameter into consideration; that pedestrian and vehicle always want to remain at safe distance from each other. A car lowers its speed greatly when moving at high speed and finds a pedestrian near the curb waiting to cross or crossing the road. With a lesser speed and within the safe distance from pedestrian, it keeps moving slowly without halting even though pedestrians are moving in front of it.
+It is also noticed, as pedestrian moves with natural speed when a vehicle is not near and he feels confident that he is in safe zone, in contrast he increases his speed when vehicle approaches. So there exists a social relationship between vehicle and pedestrian and we attempted at extracting this information and make refinement to the LSTM state. With the motivation from \cite{zhang2019sr}, we constructed a message passing mechanism to refine the features of pedestrian by the current vehicle speed and the direction between pedestrian and vehicle(camera mounted on the vehicle). The SR module takes vehicle current speed, pedestrian movement information with respect to vehicle, cell states and hidden states from the LSTM as input and outputs the refined cell state. This can be expressed as 
+\begin{equation}
+\hat{C}^{t, l+1}= M(V^t, {h}^{t, l}) + \hat{C}^{t, l}
+\end{equation}
+Where $\hat{C}^{t, l+1}$ represents refined cell state at time stamp t and refined iteration l, $V^t$ is the vehicle speed at time t and rate of pedestrian location change in X-Y \\
+${h}^{t, l}$ is the hidden state of the Pedestrian at time stamp t
+
+After L iteration of refinement in the SR module the updated equations would be
+
+\begin{equation}
+\begin{array}{l@{}}
+\hat{C}^{t}=\hat{C}^{t, L} \\
+\hat{h}^{t}={g}^{o,t} \odot tanh(\hat{C}^{t}) \\
+\left[ \hat{x}^{t+1}, \hat{y}^{t+1}, \hat{w}^{t+1}, \hat{h}^{t+1} \right] ^ T = W_p\hat{h}^{t}
+\end{array}
+\end{equation}
+
+$ \hat{h}^{t+1}$ in the left side of the equation represents the bounding box height.
+
+In this case the message passing can be formulated as below 
+\begin{equation}
+\hat{C}^{t, l+1}=M(P_t, V_t) +  \hat{C}^{t, l}
+%{W}^{vp}\alpha_v
+\end{equation}
+
+We proposed the message passing term $M(P_t, V_t)$ using awareness gate as below.
+\begin{equation}
+M(P_t, V_t) = W^{a,p}.(g^{a,t,l} \odot {h}^{t, l} ) 
+%+ \hat{C}^{t, l}
+\end{equation}
+Where $W^{a,p}$ is a linear transform parameter and $g^{a,t,l}$ is the awareness gate vector and formulated by
+
+\begin{equation}
+g^{a,t,l} = \sigma(W^{a} [ \alpha_p, {h}^{t, l} ] + b^{a} ) 
+%+ \hat{C}^{t, l}
+\end{equation}
+
+Where $W^{a}$, $b^{a}$ are parameters and $\sigma$ denotes the sigmoid function, $𝛼\alpha_p$ is the awareness factor of the pedestrian and described below \ref{awareness_factor}.
+$g^{a,t,l}$ selects features from ${h}^{t, l}$ by element-wise product.
+
+So 
+\begin{equation}
+\hat{C}^{t, l+1}= W^{a,p}.(g^{a,t,l} \odot {h}^{t, l} )+  \hat{C}^{t, l}
+%{W}^{vp}\alpha_v
+\end{equation}
+
+%Where\alpha_v is the awareness factor of the vehicle as described below, ${W}^{vp}$ is a linear transformation used for the transmission of message from vehicle to pedestrian.
+%Where $V_v$ is the velocity (speed and direction) of the vehicle and ${W}^{vp}$ is a linear transformation used for the transmission of message from vehicle to pedestrian.
+%Consider a person represented as a bounding box in a frame by (x,y,w,h), where (x,y) is the top left corner co-ordinate and \textit{w} is the width of the bounding box and \textit{h} is the height of the bounding box. The position of the the pedestrian bounding box in the next frame is given by the below relation
+
+%\begin{equation}
+%\begin{array}{l@{}}
+%{P}_{t}=(x_t,y_t,w_t,h_t) \\
+%{P}_{\hat{t}}=(x_{\hat{t}},y_{\hat{t}},w_{\hat{t}},h_{\hat{t}})
+%\end{array}
+%\end{equation}
+
+%Where ${P}_{\hat{t}}$ is the position of the pedestrian at time stamp $(t+\Delta t)$, and $\Delta t$ is given by below equation.
+
+%where $\hat{t}$ is time stamp at which the next frame is captured and can be given by below expression
+%\begin{equation}
+%\begin{array}{l@{}}
+%\hat{t} = t +  \Delta t \\
+%\Delta t = \frac{1}{fps}
+%\end{array}
+%\end{equation}
+
+%Where \textit{fps} is a measure of how many frames captured by the camera in one second
+
+%$(x_{\hat{t}},y_{\hat{t}},w_{\hat{t}},h_{\hat{t}})$ in the equation depends on basically three factors speed of the vehicle, speed of the pedestrian and the angle between vehicle camera and pedestrian. Also it is necessary to be noted that other social aspect such as obstacle, neighborhood pedestrian, sudden change in pedestrian's own decision for the destination and displacement of the camera will have impact.
+
+%A vehicle moving with a speed of $V_c$ shall travel a distance within \textit{a frame }time duration is given by the below equation.
+
+%\begin{equation}
+%d_v = \Delta t \times V_c
+%\end{equation}
+
+%A person moving with a speed of $V_p$ shall travel a distance within \textit{a frame }time duration is given by the below equation.
+
+%\begin{equation}
+%d_p = \Delta t \times V_p
+%\end{equation}
+
+%The new coordinates $(\hat{x}, \hat{y})$ for the pedestrian is given by
+
+%\begin{equation}
+%\begin{array}{l@{}}
+%\hat{x} =x + d_p cos\theta \\
+%\hat{y} =x + d_p sin\theta
+%\end{array}			
+%\end{equation}
+
+%Due to this change of distance $\Delta d_v$ and $\Delta d_p$, the resultant distance and angle between vehicle and pedestrian shall be changed and given by below relation. Considering the car camera coordinate in the previous frame at the origin, it moves always in the direction of \textit{y-axis}, its new co-ordinate at $\hat{t}$ shall be $(x_0, \Delta d)$
+
+%\begin{equation}
+%\begin{array}{l@{}}
+%d =\sqrt{(x_0 - x)^2 + (d_v - y)^2} \\
+%	=\sqrt{(x)^2 + (d_v - y)^2} \\
+%\hat{\theta }= tan^-1\frac{(y-d_v)}{(x-x_0)} \\
+%\end{array}
+%\end{equation}
+
+%\begin{equation}
+%\begin{array}{l@{}}
+%\theta =\hat{\theta } + {\theta }_f\\
+%\end{array}			
+%\end{equation}
+
+%Where ${\theta }_f$ is the focal angle made by change in vehicle angle.
+
+%The distance between camera and object in the scene can be derived by below equation.
+%\begin{equation}
+%d = \frac{w \times f}{p}
+%\end{equation}
+%where d is the distance between camera and object, w corresponds to width of the object, f represents the focal length of the camera and p is the perceived width in number of pixel in the image.
+%So with a moving camera, modified perceived width in pixel given by
+
+%\begin{equation}
+%\hat{p} = \frac{w \times f}{d_{\hat{t}}}
+%\end{equation}
+%Where $d_{\hat{t}}$ is the distance between camera and object at $\hat{t}$.
+
+Considering ${t_p}$ represents vehicle time to reach pedestrian and \\
+${t_c}$ is the time pedestrian needs to cross the road and reaches a safer location,
+${t_p}$ and ${t_v}$  can be calculated as below.
+
+\begin{equation}
+\begin{array}{l@{}}
+  t_p = \frac{d_p}{s_v} \\
+	t_c = \frac{d_c}{s_p}
+\end{array}
+\end{equation}
+
+Where ${d_p},{s_v}$ represent distance between vehicle and pedestrian and speed of the vehicle\\
+${d_c}, {s_p}$ represent distance between pedestrian and safe destination(eg. other side of the road)and speed of the pedestrian respectively \\
+
+Considering $\alpha_p$ and $\alpha_v$ are awareness factors of pedestrian and vehicle respectively, which are related by below relation for a safe driving scenario and they are dependent on ${t_c}$ and ${t_c}$ in a certain way \\
+\begin{equation} \label{awareness_factor}
+  \alpha_p + \alpha_v = 1
+\end{equation}
+
+And $\alpha_p$ is given by a linear function $f(t_p, t_c)$ 
+
+Now let's consider three scenarios:
+
+\begin{itemize}
+\item 
+For ${t_p}>>{t_c}$ vehicle is at far away and both pedestrian and vehicle can just maintain their current speed. $\alpha_p$ = $\gamma,$ where $\gamma$ is considered to be fairly safe value for the system
+
+\item 
+For ${t_c}>>{t_p}$ this is undesirable and is a catastrophic scenario and not expected if the system is operational. $\alpha_p = 0$
+
+\item
+Now considering some positive value $\beta_1$ and $\beta_2$ for which below equation holds good
+
+\begin{equation}
+\begin{array}{l@{}}
+	\beta_1 \times {t_c} < {t_p} \\
+	\beta_2 \times {t_c} > {t_p}
+\end{array}
+\end{equation}
+
+$f(t_p, t_c)$ is defined as follows, where $\hat{t}$ is given by $\frac{t_p}{t_c}$\\
+(i) $\hat{t}$ < $\beta_1$, $f(t_p, t_c)$ = 0 \\
+(ii) $\hat{t}$ > $\beta_2$, $f(t_p, t_c)$ = $\gamma$ \\
+(iii) $\beta_1$ > $\hat{t}$ > $\beta_1$
+
+\begin{equation}
+	f(t_p, t_c) = \gamma \times \frac{\frac{t_p}{t_c}}{\beta_2 - \beta_1}  
+\end{equation}
+\end {itemize}
+
+Considering the pedestrian and vehicle system always expected to be safe, LSTM cell state may be refined with calculated value for $\alpha_v$
 
 \textbf{Cell state Vs. Hidden State}
 Two entities such as \textit{cell state} and \textit{hidden state} are carried over from one time stamp (One LSTM Cell) to another (next LSTM Cell) in an LSTM. Typically they can be represented by vectors. In an LSTM Cell, \textit{hidden state }contains information about previous inputs. The hidden state from the previous LSTM Cell and current input are combined and processed through various gates in a particular LSTM Cell. Cell state can be regarded as the memory of the LSTM Cell. There are several neural network behaves as gates and they act together to decide which information are allowed to be part of \textit{cell state}. Output-gate output and the updated cell state decide the next hidden state. \textit{Hidden states} are the output of an LSTM Cell or layer of cells and they are used for predictions.  
+
+\section{Object detection: SSD}
+After image data acquisition and data preparation, the challenging task remains, how to train the model. 
+To better understand the SSD framework and training steps, a flowchart is prepared that detailed it's workings. In the current work and by other authors also the term \textit{training }and \textit{learning}is used interchangeably. 
+
+\begin{figure}[H]
+\begin{center}
+\begin{tikzpicture}[
+    node distance = 8mm and 20mm,
+      start chain = going below,
+     arrow/.style = {thick,-stealth},
+      base/.style = {% common features of all nodes
+            draw, thick, 
+            minimum width=30mm, minimum height=10mm, align=center,
+            inner sep=1mm, outer sep=0mm,
+            on chain, join=by arrow},
+  decision/.style = {diamond, base,
+            aspect=1.5, inner xsep=0mm},
+   process/.style = {rectangle, base},
+ startstop/.style = {rectangle, rounded corners, base},
+ stop/.style = {rectangle, rounded corners},
+                        ]
+\node (start) [startstop] {Start};
+\node (0) [process]{Image data is prepared with data augmentation}; 
+\node (1) [process]{A set of default bounding boxes associated with each feature map cell}; 
+\node (2) [process]{ At each feature map cell, offsets relative to default box shapes in the cell is predicted}; 
+\node (3) [process]{ Per-class score that indicates class instance is predicted}; 
+\node (4) [process]{ Each ground truth box is matched with the default box with best jaccard overlap};
+\node (5) [process]{ Match default box to any ground truth with jaccard overlap greater than 0.5}; 
+\node (6) [process]{ A combined loss function and back propagation applied end-to-end}; 
+\node (sevralepocs) [process]{ Train it for several epochs}; 
+\node (7) [process]{ Validate and save the neural network model};
+\node [decision] (validation) { Is validation error accepted?};
+\node (end)  [startstop, below=10mm of validation]  {END};
+
+\draw [arrow] (validation.west) to node [] {No} + (-3,0) |-  (sevralepocs.west);
+\path (validation) to node []{Yes} (end);
+
+\end{tikzpicture}
+\begin{center}
+\caption{Flowchart for SSD network training}
+\end{center}
+\end{center}
+\end{figure}
+
+After the model is trained, its accuracy and performance needs be measured and that is described in detailed in the subsequent chapter.
+
+\subsection{Network architectures}
+Below depicted the details of convolution in image and CNN building blocks.
+\begin{figure}[H]
+	\centering
+	\begin{tikzpicture}
+		\node at (0.5,-1){\begin{tabular}{c}input image\\layer $l = 0$\end{tabular}};
+		
+		\draw (0,0) -- (1,0) -- (1,1) -- (0,1) -- (0,0);
+		
+		\node at (3,3.5){\begin{tabular}{c}convolutional layer\\with non-linearities\\layer $l = 1$\end{tabular}};
+		
+		\draw[fill=black,opacity=0.2,draw=black] (2.75,1.25) -- (3.75,1.25) -- (3.75,2.25) -- (2.75,2.25) -- (2.75,1.25);
+		\draw[fill=black,opacity=0.2,draw=black] (2.5,1) -- (3.5,1) -- (3.5,2) -- (2.5,2) -- (2.5,1);
+		\draw[fill=black,opacity=0.2,draw=black] (2.25,0.75) -- (3.25,0.75) -- (3.25,1.75) -- (2.25,1.75) -- (2.25,0.75);
+		\draw[fill=black,opacity=0.2,draw=black] (2,0.5) -- (3,0.5) -- (3,1.5) -- (2,1.5) -- (2,0.5);
+		\draw[fill=black,opacity=0.2,draw=black] (1.75,0.25) -- (2.75,0.25) -- (2.75,1.25) -- (1.75,1.25) -- (1.75,0.25);
+		\draw[fill=black,opacity=0.2,draw=black] (1.5,0) -- (2.5,0) -- (2.5,1) -- (1.5,1) -- (1.5,0);
+		
+		\node at (4.5,-1){\begin{tabular}{c}subsampling layer\\layer $l = 3$\end{tabular}};
+		
+		\draw[fill=black,opacity=0.2,draw=black] (5,1.25) -- (5.75,1.25) -- (5.75,2) -- (5,2) -- (5,1.25);
+		\draw[fill=black,opacity=0.2,draw=black] (4.75,1) -- (5.5,1) -- (5.5,1.75) -- (4.75,1.75) -- (4.75,1);
+		\draw[fill=black,opacity=0.2,draw=black] (4.5,0.75) -- (5.25,0.75) -- (5.25,1.5) -- (4.5,1.5) -- (4.5,0.75);
+		\draw[fill=black,opacity=0.2,draw=black] (4.25,0.5) -- (5,0.5) -- (5,1.25) -- (4.25,1.25) -- (4.25,0.5);
+		\draw[fill=black,opacity=0.2,draw=black] (4,0.25) -- (4.75,0.25) -- (4.75,1) -- (4,1) -- (4,0.25);
+		\draw[fill=black,opacity=0.2,draw=black] (3.75,0) -- (4.5,0) -- (4.5,0.75) -- (3.75,0.75) -- (3.75,0);
+		
+		\node at (7,3.5){\begin{tabular}{c}convolutional layer\\with non-linearities\\layer $l = 4$\end{tabular}};
+		
+		\draw[fill=black,opacity=0.2,draw=black] (7.5,1.75) -- (8.25,1.75) -- (8.25,2.5) -- (7.5,2.5) -- (7.5,1.75);
+		\draw[fill=black,opacity=0.2,draw=black] (7.25,1.5) -- (8,1.5) -- (8,2.25) -- (7.25,2.25) -- (7.25,1.5);
+		\draw[fill=black,opacity=0.2,draw=black] (7,1.25) -- (7.75,1.25) -- (7.75,2) -- (7,2) -- (7,1.25);
+		\draw[fill=black,opacity=0.2,draw=black] (6.75,1) -- (7.5,1) -- (7.5,1.75) -- (6.75,1.75) -- (6.75,1);
+		\draw[fill=black,opacity=0.2,draw=black] (6.5,0.75) -- (7.25,0.75) -- (7.25,1.5) -- (6.5,1.5) -- (6.5,0.75);
+		\draw[fill=black,opacity=0.2,draw=black] (6.25,0.5) -- (7,0.5) -- (7,1.25) -- (6.25,1.25) -- (6.25,0.5);
+		\draw[fill=black,opacity=0.2,draw=black] (6,0.25) -- (6.75,0.25) -- (6.75,1) -- (6,1) -- (6,0.25);
+		\draw[fill=black,opacity=0.2,draw=black] (5.75,0) -- (6.5,0) -- (6.5,0.75) -- (5.75,0.75) -- (5.75,0);
+		
+		\node at (9.5,-1){\begin{tabular}{c}subsampling layer\\layer $l = 6$\end{tabular}};
+		
+		\draw[fill=black,opacity=0.2,draw=black] (10,1.75) -- (10.5,1.75) -- (10.5,2.25) -- (10,2.25) -- (10,1.75);
+		\draw[fill=black,opacity=0.2,draw=black] (9.75,1.5) -- (10.25,1.5) -- (10.25,2) -- (9.75,2) -- (9.75,1.5);
+		\draw[fill=black,opacity=0.2,draw=black] (9.5,1.25) -- (10,1.25) -- (10,1.75) -- (9.5,1.75) -- (9.5,1.25);
+		\draw[fill=black,opacity=0.2,draw=black] (9.25,1) -- (9.75,1) -- (9.75,1.5) -- (9.25,1.5) -- (9.25,1);
+		\draw[fill=black,opacity=0.2,draw=black] (9,0.75) -- (9.5,0.75) -- (9.5,1.25) -- (9,1.25) -- (9,0.75);
+		\draw[fill=black,opacity=0.2,draw=black] (8.75,0.5) -- (9.25,0.5) -- (9.25,1) -- (8.75,1) -- (8.75,0.5);
+		\draw[fill=black,opacity=0.2,draw=black] (8.5,0.25) -- (9,0.25) -- (9,0.75) -- (8.5,0.75) -- (8.5,0.25);
+		\draw[fill=black,opacity=0.2,draw=black] (8.25,0) -- (8.75,0) -- (8.75,0.5) -- (8.25,0.5) -- (8.25,0);
+		
+		\node at (12,3.5){\begin{tabular}{c}fully connected layer\\layer $l = 7$\end{tabular}};
+		
+		\draw[fill=black,draw=black,opacity=0.5] (10.5,0) -- (11,0) -- (12.5,1.75) -- (12,1.75) -- (10.5,0);
+		
+		\node at (13,-1){\begin{tabular}{c}fully connected layer\\output layer $l = 8$\end{tabular}};
+		
+		\draw[fill=black,draw=black,opacity=0.5] (12.5,0.5) -- (13,0.5) -- (13.65,1.25) -- (13.15,1.25) -- (12.5,0.5);
+	\end{tikzpicture}
+	\caption[Architecture of a traditional convolutional neural network.]{\protect\cite{davidstutz2016} The architecture of the original convolutional neural network, as introduced by LeCun et al. (1989), alternates between convolutional layers including hyperbolic tangent non-linearities and subsampling layers. In this illustration, the convolutional layers already include non-linearities and, thus, a convolutional layer actually represents two layers. The feature maps of the final subsampling layer are then fed into the actual classifier consisting of an arbitrary number of fully connected layers. The output layer usually uses softmax activation functions.}
+	\label{fig:traditional-convolutional-network}
+\end{figure}
+
+\newpara \textbf{Convolution layer} It is the first layer to which, the input image is given. A small matrix otherwise known as a filter or kernel moves along the image and is convoluted with the input image. As a process of convolution \ref{fig:Schematic-representation} kernel elements are multiplied with the original pixel value and these values are summed up and produces a feature map as input for further layers.
+ 
+\newpara \textbf{Nonlinear layer}
+A non-linearity is added to the output generated from a convolution layer in the form of an activation function in this layer. The basic idea of adding a non-linear layer is to make different layers within the network have a non-linear relationship and this ensures the network can make more complex decisions.
+Usually ReLU is used as a non-linear activation function and mathematically given as below.
+%https://machinelearningmastery.com/rectified-linear-activation-function-for-deep-learning-neural-networks/
+
+\begin{equation}
+	f(x) =max(0, x)
+\end {equation}
+Where x is the input to a neuron and output is similar to ramp function.
+Although simple, it has been demonstrated that this activation function enables better performance in deeper networks compared to widely used complex function such as \textit{sigmoid} (fig:\ref{fig:Sigmoid-function}) and \textit{hyperbolic tangent} (fig: \ref{fig:tanh-function}).
+
+\newpara \textbf{Pooling layer}
+The subsequent layer after non-linear layer. It down samples the image, as a result the processed image volume is reduced. Max-pooling is similar to convolution, but it chooses the maximum element within the area where the maxpool filter is applied. For a pooling size (2,2) the input is halved in both spatial dimensions.
+
+\newpara \textbf{Fully connected layer}
+Normally a fully connected layer is attached to the Network as last layer of the Network. Fully connected layer performs classification by taking input as features extracted and transformed in the previous conv-relu-pooing layers. This results in an N dimensional vector, where N is the number of classes the model is trained on.
+
+\newpara CNN learns the filters that traditional image classification algorithm hand crafts. This makes CNN little pre-processing compared to other traditional algorithm and results superior results. There are many evolution of CNNs starting from LeNet (LeCun et al., 1989) for zip code recognition, LeNet-5 (1998) a 7 layer CNN \ref{fig:traditional-convolutional-network} by LeCun et al. for hand written numbers on the check recognition, AlexNet by Alex Krizhevsky et al. in 2012 used deeper layers and more filters per layer than leNet-5. It also used ReLU activation, max pooling, dropout, data agumentation and SGD with momentum during training. \footnote{These terms shall be discussed in the subsequent chapter.} This achieved a record breaking result at that time. ZFNet in 2013 winner of ILSVRC 2013 with a small tweaking to AlexNet. 2014, GoogleNet otherwise known as Inception V1 from Google achieved human level performance. Another net in the same year got the attention known as VGGNet. It uses only 3x3 convolution, 16 layers and with lots of filters. It consists of 138 million parameters and one of major disadvantage and required more time to train. And weight configuration of this is publicly available and used as baseline feature extractor.
+
+Standard CNN architectures, over the last 2 decades uses set of standard layer that can be graphically \ref{tomepel} represented as below. 
+
+\begin{figure}[H]
+\begin{align*}
+\begin{tikzpicture}[baseline=-3pt]
+\node[] at (0,0) {\includegraphics[scale=0.5]{input_layer}};
+\end{tikzpicture}&=
+%
+\begin{tikzpicture}[baseline=-0pt]
+\draw (0,-1) rectangle (0+0.3,1);
+\node[align=center,scale = 0.65] at (0+0.15,0) {I \\ n \\ p \\ u \\ t};
+\end{tikzpicture}\;,&
+%
+\begin{tikzpicture}[baseline=-3pt]
+\node[] at (0,0) {\includegraphics[scale=0.5]{VGG-conv}};
+\end{tikzpicture}&=
+%
+\begin{tikzpicture}[baseline=-0pt]
+\filldraw[fill=blue!30!white] (0,-1) rectangle (0+0.3,1);
+\node[align=center,scale = 0.65] at (0+0.15,0) {C \\ o \\ n \\ v};
+\end{tikzpicture}\;,\notag\\
+%
+\begin{tikzpicture}[baseline=-3pt]
+\node[] at (0,0) {\includegraphics[scale=0.5]{VGG-pool}};
+\end{tikzpicture}&=
+%
+\begin{tikzpicture}[baseline=-0pt]
+\filldraw[fill=red!30!white] (0,-1) rectangle (0+0.3,1);
+\node[align=center,scale = 0.65] at (0+0.15,0) {P \\ o \\ o \\ l};
+\end{tikzpicture}\;,&
+%
+\begin{tikzpicture}[baseline=-3pt]
+\node[] at (0,0) {\includegraphics[scale=0.5]{VGG-fc}};
+\end{tikzpicture}&=
+%
+\begin{tikzpicture}[baseline=-0pt]
+\filldraw[fill=green!30!white] (0,-1) rectangle (0+0.3,1);
+\node[align=center,scale = 0.65] at (0+0.15,0) {F \\ u \\ l \\ l};
+\end{tikzpicture}
+\end{align*}
+\begin{center}
+\caption{CNN layers: Schematic representation, source:Thomas Epelbaum GitHub}
+\label{fig:Schematic-representation}
+\end{center}
+\end{figure}
+
+\newpara Based on these schematic layers, a simple graphical \footnote{\label{tomepel} Images source: Thomas Epelbaum GitHub: https:\textbackslash github.com\textbackslash tomepel\textbackslash Technical\_Book\_DLaccessed on 07th August 2019 } representation of VGG-Net is shown below.
+\begin{figure}[H]
+\begin{center}
+\begin{tikzpicture}
+\node[] at (0,0) {\includegraphics[scale=1]{VGG}};
+\end{tikzpicture}
+\caption{VGG-Net, souece: Thomas Epelbaum GitHub}
+\end{center}
+\end{figure} 
+
+
+\section{Terminology}
+Some of the key concepts that are studied and useful are presented in subsequent texts.
+
+\subsection{Data Augmentation}
+Data augmentation is a key in image based deep leaning application. This make the model robust to different object sizes, logically possible  additional training image generation via application of various image modification such as flipping horizontally \footnote{Many time flipping image vertically does not make sense in real world scenarios, wherever it makes sense, it can be done as well.}, shear, distortion, change in color intensity. In \cite{liu2016ssd} authors mentioned application of flipping each image randomly horizontally with probability of 0.5, this ensures objects appear on left and right with similar likelihood.
+
+\subsection{Non-Maximum Suppression (NMS)}
+During inference time, SSD predicts, a large number of boxes in a cluttered manner. To prune most of them, a technique called \textit{non-maximum suppression} is applied. This technique discards those boxes having label confidence less than a threshold and IoU less than a defined threshold. \footnote{Usually 0.45 is used as IoU threshold}. After discarding such boxes, only top \textit{N} predictions are returned which ensures most likely predictions.
+\subsection{Epoch:}
+During the learning the network sees the set of samples several times. During the training, presenting the network entire set of sample once is known as an epoch. So an epoch represents one iteration over entire dataset.
+\subsection{Batch and batch size:}
+Mainly because of two reasons we can not pass the entire dataset to the network for the training purpose at once. Firstly, datasets by nature most of the time are huge. Let it be image data or some other textual data, in many scenarios it is not possible to feed all the data because of hardware constraints, such as not enough RAM to hold entire dataset.
+Secondly to update weight during training process, network has to wait for a very very long time to calculate the delta weight after processing all the input data. To solve this problem usually the full dataset is split into several small batches and number of samples within each small batch is known as 
+Batch and batch size.
+\subsection{Iterations:} 
+Number of batches that a neural network process to complete a single epoch.
+The number of  iterations, batch size and  number of data samples in the dataset is given by, the below expression.
+\begin{equation}
+    D = B * I
+\end{equation}
+Where D is the total number of samples in the dataset.
+\\*B is the number of samples in the mini batch that is fed to the network at once.
+\\*I is the  total number of batches the network process in a single epoch.
+
+Larger batch size requires more computational resource and achieves faster completion, in contrast smaller batch size leads to more generalization. In this regards, Yann  LeCun humorously said
+\begin{quote}
+``Training with large mini batches is bad for your health. More importantly, it's bad for your test error.  Friends, don't let friends use mini batches larger than 32.''
+\end{quote}   
+The empirical study of the performance of mini-batch stochastic gradient descent in \cite{masters2018revisiting} show that, the team obtained the best training stability and generalization performance using small batch sizes, for a given computational cost, across a wide range of experiments they conducted. In all cases they have achieved the best results with batch sizes m = 32 or smaller.
+\subsection{Intersection Over Union:}
+Intersection Over Union (IOU) is a measure similar to Jaccard Index that measures the overlap ratio between two bounding boxes. It evaluates the ratio between area of  overlapping area between two BBs and area of union between them.
+
+\begin{equation}
+    IoU = \frac{area\: of\: overlap} {area\: of\: union} =
+\end{equation}
+
+\begin{center}
+\begin{tikzpicture}
+\draw [red] (0, 0) rectangle (2, 2);
+\draw [blue] (1.0, 1.0) rectangle (3.0, 3.0);
+\begin{scope}
+	\fill[green] (1.03, 1.03) rectangle (1.97, 1.97);
+\end{scope}
+\end{tikzpicture}
+
+\begin{tikzpicture}
+    \draw[line width=5pt,fill=black] (0,2) -- (6,2);
+\end{tikzpicture}\vspace{0.2cm}%
+
+\begin{tikzpicture}
+    \filldraw [draw=red,fill=green] (0, 0) rectangle (2, 2);
+    \filldraw [draw=blue,fill=green] (1.0, 1.0) rectangle (3.0, 3.0);
+    %\begin{scope}
+			\fill[green] (0.98, 0.98) rectangle (2.0, 2.0);
+		%\end{scope}
+\end{tikzpicture}
+\end{center}
 
