@@ -16,12 +16,13 @@
 
 \chapter{Introduction}
 \section{Overview}
-Apart from object detection which includes different classes of living or non-living, detection of human is considered to be of high interest for many researchers as application of human detection finds its place in several areas such as patient monitoring, security system, robot-human co-working environment, autonomous driving and many more. Specifically, predicting the pedestrians future 
+Detection of human is considered to be of high interest for many researchers, apart from object detection which includes different classes of living or non-living, as application of human detection finds its place in several areas such as patient monitoring, security system, robot-human co-working environment, autonomous driving and many more. Specifically, predicting the pedestrians future 
 location depending on his current and recent past locations, knowing the motive of the pedestrian to cross the road in front of the vehicle, before the pedestrian has actually entered into the road, would empower the ADAS to warn the driver or for autonomous vehicle to perform required maneuvers in time.
-Predicting future location of the pedestrian observed from a camera mounted camera on a moving vehicle is the main point of this thesis. It also covers some of the related concept of object tracking, object detection and image classification as they form the founding stone for my work. Some of the important observations are made a novel method for improving the prediction is also proposed. This work is based on Deep learning and usage of CNN for image processing. The detection of the human is a partial task where human and machine must interact with each other and machine expected to understand human's intention. For example, an autonomous vehicle must anticipate and predict where the pedestrian is expected to arrive after a certain time interval, the pedestrian behavior in a reliable manner, whether the pedestrian intents to cross the road, or standing near the curb waiting for the moving vehicle to cross or waiting at the waiting-shelter. During this thesis work i tried to solve where is the pedestrian expected to arrive after a certain time interval. The previous locations for a pedestrian is collected as bounding boxes and future location shall be predicted with bounding box annotation.
+Predicting future location of the pedestrian observed from a camera mounted on a moving vehicle is the main point of this thesis. It also covers some of the related concept of object tracking, object detection and image classification as they form the founding stone for my work. Some of the important observations which made a novel method for improving
+the prediction, are also proposed. This work is based on Deep learning and usage of CNN for image processing. The detection of the human is a partial task where human and machine must interact with each other and machine expected to understand human's intention. For example, an autonomous vehicle must anticipate and predict where the pedestrian is expected to arrive after a certain time interval, the pedestrian behavior in a reliable manner, whether the pedestrian intents to cross the road, or standing near the curb waiting for the moving vehicle to cross or waiting at the waiting-shelter. During this thesis work i tried to solve where the pedestrian is expected to arrive after a certain time interval. The previous locations for a pedestrian is collected as bounding boxes and future location shall be predicted with bounding box annotation.
 
 \section{Motivation}
-Deep Learning a subset of AI and machine learning was introduced in the 90's, but it's gaining  popularity recently due to the availability of low cost high performance computational unit (GPUs) and sophisticated training algorithms. Deep Learning has made some significant impacts in the areas of image classification, 
+Deep Learning, a subset of AI and machine learning was introduced in the 90's, but it's gaining  popularity recently due to the availability of low cost high performance computational unit (GPUs) and sophisticated training algorithms. Deep Learning has made some significant impacts in the areas of image classification, 
 object detection, speech recognition, text-to-speech generation, machine translation,
 online recommender system, medical diagnosis and many more. Due to the availability of high 
 computing power such as high speed CPU, high bandwidth GPU, large amount of 
@@ -40,16 +41,16 @@ high in-class variability. In the human detection task, intra-class variability 
 color of the clothing, type of clothing, appearance, pose, illumination, partial occlusions
 and background. Pedestrian detection has remained one of the most studied problem in the computer vision.
 In the last decade with application of CNNs, researchers are able to get some nice results 
-those are good enough for application in practical scenarios. Success of Deep learning and challenge of pedestrian safety motivation of application of CNN and LSTM while trying to solve the problem at hand.
+those are good enough for application in practical scenarios. Success of Deep learning and challenge of pedestrian safety motivates the use of CNN and LSTM to solve the problem at hand.
 
 \section{Problem Statement }
 This thesis work mainly answers the below question by investigating and  applying several methodologies into the practice. 
 
 \begin{itemize}
-	\item Which model to be used for the problem, that deals with detecting and tracking the pedestrians in the scene? If the model is capable of detecting multiple pedestrians in the scene? What is the processing time, if the processing time is under a threshold for the purpose of using it in the real time scenario?
+	\item Which model to be used for the problem that deals with detecting and tracking the pedestrians in the scene? If the model is capable of detecting multiple pedestrians in the scene? What is the processing time, if the processing time is under a threshold for the purpose of using it in the real time scenario?
 
 	\item 
-What kind of algorithm to be used for the problem, that deals with predicting the pedestrian intention? What is the time delay of such models and whether such models are suitable for real time application scenarios?
+What kind of algorithm to be used for the problem that deals with predicting the pedestrian intention? What is the time delay of such models and whether such models are suitable for real time application scenarios?
 
 	\item How to choose right network for such problems, training them on large dataset which includes several thousand of images or hours of video recordings? How to set and tune several hyper parameters while training the neural network? 
 
@@ -82,15 +83,15 @@ As the expected task of prediction of bounding box for pedestrian is the last st
 However a small scale study shall be done to get familiar with the topic.  Acquisition of reliable data set \footnote{There are several image and video datasets exist in the public domain for research purpose}, understanding the annotation in the data, identifying desired features were included in the scope of the work.
 
 \section{Contributions}
-The main contribution of this is state-refinement proposal. The cell state of the LSTM network may be refined with confidence awareness factor for enhancement of the result. And another contribution of this thesis was as part of result observation. We observed that....
+The main contribution of this is state-refinement proposal. The cell state of the LSTM network may be refined with confidence awareness factor for enhancement of the result. And another contribution of this thesis is as part of result observation. We observed that....
 
 \section{Limitations}
-Below are the some of limitation of my work
+Below are some of the limitation of my work
 \begin{itemize}
-	\item Much larger time into the future was not explored as the dataset(JAAD), that was used during the experiment was containing many short duration videos. 
+	\item Much larger time into the future is not explored as the dataset(JAAD), that is used during the experiment contains many short duration videos. 
 
-	\item Vehicle speed was not part of the data set
-	\item The deep investigation into the proposed state-refined module was not done due to time constraint.
+	\item Vehicle speed is not part of the data set
+	\item The deep investigation into the proposed state-refined module is not done due to time constraint.
 \end{itemize}
 
 \section{Thesis Organization }
