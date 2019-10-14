@@ -7,21 +7,9 @@
 \chapter{Implementation}
 During the thesis LSTM is used for predicting the future bounding box of the pedestrian using JAAD dataset. SSD is used as pedestrian detector. This chapter describes, how SSD is trained on large dataset, acquisition of data set and modeling LSTM on the JAAD dataset. Several aspect of Machine learning and Deep learning is discussed as well.
 
-\section{LSTM prediction model}
+\section{LSTM - JAAD Dataset}
 \subsection{Data Acquisition}
-\subsection{Data preparation}
-\subsection{Data preparation}
-JAAD \cite{rasouli2017agreeing} is a publicly available large scale data set that includes data for pedestrian detection with behavioral and contextual information. It contains 346 video clips of pedestrian data that includes occlusion label, temporal correlation, behavioral aspect, contextual information weather related data. Rasouli et al. provided a supporting GitHub code for easier interaction with JAAD data. The videos can be downloaded by running the script \colorbox{lightgray}{download\textunderscore clips.sh}. The video clips are downloaded into JAAD\textunderscore clips and the clips are named as below.\\
-\colorbox{lightgray} {JAAD\textunderscore clips/video\textunderscore  0001.mp4} \\
-\colorbox{lightgray} {JAAD\textunderscore clips/video\textunderscore  0002.mp4}
-
-Using \colorbox{lightgray}{split\textunderscore clips\textunderscore to\textunderscore .sh} the frames are extracted to corresponding video id directory with in a floder called \textit{images} \\
-\begin{center}
-\colorbox{lightgray} {images/video\textunderscore  0001/0000.png} \\
-\colorbox{lightgray} {images/video\textunderscore  0001/0001.png} \\
-\colorbox{lightgray} {....}
-\end{center}
-
+The early work includes prediction of road users behavior by employing dynamic factors e.g trajectory prediction, velocity prediction or predicting final goal of the pedestrian. JAAD dataset includes  behavioral aspect such as awareness by estimating head orientation along with other contextual information such as sign, weather condition, visibility and individual characteristics of the pedestrian such as things he carry, age and sex, size of the group he is associated with influence crossing behavior. JAAD is a publicly available large scale data set that includes data for pedestrian detection with behavioral and contextual information. It contains 346 video clips of pedestrian data that includes occlusion label, temporal correlation, behavioral aspect, contextual information weather related data.
 In JAAD annotations are divided into 5 groups:
 \begin{itemize}
 	\item Annotations: Information about pedestrian bounding box, occlusion information, activities. These annotations are one per frame per label.
@@ -31,22 +19,101 @@ In JAAD annotations are divided into 5 groups:
 	\item Vehicle: Per frame vehicle speed information e.g moving fast, speeding up.
 \end{itemize}
 
-
-The early work includes prediction of road users behavior by employing dynamic factors e.g trajectory prediction, velocity prediction or predicting final goal of the pedestrian. Recently behavioral aspect such as awareness by estimating head orientation along with other contextual information such as sign, weather condition, visibility and individual characteristics of the pedestrian such as things he carry, age and sex, size of the group he is associated with influence crossing behavior.
-
-TODO:  pedestrian to identify the pedestrians with behavioral tags (i.e. the ones demonstrating the intention of crossing or located close to the curb). 
-Occlusion information is provided in the form of tags for
-each bounding box: partial occlusion (between 25\% and 75\%
-visible) and full occlusion (less than 25\% visible).
- 654 unique pedestrian samples (out of 2.2k samples) with behavioral tags in the
-dataset. 
-The
-pedestrians\' actions are categorized into 3 groups: Precondition- this refers to the state of the pedestrian prior to crossing and can be either standing, moving slow or fast. Attention- the way the pedestrian becomes aware of the approaching vehicle. These actions, depending on their duration, are looking ( > 1s) or glancing ($\leq$ 1s). Response- this
-includes the behaviors that pedestrians exhibit in response
+The pedestrians\' actions are categorized into 3 groups: \\
+Precondition- this refers to the state of the pedestrian prior to crossing and can be either standing, moving slow or fast. \\
+Attention- the way the pedestrian becomes aware of the approaching vehicle. These actions, depending on their duration, are looking ( > 1s) or glancing ($\leq$ 1s). \\
+Response- this includes the behaviors that pedestrians exhibit in response
 to the action of the approaching vehicle, namely, stop, clear path, slow down, speed up, hand gesture and nod.
+Occlusion information is provided in the form of tags for each bounding box: partial occlusion (between 25\% and 75\% visible) and full occlusion (less than 25\% visible).  654 unique pedestrian samples (out of 2.2k samples) with behavioral tags in the dataset. 
 
-\subsection{Problem}
-MinMax scalar at a global scale introduce the error, for that reason MinMax scalar for every video clip was crated and the data sequence is transformed and fit in accordance to that.
+\subsection{Data preparation}
+\cite{rasouli2017agreeing} Rasouli et al. provided a supporting GitHub code for easier interaction with JAAD data. The videos can be downloaded by running the script \colorbox{lightgray}{download\textunderscore clips.sh}. The video clips are downloaded into JAAD\textunderscore clips and the clips are named as below.\\
+\colorbox{lightgray} {JAAD\textunderscore clips/video\textunderscore  0001.mp4} \\
+\colorbox{lightgray} {JAAD\textunderscore clips/video\textunderscore  0002.mp4}
+
+Using \colorbox{lightgray}{split\textunderscore clips\textunderscore to\textunderscore .sh} the frames are extracted to corresponding video id directory with in a folder called \textit{images} \\
+\begin{center}
+\colorbox{lightgray} {images/video\textunderscore  0001/0000.png} \\
+\colorbox{lightgray} {images/video\textunderscore  0001/0001.png} \\
+\colorbox{lightgray} {....}
+\end{center}
+
+%https://github.com/ykotseruba/JAAD/issues/7
+The video data and image data was used to manual exploration of data set and was not used for LSTM training. For LSTM training annotations from JAAD was extracted for videos 71-346. These are the videos recorded with Garmin GDR-35 with dimension 1920x1980.\footnote{videos 1-60: GoPro Hero+ (1920x1980)
+videos 61-70: Highscreen Box Connect (1280x720) information received from author of JAAD paper ykotseruba}. \\
+
+\begin{algorithm}[H]
+\SetAlgoLined
+\KwResult{Set of csv files containing bounding box information }
+ initialize JAAD path and video set for bb information are to be extracted \;
+ \While{video in video set}{
+  fetch the relevant information from json\;
+  \eIf{video length < 90}{
+   discard such entries\;
+   }{
+	 fetch the bb information from json data-structure
+   write the bb information to corresponding csv file\;
+  }
+ }
+ \caption{Algorithms for BB data preparation}
+\end{algorithm}
+
+It is noticed that there are limited number of videos for some of the scenario and for other scenarios there are more number of videos. To avoid data-skew impacting the final result, the videos are watched and stored in categorized directory. After taking the frequencies of videos in category, factors are determined  and used  replication factor during preparation of training data for the LSTM. The training sequence for the LSTM is prepared as follows.
+
+\begin{algorithm}[H]
+\SetAlgoLined
+\KwResult{$train_X, val_X$: training and validation sequences for the model }
+ initialize the path for different category and and replication factor to be considered \;
+ \While{csv file in file set}{
+  fetch the relevant information from json\;
+	normalize and fit the co-ordinates using MinMaxScaler\;
+	form a series of sequence taking number of input and number of future step\;
+	append all such series and prepare a large structure 
+ }
+reshape to the desired shape\;
+80 percentage of the prepared data is stored into $train_X$\;
+20 percentage of the prepared data is stored into $val_X$\;
+ \caption{Algorithms for BB data preparation}
+\end{algorithm}
+
+\textbf{Problem:} MinMax scalar at a global scale introduce the error, for that reason MinMax scalar for every video clip was crated and the data sequence is transformed and fit in accordance to that.
+
+\subsection{Training }
+Once training data is prepared, the next step is to fit the model with data taking validation data as a guiding factor. During my work, Keras- LSTM APIs are used for the modeling. The below algorithms are used for the source code implementation.
+
+\begin{algorithm}[H]
+\SetAlgoLined
+\KwResult{Save the better model and it's weights after each training iteration}
+ initialize the model check pointing using ModelCheckpoint class with relevant parameters\;
+ // monitor='val\textunderscore loss' is used to select better model\;
+	use model check pointing as a callback\;
+ //design network\;
+ clear\textunderscore session\;
+ model = Sequential()\;
+ model.add(LSTM(50, input\textunderscore =(train\textunderscore X.shape[1], train\textunderscore X.shape[2])))
+ // dropout avoids over fitting
+ model.add(Dropout(0.1))
+ model.add(Dense(4))
+ model.compile(loss='mae', optimizer="adam")
+ epochs = 300
+ // fit network
+ history = model.fit(train\textunderscore X, train\textunderscore y, epochs=epochs, batch\textunderscore size=72,validation\textunderscore data=(val\textunderscore X, val\textunderscore y), verbose=2,callbacks=callbacks,shuffle=False)
+
+ // use history to plot the training loss and validation loss using pyplot
+ pyplot.plot(history.history['loss'], label='train')
+ pyplot.plot(history.history['val\textunderscore loss'], label='test')
+ pyplot.legend()
+ pyplot.savefig("char-file-name.png")
+ pyplot.show()
+
+// save model
+model.save("lstm-model-name.h5")
+ \caption{Algorithms for BB data preparation}
+\end{algorithm}
+
+\subsection{Framework parameters}
+
+
 \section{SSD model}
 
 \subsection{Data Acquisition}

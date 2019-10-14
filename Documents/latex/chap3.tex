@@ -446,7 +446,7 @@ Considering the pedestrian and vehicle system always expected to be safe, LSTM c
 
 \newpara
 \textbf{Pedestrian bounding box location calculation:}
-To aid the LSTM cell refinement. Assuming the vehicle from a constant distance from a virtual point on the x-axis in the image frame of reference.
+To aid the LSTM cell refinement because of vehicle movement and its change in direction we proposed the following. Assuming the vehicle from a constant distance from a virtual point on the x-axis in the image frame of reference.
 
 Considering the below representation, a person represented as a bounding box in a frame by (x,y,w,h), where (x,y) is the top left corner co-ordinate and \textit{w} is the width of the bounding box and \textit{h} is the height of the bounding box. The position of the the pedestrian bounding box in the next frame is symbolically shown as ${P}_{\hat{t}}$.
 
@@ -470,53 +470,61 @@ where $\hat{t}$ is time stamp at which the next frame is captured and can be giv
 Where \textit{fps} is a measure of how many frames captured by the camera in one second
 
 $(x_{\hat{t}},y_{\hat{t}},w_{\hat{t}},h_{\hat{t}})$ in the equation depends on basically three factors speed of the vehicle, speed of the pedestrian and the angle between vehicle camera and pedestrian. Also it is necessary to be noted that other social aspect such as obstacle, neighborhood pedestrian, sudden change in pedestrian's own decision for the destination and displacement of the camera will have impact.
+Here we focused the aspect of change of vehicle's motion direction 
 
-A vehicle moving with a speed of $V_c$ shall travel a distance within \textit{a frame }time duration is given by the below equation.
+%A vehicle moving with a speed of $V_c$ shall travel a distance within \textit{a frame }time duration is given by the below equation.
 
-\begin{equation}
-d_v = \Delta t \times V_c
-\end{equation}
+%\begin{equation}
+%d_v = \Delta t \times V_c
+%\end{equation}
 
-A person moving with a speed of $V_p$ shall travel a distance within \textit{a frame }time duration is given by the below equation.
+%A person moving with a speed of $V_p$ shall travel a distance within \textit{a frame }time duration is given by the below equation.
 
-\begin{equation}
-d_p = \Delta t \times V_p
-\end{equation}
+%\begin{equation}
+%d_p = \Delta t \times V_p
+%\end{equation}
 
-The new coordinates $(\hat{x}, \hat{y})$ for the pedestrian in the image frame of reference is given by
+%The new coordinates $(\hat{x}, \hat{y})$ for the pedestrian in the image frame of reference is given by
 
-\begin{equation}
-\begin{array}{l@{}}
-x_{\hat{t}} =x_t + \frac{d_p cos\theta }{CF}\\
-y_{\hat{t}} =y_t + \frac{d_p sin\theta }{CF}
-\end{array}			
-\end{equation}
-
-Where $\theta$ is the angle of the pedestrian movement \\
-CF is the calibration factor of the camera and used for scale conversion.
-
-%Assuming the initial position of the pedestrain (x,y) on the ground frame-of-reference and due to this change of distance $\Delta d_v$ and $\Delta d_p$, the resultant distance and angle between vehicle and pedestrian shall be changed and given by below relation. Considering the car camera coordinate in the previous frame at the origin, it moves always in the direction of \textit{y-axis}, its new co-ordinate at $\hat{t}$ shall be $(x_0, d_v)$. New position of the pedestrian shall be $(x + d_p cos\theta, y + d_p sin\theta)$
-
-Assuming the initial position of the pedestrian (x,y) on the ground frame-of-reference and due to this change of distance $\Delta d_v$ and $\Delta d_p$, the resultant distance between vehicle and pedestrian shall be changed and given by below relation. Considering the car camera coordinate in the previous frame at the origin, it moves always in the direction of \textit{y-axis}, its new co-ordinate at $\hat{t}$ shall be $(x_0, d_v)$. New position of the pedestrian shall be $(x + d_p cos\theta, y + d_p sin\theta)$
-
-
-\begin{equation}
-\begin{array}{l@{}}
-d_{\hat{t }} =\sqrt{(x_0 - x-d_p cos\theta)^2 + (d_v - y-d_p sin\theta)^2} \\
-%\hat{\theta}= tan^-1\frac{(y-d_v)}{(x-x_0)} \\
-\end{array}
-\end{equation}
-
-%Where $\hat{\theta}$ is the final angle between vehicle and pedestrian.
-
-%If the vehicle starts to move with an angle ${\theta }_f$ 
 %\begin{equation}
 %\begin{array}{l@{}}
-%\theta =\hat{\theta } + {\theta }_f\\
+%x_{\hat{t}} =x_t + \frac{d_p cos\theta }{CF}\\
+%y_{\hat{t}} =y_t + \frac{d_p sin\theta }{CF}
 %\end{array}			
 %\end{equation}
 
-%Where ${\theta }$ is the resultant angle due to vehicle change in direction.
+%Where $\theta$ is the angle of the pedestrian movement \\
+%CF is the calibration factor of the camera and used for scale conversion.
+
+%Assuming the initial position of the pedestrain (x,y) on the ground frame-of-reference and due to this change of distance $\Delta d_v$ and $\Delta d_p$, the resultant distance and angle between vehicle and pedestrian shall be changed and given by below relation. Considering the car camera coordinate in the previous frame at the origin, it moves always in the direction of \textit{y-axis}, its new co-ordinate at $\hat{t}$ shall be $(x_0, d_v)$. New position of the pedestrian shall be $(x + d_p cos\theta, y + d_p sin\theta)$
+
+%Assuming the initial position of the pedestrian (x,y) on the ground frame-of-reference and due to this change of distance $\Delta d_v$ and $\Delta d_p$, the resultant distance between vehicle and pedestrian shall be changed and given by below relation. Considering the car camera coordinate in the previous frame at the origin, it moves always in the direction of \textit{y-axis}, its new co-ordinate at $\hat{t}$ shall be $(x_0, d_v)$. New position of the pedestrian shall be $(x + d_p cos\theta, y + d_p sin\theta)$
+
+
+%\begin{equation}
+%\begin{array}{l@{}}
+%d_{\hat{t }} =\sqrt{(x_0 - x-d_p cos\theta)^2 + (d_v - y-d_p sin\theta)^2} \\
+%\hat{\theta}= tan^-1\frac{(y-d_v)}{(x-x_0)} \\
+%\end{array}
+%\end{equation}
+
+Considering the mid point of the lower side of the pedestrian bounding box as the initial position of the pedestrian (x,y) on the image frame-of-reference, the initial angle between camera and pedestrain can be approximated as
+
+\begin{equation}
+{\theta }= tan^-1\frac{(y-y_0)}{(x-x_0)}
+\end{equation}
+
+\textit{Note:} Some image processing software package considers top-left corner as (0,0) and some others consider bottom-left corner as (0,0). For the simplicity purpose we assumed  bottom-left corner as (0,0).
+
+When the vehicle starts to move with an angle ${\theta }_f$ 
+The resultant angle between vehicle and pedestrian, $\hat{\theta}$ can be expressed as below.
+\begin{equation}
+\begin{array}{l@{}}
+\hat{\theta } = \theta  + {\theta }_f\\
+\end{array}			
+\end{equation}
+
+Where ${\theta }$ is the initial angle between vehicle and pedestrian.
 
 The distance between camera and object in the scene can be derived by below equation.
 \begin{equation}
@@ -668,62 +676,61 @@ Normally a fully connected layer is attached to the Network as last layer of the
 
 \newpara CNN learns the filters that traditional image classification algorithm hand crafts. This makes CNN little pre-processing compared to other traditional algorithm and results superior results. There are many evolution of CNNs starting from LeNet (LeCun et al., 1989) for zip code recognition, LeNet-5 (1998) a 7 layer CNN \ref{fig:traditional-convolutional-network} by LeCun et al. for hand written numbers on the check recognition, AlexNet by Alex Krizhevsky et al. in 2012 used deeper layers and more filters per layer than leNet-5. It also used ReLU activation, max pooling, dropout, data agumentation and SGD with momentum during training. \footnote{These terms shall be discussed in the subsequent chapter.} This achieved a record breaking result at that time. ZFNet in 2013 winner of ILSVRC 2013 with a small tweaking to AlexNet. 2014, GoogleNet otherwise known as Inception V1 from Google achieved human level performance. Another net in the same year got the attention known as VGGNet. It uses only 3x3 convolution, 16 layers and with lots of filters. It consists of 138 million parameters and one of major disadvantage and required more time to train. And weight configuration of this is publicly available and used as baseline feature extractor.
 
-Standard CNN architectures, over the last 2 decades uses set of standard layer that can be graphically \ref{tomepel} represented as below. 
+%Standard CNN architectures, over the last 2 decades uses set of standard layer that can be graphically \ref{tomepel} represented as below. 
 
-\begin{figure}[H]
-\begin{align*}
-\begin{tikzpicture}[baseline=-3pt]
-\node[] at (0,0) {\includegraphics[scale=0.5]{input_layer}};
-\end{tikzpicture}&=
+%\begin{figure}[H]
+%\begin{align*}
+%\begin{tikzpicture}[baseline=-3pt]
+%\node[] at (0,0) {\includegraphics[scale=0.5]{input_layer}};
+%\end{tikzpicture}&=
 %
-\begin{tikzpicture}[baseline=-0pt]
-\draw (0,-1) rectangle (0+0.3,1);
-\node[align=center,scale = 0.65] at (0+0.15,0) {I \\ n \\ p \\ u \\ t};
-\end{tikzpicture}\;,&
+%\begin{tikzpicture}[baseline=-0pt]
+%\draw (0,-1) rectangle (0+0.3,1);
+%\node[align=center,scale = 0.65] at (0+0.15,0) {I \\ n \\ p \\ u \\ t};
+%\end{tikzpicture}\;,&
 %
-\begin{tikzpicture}[baseline=-3pt]
-\node[] at (0,0) {\includegraphics[scale=0.5]{VGG-conv}};
-\end{tikzpicture}&=
+%\begin{tikzpicture}[baseline=-3pt]
+%\node[] at (0,0) {\includegraphics[scale=0.5]{VGG-conv}};
+%\end{tikzpicture}&=
 %
-\begin{tikzpicture}[baseline=-0pt]
-\filldraw[fill=blue!30!white] (0,-1) rectangle (0+0.3,1);
-\node[align=center,scale = 0.65] at (0+0.15,0) {C \\ o \\ n \\ v};
-\end{tikzpicture}\;,\notag\\
+%\begin{tikzpicture}[baseline=-0pt]
+%\filldraw[fill=blue!30!white] (0,-1) rectangle (0+0.3,1);
+%\node[align=center,scale = 0.65] at (0+0.15,0) {C \\ o \\ n \\ v};
+%\end{tikzpicture}\;,\notag\\
 %
-\begin{tikzpicture}[baseline=-3pt]
-\node[] at (0,0) {\includegraphics[scale=0.5]{VGG-pool}};
-\end{tikzpicture}&=
+%\begin{tikzpicture}[baseline=-3pt]
+%\node[] at (0,0) {\includegraphics[scale=0.5]{VGG-pool}};
+%\end{tikzpicture}&=
 %
-\begin{tikzpicture}[baseline=-0pt]
-\filldraw[fill=red!30!white] (0,-1) rectangle (0+0.3,1);
-\node[align=center,scale = 0.65] at (0+0.15,0) {P \\ o \\ o \\ l};
-\end{tikzpicture}\;,&
+%\begin{tikzpicture}[baseline=-0pt]
+%\filldraw[fill=red!30!white] (0,-1) rectangle (0+0.3,1);
+%\node[align=center,scale = 0.65] at (0+0.15,0) {P \\ o \\ o \\ l};
+%\end{tikzpicture}\;,&
 %
-\begin{tikzpicture}[baseline=-3pt]
-\node[] at (0,0) {\includegraphics[scale=0.5]{VGG-fc}};
-\end{tikzpicture}&=
+%\begin{tikzpicture}[baseline=-3pt]
+%\node[] at (0,0) {\includegraphics[scale=0.5]{VGG-fc}};
+%\end{tikzpicture}&=
 %
-\begin{tikzpicture}[baseline=-0pt]
-\filldraw[fill=green!30!white] (0,-1) rectangle (0+0.3,1);
-\node[align=center,scale = 0.65] at (0+0.15,0) {F \\ u \\ l \\ l};
-\end{tikzpicture}
-\end{align*}
-\begin{center}
-\caption{CNN layers: Schematic representation, source:Thomas Epelbaum GitHub}
-\label{fig:Schematic-representation}
-\end{center}
-\end{figure}
+%\begin{tikzpicture}[baseline=-0pt]
+%\filldraw[fill=green!30!white] (0,-1) rectangle (0+0.3,1);
+%\node[align=center,scale = 0.65] at (0+0.15,0) {F \\ u \\ l \\ l};
+%\end{tikzpicture}
+%\end{align*}
+%\begin{center}
+%\caption{CNN layers: Schematic representation, source:Thomas Epelbaum GitHub}
+%\label{fig:Schematic-representation}
+%\end{center}
+%\end{figure}
 
-\newpara Based on these schematic layers, a simple graphical \footnote{\label{tomepel} Images source: Thomas Epelbaum GitHub: https:\textbackslash github.com\textbackslash tomepel\textbackslash Technical\_Book\_DLaccessed on 07th August 2019 } representation of VGG-Net is shown below.
-\begin{figure}[H]
-\begin{center}
-\begin{tikzpicture}
-\node[] at (0,0) {\includegraphics[scale=1]{VGG}};
-\end{tikzpicture}
-\caption{VGG-Net, souece: Thomas Epelbaum GitHub}
-\end{center}
-\end{figure} 
-
+%\newpara Based on these schematic layers, a simple graphical \footnote{\label{tomepel} Images source: Thomas Epelbaum GitHub: https:\textbackslash github.com\textbackslash tomepel\textbackslash Technical\_Book\_DLaccessed on 07th August 2019 } representation of VGG-Net is shown below.
+%\begin{figure}[H]
+%\begin{center}
+%\begin{tikzpicture}
+%\node[] at (0,0) {\includegraphics[scale=1]{VGG}};
+%\end{tikzpicture}
+%\caption{VGG-Net, souece: Thomas Epelbaum GitHub}
+%\end{center}
+%\end{figure} 
 
 \section{Terminology}
 Some of the key concepts that are studied and useful are presented in subsequent texts.
