@@ -40,7 +40,7 @@ Using \colorbox{lightgray}{split\textunderscore clips\textunderscore to\textunde
 
 %https://github.com/ykotseruba/JAAD/issues/7
 The video data and image data was used to manual exploration of data set and was not used for LSTM training. For LSTM training annotations from JAAD was extracted for videos 71-346. These are the videos recorded with Garmin GDR-35 with dimension 1920x1980.\footnote{videos 1-60: GoPro Hero+ (1920x1980)
-videos 61-70: Highscreen Box Connect (1280x720) information received from author of JAAD paper ykotseruba}. \\
+videos 61-70: Highscreen Box Connect (1280x720) information received from author of JAAD paper ykotseruba}. Widely used python packages such as \textit{numpy }and \textit{pandas} are used for transform and manipulation of dataset. NumPy is a scientific computing package specializing array operations and Pandas provides high performance ease to use data analysis tool using python programming language.  \\
 
 \begin{algorithm}[H]
 \SetAlgoLined
@@ -55,14 +55,16 @@ videos 61-70: Highscreen Box Connect (1280x720) information received from author
    write the bb information to corresponding csv file\;
   }
  }
- \caption{Algorithms for BB data preparation}
+~\\
+~\\
+ \caption{Algorithm for BB data preparation}
 \end{algorithm}
 
 It is noticed that there are limited number of videos for some of the scenario and for other scenarios there are more number of videos. To avoid data-skew impacting the final result, the videos are watched and stored in categorized directory. After taking the frequencies of videos in category, factors are determined  and used  replication factor during preparation of training data for the LSTM. The training sequence for the LSTM is prepared as follows.
 
 \begin{algorithm}[H]
 \SetAlgoLined
-\KwResult{$train_X, val_X$: training and validation sequences for the model }
+\KwResult{train\textunderscore X, val\textunderscore X: training and validation sequences for the model }
  initialize the path for different category and and replication factor to be considered \;
  \While{csv file in file set}{
   fetch the relevant information from json\;
@@ -71,16 +73,17 @@ It is noticed that there are limited number of videos for some of the scenario a
 	append all such series and prepare a large structure 
  }
 reshape to the desired shape\;
-80 percentage of the prepared data is stored into $train_X$\;
-20 percentage of the prepared data is stored into $val_X$\;
- \caption{Algorithms for BB data preparation}
+80 percentage of the prepared data is stored into train\textunderscore X\;
+20 percentage of the prepared data is stored into val\textunderscore X\; 
+~\\
+~\\
+ \caption{Algorithm for LSTM training data preparation}
 \end{algorithm}
 
-\textbf{Problem:} MinMax scalar at a global scale introduce the error, for that reason MinMax scalar for every video clip was crated and the data sequence is transformed and fit in accordance to that.
+\textbf{Note:} MinMax scalar at a global scale introduce the error, because several video clips are taken from a very close distance to the object and several other video clips are recored from a far distance. To mitigate this issue \textit{MinMax scalar } for every video clip was created and the data sequence is transformed and fit in accordance to that.
 
 \subsection{Training }
-Once training data is prepared, the next step is to fit the model with data taking validation data as a guiding factor. During my work, Keras- LSTM APIs are used for the modeling. The below algorithms are used for the source code implementation.
-
+Once training data is prepared, the next step is to fit the model with data taking validation data as a guiding factor. During my work, Keras- LSTM APIs are used for the modeling. The below algorithms are used for the source code implementation.\\
 \begin{algorithm}[H]
 \SetAlgoLined
 \KwResult{Save the better model and it's weights after each training iteration}
@@ -90,29 +93,52 @@ Once training data is prepared, the next step is to fit the model with data taki
  //design network\;
  clear\textunderscore session\;
  model = Sequential()\;
- model.add(LSTM(50, input\textunderscore =(train\textunderscore X.shape[1], train\textunderscore X.shape[2])))
- // dropout avoids over fitting
- model.add(Dropout(0.1))
- model.add(Dense(4))
- model.compile(loss='mae', optimizer="adam")
- epochs = 300
- // fit network
- history = model.fit(train\textunderscore X, train\textunderscore y, epochs=epochs, batch\textunderscore size=72,validation\textunderscore data=(val\textunderscore X, val\textunderscore y), verbose=2,callbacks=callbacks,shuffle=False)
+ model.add(LSTM(50, input\textunderscore =(train\textunderscore X.shape[1], train\textunderscore X.shape[2]))) \;
+ // dropout avoids over fitting \;
+ model.add(Dropout(0.1))\; 
+ model.add(Dense(4))\;
+ model.compile(loss='mae', optimizer="adam")\;
+ epochs = 300\;
+ // fit network\;
+ // The model tries to fit the weights by iterating the training \\
+ // dataset for 'epoch' number of time, monitors the validation loss  \\
+ // when validation loss is better than previous, that model weights are saved
+ history = model.fit(train\textunderscore X, train\textunderscore y, \\
+ \HS \HS \HS \HS epochs=epochs, \\
+ \HS \HS \HS \HS batch\textunderscore size=72,\\
+ \HS \HS \HS \HS validation\textunderscore data=(val\textunderscore X, val\textunderscore y),\\
+ \HS \HS \HS \HS verbose=2,\\
+ \HS \HS \HS \HS callbacks=callbacks,\\
+ \HS \HS \HS \HS shuffle=False)
+~\\
+~\\
+\caption{Algorithm for LSTM training using Keras API} 
+\end{algorithm} \label{training-algo}
 
- // use history to plot the training loss and validation loss using pyplot
- pyplot.plot(history.history['loss'], label='train')
- pyplot.plot(history.history['val\textunderscore loss'], label='test')
- pyplot.legend()
- pyplot.savefig("char-file-name.png")
- pyplot.show()
+Once the model is trained for a particular number of epochs, model training performance can be visualized by plotting a graph and the best model can be saved using below pseudo-code. \\
 
-// save model
-model.save("lstm-model-name.h5")
- \caption{Algorithms for BB data preparation}
+\begin{algorithm}[H]
+\SetAlgoLined
+\KwResult{Plot the training-validation graph and saves the best model with weights}
+ The model is generated using \ref{training-algo} \;
+ // history variable is updated \\
+ // use history to plot the training loss and validation loss using pyplot\;
+ pyplot.plot(history.history['loss'], label='train')\;
+ pyplot.plot(history.history['val\textunderscore loss'], label='test')\;
+ pyplot.legend()\;
+ pyplot.savefig("char-file-name.png")\;
+ pyplot.show()\;
+
+// save model\;
+model.save("{}.h5".format(lstm-model-name)) \;
+~\\
+~\\
+ \caption{Algorithm for plotting the graph and saving the model} 
 \end{algorithm}
 
 \subsection{Framework parameters}
-
+% https://datascience.stackexchange.com/questions/20413/clarification-on-the-keras-recurrent-unit-cell
+For the LSTM model number of units for the cell is used as 50, which determines the learning capacity of the model. A dropout of 0.1 is used to avoid over fitting, model is trained for  300 number of epochs. A batch size of 72 is used. Mean absolute Error (\textit{mae}) is used as the loss function and Adaptive Moment Estimation (\textit{adam}) is used as the optimizer. The Keras's default values for adam's parameter are used. The default value for \textit{learning rate} is 0.01 and \textit{decay} is 0.0001. 
 
 \section{SSD model}
 
