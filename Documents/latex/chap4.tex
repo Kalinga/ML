@@ -136,11 +136,11 @@ model.save("{}.h5".format(lstm-model-name)) \;
  \caption{Algorithm for plotting the graph and saving the model} 
 \end{algorithm}
 
-\subsection{Framework parameters}
+\subsection{Model parameters}
 % https://datascience.stackexchange.com/questions/20413/clarification-on-the-keras-recurrent-unit-cell
 For the LSTM model number of units for the cell is used as 50, which determines the learning capacity of the model. A dropout of 0.1 is used to avoid over fitting, model is trained for  300 number of epochs. A batch size of 72 is used. Mean absolute Error (\textit{mae}) is used as the loss function and Adaptive Moment Estimation (\textit{adam}) is used as the optimizer. The Keras's default values for adam's parameter are used. The default value for \textit{learning rate} is 0.01 and \textit{decay} is 0.0001. 
 
-\section{SSD model}
+\section{SSD - Caltech Dataset}
 
 \subsection{Data Acquisition}
 Challenges are there while just considering image data, the verities of image sources for example we can get photos that are taken by professionals, synthetic photos drawn by image generators and real life photos that we see and capture in our day to day life. So the results of these benchmarks and 
@@ -228,7 +228,7 @@ are in the far scale and rest in the medium scale. Most pedestrians are observed
 As SSD has predictors at multiple level, before the model training step, a pre-processing step is required where proposed BBs are generated and compared with the ground truth and depending on IoU threshold, certain prior BBs are considered and encoded for the training purpose. There are several parameters play a role in generating bounding boxes and some of critical parameters used are given below.
 
 \subsection{Framework parameters}
-
+In case of SSD there is a reprocessing subsystem, that reprocess and prepares the data such that it can be fit by the SSD neural network. Below table lists the major parameters of this reprocessing subsystem.
 \begin {table}[H]
 \begin{center}
  \begin{tabular}{||c c||} 
@@ -251,7 +251,6 @@ As SSD has predictors at multiple level, before the model training step, a pre-p
 \end{table}
 
 \subsection{Model parameters}
-\textbf{Model Architecture:}
 SSD model consists of convolutional feature layers and some convolutional predictor layers that take input from different feature layers, making the model fully convolutional. In the presented model, 7 convolutional layers and 4 predictors layers are used. These 4 convolutional predictors layers take input from layers 4, 5, 6, and 7 respectively. convnet with was used for modeling using keras \footnote{Keras is a high-level neural networks API, written in Python and capable of running on top of TensorFlow, CNTK, or Theano.}. The model is created and initialised with Keras API Sequential (). 
 
 \subsection{Hyper Parameters}
