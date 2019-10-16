@@ -254,7 +254,34 @@ In case of SSD there is a reprocessing subsystem, that reprocess and prepares th
 SSD model consists of convolutional feature layers and some convolutional predictor layers that take input from different feature layers, making the model fully convolutional. The used model consists of 7 convolutional layers and 4 predictors layers. These 4 convolutional predictors layers take input from layers 4, 5, 6, and 7 respectively. Convnet which was used for modeling created with Keras \footnote{Keras is a high-level neural networks API, written in Python and capable of running on top of TensorFlow, CNTK, or Theano.}.
 
 \subsection{Hyper Parameters}
+For the SSD model, 0.0005 is used as L2 regularization factor. The model is trained for different number of epochs(300). A customized loss function is used. Adaptive Moment Estimation (adam) is used as the optimizer with below parameters.
+\begin{itemize}
+	\item learning rate=0.001
+	\item parameter beta\textunderscore 1=0.9
+	\item beta\textunderscore 2=0.999
+	\item epsilon=1e-08
+	\item decay=5e-04
+\end{itemize}
+
+ A batch size of 16 is used. Image data argumentation is applied as per below.
  
+\begin{itemize}
+	\item random\textunderscore brightness=(-48, 48, 0.5)
+	\item random\textunderscore contrast=(0.5, 1.8, 0.5)
+	\item random\textunderscore saturation=(0.5, 1.8, 0.5)
+	\item random\textunderscore hue=(18, 0.5)
+	\item random\textunderscore flip=0.5
+	\item random\textunderscore translate=((0.03,0.5), (0.03,0.5), 0.5)
+	\item clip\textunderscore boxes=True
+	\item random\textunderscore scale=(0.5, 2.0, 0.5)
+	\item overlap\textunderscore criterion='area'
+	\item bounds\textunderscore box\textunderscore filter=(0.3, 1.0)
+	\item bounds\textunderscore validator=(0.5, 1.0)
+\end{itemize}
+
+\textbf{System parameters:}
+The model training, validation and testing is done on an NVIDIA GeForce GTX 1080 GPU with 8GB of video memory. The experiment was run on a shared Linux server hosted within the University Network and the computing resource was shared with other students.
+
 %--------AS IS---------------
 %Creating a layer of LSTM memory units allows you to specify the number of memory units within the layer.
 %Each unit or cell within the layer has an internal cell state, often abbreviated as “c“, and outputs a hidden state, often abbreviated as “h“.
