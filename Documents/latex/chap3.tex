@@ -228,12 +228,13 @@ LSTM has a chain like structure as in RNN but the repeating module has a differe
 The core idea to LSTM is the cell state, it run through the entire chain and performs some minor linear interaction. LSTM adds or removes information to the cell state with the help of regulated structure called gates. Gates are represented by a neural network layer sigmoid activation and a point-wise multiplication operation.
 A sigmoid outputs how much of a component should be let through. A value of 0 blocks the whole component and a value of 1 let entire component through. In a basic LSTM, there are four such gates.
 With arrival of new information, the model first decides which long term information is not needed anymore, and forgets it. Stores necessary part of the new information into long-term memory. An LSTM has three such gates, that controls the cell state.
-A \textbf{remember gate} is learned that takes new input and working memory as input and outputs \textit{n} bummers between 0 and 1, each determines degree to which long-term memory element to be kept. Where 1 indicates to keep it and 0 indicates to forget it entirely. A small neural network can model this \textbf{remember gate} given below. In the literature this is also known as \textbf{forget gate}.
+A \textbf{remember gate} is learned that takes new input and working memory as input and outputs \textit{n} bummers between 0 and 1, each determines degree to which long-term memory element to be kept. Where 1 indicates to keep it and 0 indicates to forget it entirely. A small neural network can model this \textbf{remember gate} given below. In the literature this is also known as \textbf{forget gate}. Below mathematical expressions details various internal operation within a LSTM memory cell as discussed in original paper of Hochreiter et.al \cite{hochreiter1997long} and simplified rewriting \cite{christopherolah}
 
 \begin{equation}
 f_t = \sigma(W_f. [h_{t-1}, x_t  ] + b_f)
 \end{equation}
-Where $W_f$ is the weight matrix for the forget gate \\
+Where $f_t$ is forget gate's activation vector \\
+$W_f$ is the weight matrix for the forget gate \\
 $h_{t-1}$ is the cell state at time (t-1) \\
 $b_f$ is the bias for the forget gate
 
@@ -242,11 +243,16 @@ After forgetting the unnecessary information, LSTM is interested in storing the 
 \begin{equation}
 i_t = \sigma(W_i. [h_{t-1}, x_t  ] + b_i)
 \end{equation}
+Where $i_t$ is input gate's activation vector 
+$W_i$ is the weight matrix for the input gate \\
+$h_{t-1}$ is the hidden state at time (t-1) \\
+$b_i$ is the bias for the input gate
 
 \begin{equation}
 C_t\textasciitilde = tanh(W_C. [h_{t-1}, x_t ] + b_C)
 \end{equation}
-
+$C_t\textasciitilde$ represents vector of new candidate values for the cell state
+$W_C$ is the weight matrix for the tanh layer that computes the candidates\\
 Both $i_t$ and $C_t\textasciitilde$ is combined to update the cell state as below.
 
 \begin{equation}
@@ -261,6 +267,10 @@ o_t = \sigma(W_o. [h_{t-1}, x_t  ] + b_o)
 \begin{equation}
 h_t = o_t  * tanh(C_t)
 \end{equation}
+Where $o_t$ is output gate's activation vector 
+$W_o$ is the weight matrix for the output gate \\
+$h_{t-1}$ is the hidden state at time (t-1) \\
+$b_o$ is the bias for the output gate
 
 There are several variants of LSTM, but basic variant was explored and used in the scope of the thesis.
 
@@ -268,6 +278,7 @@ There are several variants of LSTM, but basic variant was explored and used in t
 
 The position of the pedestrian bounding box largely depends upon speed of the vehicle, pedestrian own speed and the direction pedestrian makes with the camera and other social behavior such neighboring pedestrians, stationary obstacles etc. We propose an obvious factor which is not yet considered while predicting the future trajectory of the pedestrian by taking an important parameter into consideration; that pedestrian and vehicle always want to remain at safe distance from each other. A car lowers its speed greatly when moving at high speed and finds a pedestrian near the curb waiting to cross or crossing the road. With a lesser speed and within the safe distance from pedestrian, it keeps moving slowly without halting even though pedestrians are moving in front of it.
 It is also noticed, as pedestrian moves with natural speed when a vehicle is not near and he feels confident that he is in safe zone, in contrast he increases his speed when vehicle approaches. So there exists a social relationship between vehicle and pedestrian and we attempted at extracting this information and make refinement to the LSTM state. With the motivation from \cite{zhang2019sr}, we constructed a message passing mechanism to refine the features of pedestrian by the current vehicle speed and the direction between pedestrian and vehicle(camera mounted on the vehicle). The SR module takes vehicle current speed, pedestrian movement information with respect to vehicle, cell states and hidden states from the LSTM as input and outputs the refined cell state. This can be expressed as 
+%
 \begin{equation}
 \hat{C}^{t, l+1}= M(V^t, {h}^{t, l}) + \hat{C}^{t, l}
 \end{equation}
@@ -284,15 +295,18 @@ After L iteration of refinement in the SR module the updated equations would be
 \end{array}
 \end{equation}
 
-$ \hat{h}^{t+1}$ in the left side of the equation represents the bounding box height.
-
+$\hat{w}^{t+1}$, $\hat{h}^{t+1}$ represents the bounding box width and height.
+$W_p$ is the weight matrix of the output gate, and \textit{p} symbolizes this is modeled for pedestrian
+%
 In this case the message passing can be formulated as below 
 \begin{equation}
 \hat{C}^{t, l+1}=M(P_t, V_t) +  \hat{C}^{t, l}
 %{W}^{vp}\alpha_v
 \end{equation}
+$\hat{C}^{t, l+1}$ is the refined cell state for (l+1)th iteration at the t-time stamp \\
+$M(P_t, V_t)$ is the message passing between state of pedestrian and vehicle as described below.
 
-We proposed the message passing term $M(P_t, V_t)$ using awareness gate as below.
+We propose the message passing term $M(P_t, V_t)$ using awareness gate as below.
 \begin{equation}
 M(P_t, V_t) = W^{a,p}.(g^{a,t,l} \odot {h}^{t, l} ) 
 %+ \hat{C}^{t, l}
@@ -304,7 +318,7 @@ g^{a,t,l} = \sigma(W^{a} [ \alpha_p, {h}^{t, l} ] + b^{a} )
 %+ \hat{C}^{t, l}
 \end{equation}
 
-Where $W^{a}$, $b^{a}$ are parameters and $\sigma$ denotes the sigmoid function, $𝛼\alpha_p$ is the awareness factor of the pedestrian and described below \ref{awareness_factor}.
+Where $W^{a}$, $b^{a}$ are parameters and $\sigma$ denotes the sigmoid function, $\alpha_p$ is the awareness factor of the pedestrian and described below \ref{awareness_factor}.
 $g^{a,t,l}$ selects features from ${h}^{t, l}$ by element-wise product.
 
 So 
@@ -389,6 +403,8 @@ So
 %\end{equation}
 %Where $d_{\hat{t}}$ is the distance between camera and object at $\hat{t}$.
 
+\newpara
+\textbf{Awareness:}
 Considering ${t_p}$ represents vehicle time to reach pedestrian and \\
 ${t_c}$ is the time pedestrian needs to cross the road and reaches a safer location,
 ${t_p}$ and ${t_v}$  can be calculated as below.
@@ -401,18 +417,18 @@ ${t_p}$ and ${t_v}$  can be calculated as below.
 \end{equation}
 
 Where ${d_p},{s_v}$ represent distance between vehicle and pedestrian and speed of the vehicle\\
-${d_c}, {s_p}$ represent distance between pedestrian and safe destination(eg. other side of the road)and speed of the pedestrian respectively \\
+${d_c}, {s_p}$ represent distance between pedestrian and safe destination (eg. other side of the road)and speed of the pedestrian respectively \\
+Awareness factor of pedestrian ${\alpha_p}$ and vehicle ${\alpha_v}$, 
+which are related by below relation for a safe driving scenario and they are dependent on ${t_c}$ and ${t_c}$ in a certain way is proposed.
 
-
-\newpara
-\textbf{Awareness:}
-
-Considering $\alpha_p$ and $\alpha_v$ are awareness factors of pedestrian and vehicle respectively, which are related by below relation for a safe driving scenario and they are dependent on ${t_c}$ and ${t_c}$ in a certain way \\
+\comment
+{
+}
 \begin{equation} \label{awareness_factor}
   \alpha_p + \alpha_v = 1
 \end{equation}
 
-And $\alpha_p$ is given by a linear function \cite{} $f(t_p, t_c)$ 
+And $\alpha_p$ is given by a linear function \cite{osaragi2004modeling} $f(t_p, t_c)$ 
 
 Now let's consider three scenarios:
 
@@ -521,13 +537,33 @@ Consider the mid point ($P$) of the lower side of the pedestrian bounding box as
 
 %\textit{Note:} Some image processing software package considers top-left corner as (0,0) and some others consider bottom-left corner as (0,0). For the simplicity purpose we assumed  bottom-left corner as (0,0).
 
-When the vehicle made an angle ${\theta }$ in a time period of ${\Delta t}$, the point P now moved by the same angle as ${\theta}$. Consider the vehicle speed \textit{v}, the displacement of the point \textit{P} on the image is given by
+Using the given equation in \cite{dougan2010real}, which tries to estimate instantaneous velocity vector of a point (in 2D space) using displacement vector which depend upon scale of the image, frame rate and vehicle speed.
+\begin{equation} \label{conversion}
+{v}= \frac{\delta p}{\delta t}
+\end{equation} 
+v is the instantaneous velocity vector \\
+${\delta p}$ displacement vector, displacement vector measured in pixel units \\
+${\delta t}$ is the frame capture rate
 
-\begin{equation} \label{distance-in-pixel}
-{d_1}= \frac{v \times \Delta t}{CF}
+The magnitude of this vector in image space is transformed to object space using scale factor as described below. Scale factor (SF) related to distance between camera and object and the focal length of the camera.
+
+Object space displacement can be computed as below
+
+\begin{equation} \label{conversion}
+{d_o}= {d_i} \times SF
 \end{equation} 
 
-Where ${d_1}$ is the displacement in pixels, CF is the calibration factor of the camera that converts real world distance to distance in pixels, $\Delta t$ as given in \ref{delta-t}.
+where $d_o$ represents the distance in object space \\
+$d_i$ represents the displacement in image space \\
+SF is the scale factor
+
+When the vehicle moves with an angle ${\theta }$ in a time period of ${\Delta t}$, the point P now displaced by the same angle as ${\theta}$. Consider the vehicle speed \textit{v}, the displacement of the point \textit{P} on the image is given by
+
+\begin{equation} \label{distance-in-pixel}
+{d_1}= \frac{v \times \Delta t}{SF}
+\end{equation} 
+
+Where ${d_1}$ is the displacement in pixels, SF is the scale factor of the camera that converts real world distance to distance in pixels, $\Delta t$ as given in \ref{delta-t}.
 
 Now to determine this translated point ${P_1}$, laws of sine is used as given below. 
 
@@ -589,7 +625,7 @@ d = d_p \times {CF} + k
 \end{equation}
 where $d_p$ is the measured pixel distance as in \ref{distance-in-pixel}, k is a constant, its the least distance between the camera and the point in the ground that is captured in the image frame.
 
-Combining the results of eq \ref{new-xy} and \ref{new-height-width-pixels}, bounding box for the pedestrian is calculated as $({x_1}, {y_1},{p_w}, {p_h})$
+Combining the results of eq \ref{new-height-width-pixels} and \ref{new-height-width-pixels}, bounding box for the pedestrian is calculated as $({x_1}, {y_1},{p_w}, {p_h})$
 
 %\comment{
 %}
