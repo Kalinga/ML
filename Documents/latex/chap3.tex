@@ -460,17 +460,19 @@ Considering the below representation, a person represented as a bounding box in 
 Where ${P}_{\hat{t}}$ is the position of the pedestrian at time stamp $(t+\Delta t)$, and $\Delta t$ is given by below equation.
 
 where $\hat{t}$ is time stamp at which the next frame is captured and can be given by below expression
-\begin{equation}
+\begin{equation} \label{delta-t}
 \begin{array}{l@{}}
 \hat{t} = t +  \Delta t \\
 \Delta t = \frac{1}{fps}
 \end{array}
 \end{equation}
 
+
 Where \textit{fps} is a measure of how many frames captured by the camera in one second
 
 $(x_{\hat{t}},y_{\hat{t}},w_{\hat{t}},h_{\hat{t}})$ in the equation depends on basically three factors speed of the vehicle, speed of the pedestrian and the angle between vehicle camera and pedestrian. Also it is necessary to be noted that other social aspect such as obstacle, neighborhood pedestrian, sudden change in pedestrian's own decision for the destination and displacement of the camera will have impact.
-Here we focused the aspect of change of vehicle's motion direction 
+Here we focused the aspect of vehicle's motion (speed and direction).
+
 
 %A vehicle moving with a speed of $V_c$ shall travel a distance within \textit{a frame }time duration is given by the below equation.
 
@@ -508,43 +510,89 @@ Here we focused the aspect of change of vehicle's motion direction
 %\end{array}
 %\end{equation}
 
-Considering the mid point of the lower side of the pedestrian bounding box as the initial position of the pedestrian (x,y) on the image frame-of-reference, the initial angle between camera and pedestrain can be approximated as
+
+Consider the mid point ($P$) of the lower side of the pedestrian bounding box as the initial position of the pedestrian (x,y) on the image frame-of-reference.
+
+%, the initial angle between camera and pedestrain can be approximated as
+
+%\begin{equation}
+%{\theta }= tan^-1\frac{(y-y_0)}{(x-x_0)}
+%\end{equation}
+
+%\textit{Note:} Some image processing software package considers top-left corner as (0,0) and some others consider bottom-left corner as (0,0). For the simplicity purpose we assumed  bottom-left corner as (0,0).
+
+When the vehicle made an angle ${\theta }$ in a time period of ${\Delta t}$, the point P now moved by the same angle as ${\theta}$. Consider the vehicle speed \textit{v}, the displacement of the point \textit{P} on the image is given by
+
+\begin{equation} \label{distance-in-pixel}
+{d_1}= \frac{v \times \Delta t}{CF}
+\end{equation} 
+
+Where ${d_1}$ is the displacement in pixels, CF is the calibration factor of the camera that converts real world distance to distance in pixels, $\Delta t$ as given in \ref{delta-t}.
+
+Now to determine this translated point ${P_1}$, laws of sine is used as given below. 
 
 \begin{equation}
-{\theta }= tan^-1\frac{(y-y_0)}{(x-x_0)}
+\frac{d_1}{sin \theta_1} = \frac{d}{sin \theta_2} 
 \end{equation}
 
-\textit{Note:} Some image processing software package considers top-left corner as (0,0) and some others consider bottom-left corner as (0,0). For the simplicity purpose we assumed  bottom-left corner as (0,0).
+In the above equation, $\theta_1$ is the angle made by vehicle, $\theta_2$ is the only unknown, after finding that $\theta_3$ can be easily found.
 
-When the vehicle starts to move with an angle ${\theta }_f$ 
-The resultant angle between vehicle and pedestrian, $\hat{\theta}$ can be expressed as below.
-\begin{equation}
+By applying same laws of sine, the distance $d_c$ (from the imaginary vehicle point to the point $P_1$) in pixels can be evaluated from below equation.
+
+\begin{equation} \label{camera-distance}
+\frac{d_c}{sin \theta_3} = \frac{d}{sin \theta_2} 
+\end{equation} 
+
+
+The resultant angle between vehicle and pedestrian, ${\hat{\theta}}$ can be expressed as below.
+\begin{equation} \label{theta-large}
 \begin{array}{l@{}}
-\hat{\theta } = \theta  + {\theta }_f\\
+\hat{\theta } = \theta  + {\theta}_1
 \end{array}			
-\end{equation}
+\end{equation} 
 
-Where ${\theta }$ is the initial angle between vehicle and pedestrian.
+Where ${\theta}$ is the initial angle between vehicle and pedestrian and ${{\theta}_1}$ is the angle made by vehicle.
 
-Determination of the distance to an object \cite{jungel2007improving} is easy when size of the object and the focal length of the camera are known.
+The coordinates of point ${P_1(x_1, y_1)}$ can be formulated as
+\begin{equation}
+\begin{array}{l@{}} 
+x_1 = d_c cos \hat{\theta } \\
+y_1 = d_c sin \hat{\theta } 
+\end{array}			
+\end{equation} 
+%\label{new-xy}
+
+Where $d_c$ is given as in equation \ref{camera-distance} and $\hat{\theta}$ in \ref{theta-large}
+
+Determination of the distance to an object \cite{jungel2007improving} can be determined from size of the object and the focal length of the camera are known.
 The distance between camera and object in the scene can be derived by below equation.
-\begin{equation}
-d = \frac{w \times f}{p}
-\end{equation}
-where d is the distance between camera and object, w corresponds to width of the object, f represents the focal length of the camera and p is the perceived width in number of pixel in the image.
-So with a moving camera, modified perceived width in pixel given by
 
-\begin{equation}
+\begin{equation} \label{distance-camera-object}
+d_object = \frac{w \times f}{p}
+\end{equation} 
+
+where \textit{d} is the distance between camera and object, \textit{w} corresponds to width of the object, \textit{f} represents the focal length of the camera and \textit{p} is the perceived width in number of pixel in the image.
+
+So with a moving camera, modified perceived width and height in pixel represented as ${p_w}$ ${p_h}$ respectively given by below expression where $w_s$ and $h_s$ are the standard width and height of a pedestrian and used as a constant.
+
+\begin{equation} \label{new-height-width-pixels}
 \begin{array}{l@{}}
 {p_w} = \frac{w_s \times f}{d_{\hat{t}}} \\
 {p_h} = \frac{h_s \times f}{d_{\hat{t}}}
 \end{array}			
-\end{equation}
+\end{equation} 
 
-Where $d_{\hat{t}}$ is the distance between camera and object at $\hat{t}$ \\
-${p_w}$ ${p_h}$ are the perceived width and perceived height respectively
-$w_s$ and $h_s$ are the standard width and height of a pedestrian and used as a constant.
-And calculated bounding box for the pedestrian is approximated at $(\hat{x}, \hat{y},{p_w}, {p_h})$
+Where ${d_{\hat{t}}}$ is the distance between camera and object at ${\hat{t}}$ given by below expression
+
+\begin{equation}
+d = d_p \times {CF} + k
+\end{equation}
+where $d_p$ is the measured pixel distance as in \ref{distance-in-pixel}, k is a constant, its the least distance between the camera and the point in the ground that is captured in the image frame.
+
+Combining the results of eq \ref{new-xy} and \ref{new-height-width-pixels}, bounding box for the pedestrian is calculated as $({x_1}, {y_1},{p_w}, {p_h})$
+
+%\comment{
+%}
 
 \textbf{Cell state Vs. Hidden State:}
 Two entities such as \textit{cell state} and \textit{hidden state} are carried over from one time stamp (One LSTM Cell) to another (next LSTM Cell) in an LSTM. Typically they can be represented by vectors. In an LSTM Cell, \textit{hidden state }contains information about previous inputs. The hidden state from the previous LSTM Cell and current input are combined and processed through various gates in a particular LSTM Cell. Cell state can be regarded as the memory of the LSTM Cell. There are several neural network behaves as gates and they act together to decide which information are allowed to be part of \textit{cell state}. Output-gate output and the updated cell state decide the next hidden state. \textit{Hidden states} are the output of an LSTM Cell or layer of cells and they are used for predictions.  

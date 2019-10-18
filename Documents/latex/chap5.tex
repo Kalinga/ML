@@ -18,10 +18,45 @@ true performance correctly. In our experimented we have used averaged center loc
 
 (ii) To measure how precisely the predictions are, Intersection over the Union (IoU) is used. In our experiment we tried with several values for IoU. When a particular value for the IoU is considered, the measured IOU value greater than the particular value in the question is treated as positive.
 
+%\begin{figure}[H]
+%\includegraphics[scale=1.0]{conf7_1000e_15ffuture}
+%\begin{center}
+%\caption{Training and validation loss for - 15 frame input and prediction at 15 time step }
+%\end{center}
+%\end{figure}
+
 \begin{figure}[H]
-\includegraphics[scale=1.0]{conf7_1000e_15ffuture}
+\includegraphics[scale=1.0]{conf8_300e_30ffuture}
 \begin{center}
-\caption{Training and validation loss for - 15 frame input and prediction at 15 time step }
+\caption{Training and validation loss for - 15 frame input and prediction at 30 time step }
+\end{center}
+\end{figure}
+
+\begin{figure}[H]
+\includegraphics[scale=1.0]{conf10_300e_30ffuture}
+\begin{center}
+\caption{Training and validation loss for - 30 frame input and prediction at 30 time step }
+\end{center}
+\end{figure}
+
+\begin{figure}[H]
+\includegraphics[scale=1.0]{conf11_300e_60_30ffuture}
+\begin{center}
+\caption{Training and validation loss for - 60 frame input and prediction at 30 time step }
+\end{center}
+\end{figure}
+
+\begin{figure}[H]
+\includegraphics[scale=1.0]{prediction-at-30frames_IoU}
+\begin{center}
+\caption{Test result for - prediction at 30 time step }
+\end{center}
+\end{figure}
+
+\begin{figure}[H]
+\includegraphics[scale=1.0]{prediction-at-30frames-mean_distance_accuracy}
+\begin{center}
+%\caption{Test result (mean\textunderscore distance\textunderscore accuracy) for - prediction at 30 time step  }
 \end{center}
 \end{figure}
 
