@@ -6,7 +6,7 @@
 %% prompt when you run the file main.tex through LaTeX.
 
 \chapter{Methodology}
-This chapter describes the approaches that are planned and outlined before starting of the actual implementation. The primary goal of the thesis was to identify various stages of the pipeline which can be employed at prediction of pedestrian's future location. After the literature review i was motivated by the SSD for identification of pedestrian and locating with help of bounding box and usage of LSTM as \textit{future prediction} by considering pedestrian past move sequence as a time-series data. Also this chapter describes some of the key concepts and terminology used in the next chapter. These are some of the key concept in the area of machine learning with image data. Though the list of such concepts are exhaustive, the minimal terminologies and concepts are presented here.
+This chapter describes the approaches that are planned and outlined before starting of the actual implementation. The primary goal of the thesis is to identify various stages of the pipeline which can be employed for predicting pedestrian's future location. After the literature review I was motivated by the SSD for identification of pedestrian and locating with help of bounding box and usage of LSTM as \textit{future prediction} by considering pedestrian past move sequence as a time-series data. Also this chapter describes some of the key concepts and terminology used in the next chapter. These are some of the key concept in the area of machine learning with image data. Though the list of such concepts are exhaustive, the minimal terminologies and concepts are presented here.
 
 
 \section{Bounding box prediction: RNN/LSTM}
@@ -100,7 +100,7 @@ And in general, if we unfold in n time slot back,
 Where \textbf{$y_t$}  represents output at a time stamp \textit{t} \\
 \textbf{$h_t$} is the hidden state, computed as in equation \ref{hidden_state}
 
-The problem in general suffered by a plain RNN is over a large period of time the back propagation gradients either exploding or vanishing. During a \textit{vanishing gradient } problem, the gradients of the network output with respect to the early layer of the network becomes extremely small, which indicates a large change in the parameters for the early layers does not have a big effect on network output. Usually this happens when the activation function such as \textit{sigmoid} or \textit{tanh} squash their input into a small output range non-linearly. Considering the activation function sigmoid which is defined as below,
+The problem with RNN is, over a large period of time, the back propagation gradients either explodes or vanishes. During a \textit{vanishing gradient } problem, the gradients of the network output with respect to the early layer of the network becomes extremely small, which indicates a large change in the parameters for the early layers, does not have a big effect on network output. Usually this happens when the activation function such as \textit{sigmoid} or \textit{tanh} squash their input into a small output range non-linearly. Considering the activation function sigmoid which is defined as below,
 
 \begin{equation}
 	S(x) = \frac{1}{ 1+ e^x}
@@ -143,7 +143,7 @@ A standard logistic function is called sigmoid when (k=1,x0=0,L=1) and can be vi
 	\label{fig:Sigmoid-function}
 \end{figure}
 
-Sigmoid function can be re written as  \\
+Sigmoid function can be rewritten as  \\
 \begin{equation}
 	S(x) = (1+e^{-x})^{-1}
 \end{equation}
@@ -208,7 +208,7 @@ domain=-10:10,
 	\label{fig:tanh-function}
 \end{figure}
 
-the sigmoid derivative is well below the 1.0 in the whole range of input values. And this makes the gradients vanishing quite fast as, multiplying this value \footnote{value less than 1} several times for several layer \textit{ back propagation} brings the value close to 0.
+the sigmoid derivative is well below the 1.0 in the whole range of input values. And this makes the gradients vanish quite fast as multiplying this value \footnote{value less than 1} several times for several layers, \textit{ back propagation} brings the value close to 0.
 
 
 \subsection{LSTM}
@@ -226,9 +226,9 @@ LSTM has a chain like structure as in RNN but the repeating module has a differe
 \end{figure} 
 
 The core idea to LSTM is the cell state, it run through the entire chain and performs some minor linear interaction. LSTM adds or removes information to the cell state with the help of regulated structure called gates. Gates are represented by a neural network layer sigmoid activation and a point-wise multiplication operation.
-A sigmoid outputs how much of a component should be let through. A value of 0 blocks the whole component and a value of 1 let entire component through. In a basic LSTM, there are four such gates.
-With arrival of new information, the model first decides which long term information is not needed anymore, and forgets it. Stores necessary part of the new information into long-term memory. An LSTM has three such gates, that controls the cell state.
-A \textbf{remember gate} is learned that takes new input and working memory as input and outputs \textit{n} bummers between 0 and 1, each determines degree to which long-term memory element to be kept. Where 1 indicates to keep it and 0 indicates to forget it entirely. A small neural network can model this \textbf{remember gate} given below. In the literature this is also known as \textbf{forget gate}. Below mathematical expressions details various internal operation within a LSTM memory cell as discussed in original paper of Hochreiter et.al \cite{hochreiter1997long} and simplified rewriting \cite{christopherolah}
+A sigmoid generates the outputs which decides the quantity a component should be provided to the system. A value of 0 blocks the whole component and a value of 1 let entire component through. In a basic LSTM, there are four such gates.
+With arrival of new information, the model decides the long term information which is not needed anymore, and forgets it. It stores necessary part of the new information into long-term memory. An LSTM has three such gates, that controls the cell state.
+A \textbf{remember gate} is learned that takes new data and working memory as input and outputs \textit{n} bummers between 0 and 1, each determines the degree to which long-term memory element to be kept. Where 1 indicates to keep the data and 0 indicates as forget the data entirely. A small neural network can model this \textbf{remember gate} given below. In the literature this is also known as \textbf{forget gate}. Below mathematical expressions details various internal operation within a LSTM memory cell as discussed in original paper of Hochreiter et.al \cite{hochreiter1997long} and simplified rewriting \cite{christopherolah}
 
 \begin{equation}
 f_t = \sigma(W_f. [h_{t-1}, x_t  ] + b_f)
@@ -238,7 +238,7 @@ $W_f$ is the weight matrix for the forget gate \\
 $h_{t-1}$ is the cell state at time (t-1) \\
 $b_f$ is the bias for the forget gate
 
-After forgetting the unnecessary information, LSTM is interested in storing the new required information in the cell state. This involves two step, with a \textbf{input} sigmoid layer values that needs to be updated is decided. And then a tanh layer creates a vector for new candidate values for cell state that could be added to the cell state. 
+After forgetting the unnecessary information, LSTM is interested in storing the new required information in the cell state. This involves two step, with a \textbf{input} sigmoid layer, values that need to be updated is decided. And then a tanh layer creates a vector for new candidate values for cell state that could be added to the cell state. 
 
 \begin{equation}
 i_t = \sigma(W_i. [h_{t-1}, x_t  ] + b_i)
@@ -276,8 +276,8 @@ There are several variants of LSTM, but basic variant was explored and used in t
 
 \subsection{LSTM Cell refinement} \label{state_refinement}
 
-The position of the pedestrian bounding box largely depends upon speed of the vehicle, pedestrian own speed and the direction pedestrian makes with the camera and other social behavior such neighboring pedestrians, stationary obstacles etc. We propose an obvious factor which is not yet considered while predicting the future trajectory of the pedestrian by taking an important parameter into consideration; that pedestrian and vehicle always want to remain at safe distance from each other. A car lowers its speed greatly when moving at high speed and finds a pedestrian near the curb waiting to cross or crossing the road. With a lesser speed and within the safe distance from pedestrian, it keeps moving slowly without halting even though pedestrians are moving in front of it.
-It is also noticed, as pedestrian moves with natural speed when a vehicle is not near and he feels confident that he is in safe zone, in contrast he increases his speed when vehicle approaches. So there exists a social relationship between vehicle and pedestrian and we attempted at extracting this information and make refinement to the LSTM state. With the motivation from \cite{zhang2019sr}, we constructed a message passing mechanism to refine the features of pedestrian by the current vehicle speed and the direction between pedestrian and vehicle(camera mounted on the vehicle). The SR module takes vehicle current speed, pedestrian movement information with respect to vehicle, cell states and hidden states from the LSTM as input and outputs the refined cell state. This can be expressed as 
+The position of the pedestrian bounding box largely depends upon speed of the vehicle, pedestrian own speed and the direction pedestrian makes with the camera and other social behavior such as neighboring pedestrians, stationary obstacles etc. We propose an obvious factor which is not yet considered while predicting the future trajectory of the pedestrian by taking an important parameter into consideration; that pedestrian and vehicle always want to remain at safe distance from each other. A car lowers its speed greatly when moving at high speed to find a pedestrian near the curb waiting to cross or crossing the road. With a lesser speed and within the safe distance from pedestrian, it keeps moving slowly without halting even though pedestrians are moving in front of it.
+It is also noticed that, as pedestrian moves with normal speed when a vehicle is not near and feels confident that he is in safe zone, in contrast he increases his speed when vehicle approaches. So there exists a social relationship between vehicle and pedestrian and we attempted at extracting this information and make refinement to the LSTM state. With the motivation from \cite{zhang2019sr}, we constructed a message passing mechanism to refine the features of pedestrian by the current vehicle speed and the direction between pedestrian and vehicle(camera mounted on the vehicle). The SR module takes vehicle current speed, pedestrian movement information with respect to vehicle, cell states and hidden states from the LSTM as input and outputs the refined cell state. This can be expressed as 
 %
 \begin{equation}
 \hat{C}^{t, l+1}= M(V^t, {h}^{t, l}) + \hat{C}^{t, l}
@@ -635,7 +635,7 @@ Two entities such as \textit{cell state} and \textit{hidden state} are carried o
 
 \section{Object detection: SSD}
 After image data acquisition and data preparation, the challenging task remains, how to train the model. 
-To better understand the SSD framework and training steps, a flowchart is prepared that detailed it's workings. In the current work and by other authors also the term \textit{training }and \textit{learning}is used interchangeably. 
+To better understand the SSD framework and training steps, a flowchart is prepared that detailed it's workings. In the current work and by other authors also the term \textit{training }and \textit{learning}are used interchangeably. 
 
 \begin{figure}[H]
 \begin{center}
@@ -677,7 +677,7 @@ To better understand the SSD framework and training steps, a flowchart is prepar
 \end{center}
 \end{figure}
 
-After the model is trained, its accuracy and performance needs be measured and that is described in detailed in the subsequent chapter.
+After the model is trained, its accuracy and performance needs be measured and that is described in detail in the subsequent chapters.
 
 \subsection{Network architectures}
 Below depicted the details of convolution in image and CNN building blocks.
@@ -711,10 +711,10 @@ Below depicted the details of convolution in image and CNN building blocks.
 \textbf{Sixth and seventh Layer:} Are dense layers
 \end{itemize}
 
-\newpara \textbf{Convolution layer} It is the first layer to which, the input image is given. A small matrix otherwise known as a filter or kernel moves along the image and is convoluted with the input image. As a process of convolution \ref{fig:Schematic-representation} kernel elements are multiplied with the original pixel value and these values are summed up and produces a feature map as input for further layers.
+\newpara \textbf{Convolution layer} It is the first layer to which the input image is given. A small matrix otherwise known as a filter or kernel moves along the image and is convoluted with the input image. As a process of convolution, kernel elements are multiplied with the original pixel value and these values are summed up and produces a feature map as input for further layers.
  
 \newpara \textbf{Nonlinear layer}
-A non-linearity is added to the output generated from a convolution layer in the form of an activation function in this layer. The basic idea of adding a non-linear layer is to make different layers within the network have a non-linear relationship and this ensures the network can make more complex decisions.
+A non-linearity is added to the output generated from a convolution layer in the form of an activation function in this layer. The basic idea of adding a non-linear layer is to make different layers within the network to have a non-linear relationship and this ensures the network can make more complex decisions.
 Usually ReLU is used as a non-linear activation function and mathematically given as below.
 %https://machinelearningmastery.com/rectified-linear-activation-function-for-deep-learning-neural-networks/
 
@@ -728,9 +728,9 @@ Although simple, it has been demonstrated that this activation function enables 
 The subsequent layer after non-linear layer. It down samples the image, as a result the processed image volume is reduced. Max-pooling is similar to convolution, but it chooses the maximum element within the area where the maxpool filter is applied. For a pooling size (2,2) the input is halved in both spatial dimensions.
 
 \newpara \textbf{Fully connected layer}
-Normally a fully connected layer is attached to the Network as last layer of the Network. Fully connected layer performs classification by taking input as features extracted and transformed in the previous conv-relu-pooing layers. This results in an N dimensional vector, where N is the number of classes the model is trained on.
+Normally a fully connected layer is attached to the Network as last layer of the Network. Fully connected layer performs classification by taking input as features extracted and transformed in the previous \textit{conv-relu-pooling} layers. This results in an N dimensional vector, where N is the number of classes the model is trained on.
 
-\newpara CNN learns the filters that traditional image classification algorithm hand crafts. This makes CNN little pre-processing compared to other traditional algorithm and results superior results. There are many evolution of CNNs starting from LeNet (LeCun et al., 1989) for zip code recognition, LeNet-5 (1998) a 7 layer CNN \ref{fig:traditional-convolutional-network} by LeCun et al. for hand written numbers on the check recognition, AlexNet by Alex Krizhevsky et al. in 2012 used deeper layers and more filters per layer than leNet-5. It also used ReLU activation, max pooling, dropout, data agumentation and SGD with momentum during training. \footnote{These terms shall be discussed in the subsequent chapter.} This achieved a record breaking result at that time. ZFNet in 2013 winner of ILSVRC 2013 with a small tweaking to AlexNet. 2014, GoogleNet otherwise known as Inception V1 from Google achieved human level performance. Another net in the same year got the attention known as VGGNet. It uses only 3x3 convolution, 16 layers and with lots of filters. It consists of 138 million parameters and one of major disadvantage and required more time to train. And weight configuration of this is publicly available and used as baseline feature extractor.
+\newpara CNN learns the filters that traditional image classification algorithm hand crafts. This makes CNN less pre-processing compared to other traditional algorithm and results superior results. There are many evolution of CNNs starting from LeNet (LeCun et al., 1989) for zip code recognition, LeNet-5 (1998) a 7 layer CNN \ref{fig:traditional-convolutional-network} by LeCun et al. for hand written numbers on the check recognition, AlexNet by Alex Krizhevsky et al. in 2012 used deeper layers and more filters per layer than leNet-5. It also used ReLU activation, max pooling, dropout, data agumentation and SGD with momentum during training. \footnote{These terms shall be discussed in the subsequent chapter.} This achieved a record breaking result at that time. ZFNet in 2013 was the winner of ILSVRC 2013 with a small tweaking to AlexNet. 2014, GoogleNet otherwise known as Inception V1 from Google achieved human level performance. Another net in the same year got the attention known as VGGNet. It uses only 3x3 convolution, 16 layers and with lots of filters. It consists of 138 million parameters which was one of major disadvantages and required more time to train. The weight configuration of this is publicly available and used as baseline feature extractor.
 
 %Standard CNN architectures, over the last 2 decades uses set of standard layer that can be graphically \ref{tomepel} represented as below. 
 
@@ -792,7 +792,7 @@ Normally a fully connected layer is attached to the Network as last layer of the
 Some of the key concepts that are studied and useful are presented in subsequent texts.
 
 \subsection{Data Augmentation}
-Data augmentation is a key in image based deep leaning application. This make the model robust to different object sizes, logically possible  additional training image generation via application of various image modification such as flipping horizontally \footnote{Many time flipping image vertically does not make sense in real world scenarios, wherever it makes sense, it can be done as well.}, shear, distortion, change in color intensity. In \cite{liu2016ssd} authors mentioned application of flipping each image randomly horizontally with probability of 0.5, this ensures objects appear on left and right with similar likelihood.
+Data augmentation is a key in image based deep leaning application. This make the model robust to different object sizes, logically achievable  additional training image generation via application of various image modification such as flipping horizontally \footnote{Many time flipping image vertically does not make sense in real world scenarios, wherever it makes sense, it can be done as well.}, shear, distortion, change in color intensity. In \cite{liu2016ssd} authors mentioned application of flipping each image randomly horizontally with probability of 0.5, this ensures objects appear on left and right with similar likelihood.
 
 \subsection{Non-Maximum Suppression (NMS)}
 During inference time, SSD predicts, a large number of boxes in a cluttered manner. To prune most of them, a technique called \textit{non-maximum suppression} is applied. This technique discards those boxes having label confidence less than a threshold and IoU less than a defined threshold. \footnote{Usually 0.45 is used as IoU threshold}. After discarding such boxes, only top \textit{N} predictions are returned which ensures most likely predictions.
@@ -818,7 +818,7 @@ Larger batch size requires more computational resource and achieves faster compl
 \end{quote}   
 The empirical study of the performance of mini-batch stochastic gradient descent in \cite{masters2018revisiting} show that, the team obtained the best training stability and generalization performance using small batch sizes, for a given computational cost, across a wide range of experiments they conducted. In all cases they have achieved the best results with batch sizes m = 32 or smaller.
 \subsection{Intersection Over Union:}
-Intersection Over Union (IOU) is a measure similar to Jaccard Index that measures the overlap ratio between two bounding boxes. It evaluates the ratio between area of  overlapping area between two BBs and area of union between them.
+Intersection Over Union (IOU) is a measure similar to Jaccard Index that measures the overlap ratio between two bounding boxes. It evaluates the ratio between area of overlapping between two BBs and area of union between them.
 
 \begin{equation}
     IoU = \frac{area\: of\: overlap} {area\: of\: union} =
