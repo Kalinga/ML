@@ -8,7 +8,7 @@
 In this chapter results related to various types of experiments with different parameters are presented and discussed.
 
 \section{LSTM results}
-\subsection{LSTM results}
+%\subsection{LSTM results}
 LSTM model is trained with the videos 71-346. Video data from 317-346, 30 videos data is used for model testing. Normally performance of a future bounding box predictor evaluated  in two ways. 
 (i) It is determined by the center location error, it computes the average
 euclidean distance between the center position of the tracked targets and the ground truth
@@ -18,45 +18,74 @@ true performance correctly. In our experimented we have used averaged center loc
 
 (ii) To measure how precisely the predictions are, Intersection over the Union (IoU) is used. In our experiment we tried with several values for IoU. When a particular value for the IoU is considered, the measured IOU value greater than the particular value in the question is treated as positive.
 
-%\begin{figure}[H]
-%\includegraphics[scale=1.0]{conf7_1000e_15ffuture}
-%\begin{center}
-%\caption{Training and validation loss for - 15 frame input and prediction at 15 time step }
-%\end{center}
-%\end{figure}
+\subsection{Experiment. Phase 1. Effect of different future time stamp on prediction, with 15 frame as input}
+%---------------------------------------------------------------------
+\begin{figure}[H] \label{15-15}
+\includegraphics[scale=0.75]{conf7_1000e_15ffuture}
+\begin{center}
+\caption{Training and validation loss for - 15 frame input and prediction at 15 time step }
+\end{center}
+\end{figure}
 
-\begin{figure}[H]
-\includegraphics[scale=1.0]{conf8_300e_30ffuture}
+\begin{figure}[H] \label{15-30}
+\includegraphics[scale=0.75]{conf8_300e_30ffuture}
 \begin{center}
 \caption{Training and validation loss for - 15 frame input and prediction at 30 time step }
 \end{center}
 \end{figure}
 
-\begin{figure}[H]
-\includegraphics[scale=1.0]{conf10_300e_30ffuture}
+\begin{figure}[H] \label{15-60}
+\includegraphics[scale=0.8]{conf9_300e_60ffuture}
+\begin{center}
+\caption{Training and validation loss for - 15 frame input and prediction at 60 time step }
+\end{center}
+\end{figure}
+
+\begin{figure}[H] \label{15-IoU}
+\includegraphics[scale=0.8]{prediction-with-15frames-input_IoU}
+\begin{center}
+\caption{Test result (IoU) for - prediction with 15 frame input}
+\end{center}
+\end{figure}
+
+\begin{figure}[H] \label{15-mcd}
+\includegraphics[scale=0.8]{prediction-with-15frames-mean_distance_accuracy}
+\begin{center}
+\caption{Test result (mean\textunderscore distance\textunderscore accuracy) for - prediction with 15frame input }
+\end{center}
+\end{figure}
+
+From the above plots, we can see that, the validation error is least for '15 frame input and prediction at 15 time step' case. Also prediction accuracy (using IoU) from \ref{15-IoU}, for the case, with 15 frame input and prediction at 15 frame, prediction accuracy is better than prediction at 30 frames and 60 frames. It is also noticeable that with increase in the IoU for considering the prediction as accurate, the accuracy decreases linearly with increase in IoU threshold value. When considering mean center distance as a measure of performance, the lesser the mean center distance the better is the prediction. From the plot it is seen that, larger the future time slice larger is the is the mean center distance.
+
+%---------------------------------------------------------------------
+\subsection{Experiment. Phase 2. Effect of different number of frames as input on prediction at 30  time step}
+For Training and validation loss for - 15 frame input and prediction at 30 time step \ref{15-30}
+
+\begin{figure}[H] \label{30-30}
+\includegraphics[scale=0.8]{conf10_300e_30ffuture}
 \begin{center}
 \caption{Training and validation loss for - 30 frame input and prediction at 30 time step }
 \end{center}
 \end{figure}
 
-\begin{figure}[H]
-\includegraphics[scale=1.0]{conf11_300e_60_30ffuture}
+\begin{figure}[H] \label{60-30}
+\includegraphics[scale=0.8]{conf11_300e_60_30ffuture}
 \begin{center}
 \caption{Training and validation loss for - 60 frame input and prediction at 30 time step }
 \end{center}
 \end{figure}
 
-\begin{figure}[H]
-\includegraphics[scale=1.0]{prediction-at-30frames_IoU}
+\begin{figure}[H] \label{30-IoU}
+\includegraphics[scale=0.8]{prediction-at-30frames_IoU}
 \begin{center}
 \caption{Test result for - prediction at 30 time step }
 \end{center}
 \end{figure}
 
-\begin{figure}[H]
-\includegraphics[scale=1.0]{prediction-at-30frames-mean_distance_accuracy}
+\begin{figure}[H] \label{30-mcd}
+\includegraphics[scale=0.8]{prediction-at-30frames-mean_distance_accuracy}
 \begin{center}
-%\caption{Test result (mean\textunderscore distance\textunderscore accuracy) for - prediction at 30 time step  }
+\caption{Test result (mean\textunderscore distance\textunderscore accuracy) for - prediction at 30 time step  }
 \end{center}
 \end{figure}
 
@@ -163,13 +192,58 @@ true performance correctly. In our experimented we have used averaged center loc
 %batch normalization
 
 %\section{LSTM with refinement}
-\section{Discussion}
+
+As we can see from the above plots, the validation error is least for '60 frame input and prediction at 30 time step' case. Also prediction accuracy (using IoU) from fig with 60 frame as input, the prediction accuracy is better compared to 15 frames and 30 frames as input. It is also noticeable that with increase in the IoU for considering the prediction as accurate, the accuracy decreases linearly with increase in IoU threshold value. When considering mean center distance as a measure of performance, the lesser the mean center distance the better is the prediction. From the plot it is seen that for 30 frames input the prediction is slightly better than the model that takes 60 frames as input.
+
+%---------------------------------------------------------------------
+\subsection{Experiment. Phase 3. Effect of different future time stamp on prediction, with 60 frame as input}
+Training and validation loss for 60 frame input and prediction at 30 time step is at \ref{60-30}
+
+\begin{figure}[H] \label{60-60}
+\includegraphics[scale=0.8]{conf12_300e_60_60ffuture}
+\begin{center}
+\caption{Training and validation loss for - 60 frame input and prediction at 60 time step }
+\end{center}
+\end{figure}
+
+\begin{figure}[H] \label{60-90}
+\includegraphics[scale=0.8]{conf13_300e_60_90ffuture}
+\begin{center}
+\caption{Training and validation loss for - 60 frame input and prediction at 90 time step }
+\end{center}
+\end{figure}
+
+\begin{figure}[H] \label{60-IoU}
+\includegraphics[scale=0.8]{prediction-with-60frames-input_IoU.png}
+\begin{center}
+\caption{Test result (IoU) for - prediction with 60 frame input}
+\end{center}
+\end{figure}
+
+\begin{figure}[H] \label{60-mcd}
+\includegraphics[scale=0.7]{prediction-with-60frames-mean_distance_accuracy}
+\begin{center}
+\caption{Test result (mean\textunderscore distance\textunderscore accuracy) for - prediction with 60 time step input }
+\end{center}
+\end{figure}
+
+%---------------------------------------------------------------------
+\subsection{Experiment. Phase 4. Effect of different units in LSTM Cell on accuracy for prediction at 90 time step with 60 frames as input}
+
+\begin{figure}[H] \label{60-90-100unit}
+\includegraphics[scale=0.7]{conf14_300e_60_90ffuture_100unit}
+\begin{center}
+\caption{Training and validation loss for - 60 frame input and prediction at 90 time step using 100 units in the Cell}
+\end{center}
+\end{figure}
+
+
 
 \section{SSD results}
-\subsection{Validation}
-Below graphs depicts the validation error when SSD model was trained for 10 epochs.
+%\subsection{Validation}
+Below graphs depicts the validation error and the training error when SSD model was trained for 10 epochs.
 \begin{figure}[H]
-\includegraphics[scale=0.4]{conf0_loss-val_loss_0_10epochs}
+\includegraphics[scale=0.3]{conf0_loss-val_loss_0_10epochs}
 \begin{center}
 \caption{Training and Validation error at 10 epochs}
 \end{center}
@@ -177,7 +251,7 @@ Below graphs depicts the validation error when SSD model was trained for 10 epoc
 As the training error has not converged after 10 epochs it was decided to training for another 10 epoch and the graph as follows. After training for 10 epochs the training error gradually reduces and the validation error revolves around training error as shown in the below graph. As the training of single epoch takes significant time the statistics were taken with small epochs.
 
 \begin{figure}[H]
-\includegraphics[scale=0.4]{conf0_loss-val_loss_10_20epochs}
+\includegraphics[scale=0.3]{conf0_loss-val_loss_10_20epochs}
 \begin{center}
 \caption{Training and Validation error at 20 epochs}
 \end{center}
@@ -186,7 +260,7 @@ As the training error has not converged after 10 epochs it was decided to traini
 \newpara
 Looking at the graph which depicts training loss and validation loss drawn with several epochs, we could see training error gradually reduces with increase in the number of epochs, simultaneously we see validation loss also exhibiting same pattern and slowly decreasing with number of epochs. This trend of decrease in validation error with increase in training is a good indication of learning. The model could have trained for some more epochs until it converges, however due to long training time, it was not possible to do so, instead training with different configuration was done to see the behavior with other configuration.
 
-\subsection{Testing} 
+%\subsection{Testing} 
 For the testing of the generated model below steps were followed to prepare the test data and conduct the experiment.
 \begin{enumerate}
 	\item video set 06 - 10 was selected as test data and bounding box, label are extracted into labels\textunderscore test\textunderscore full.csv which contains total 154436 records
