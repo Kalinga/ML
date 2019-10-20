@@ -217,13 +217,14 @@ LSTM has a chain like structure as in RNN but the repeating module has a differe
 \begin{figure}[H]
 \begin{align*}
 \begin{tikzpicture}[baseline=-1pt]
-\node[] at (0,0) {\includegraphics[scale=0.8]{LSTM3-chain}};
+\node[] at (0,0) {\includegraphics[scale=0.8]{LSTM3-chain1}};
 \end{tikzpicture}&
 \end{align*}
 \begin{center}
 \caption{LSTM schematic diagram}
 \end{center}
 \end{figure} 
+
 
 The core idea to LSTM is the cell state, it run through the entire chain and performs some minor linear interaction. LSTM adds or removes information to the cell state with the help of regulated structure called gates. Gates are represented by a neural network layer sigmoid activation and a point-wise multiplication operation.
 A sigmoid generates the outputs which decides the quantity a component should be provided to the system. A value of 0 blocks the whole component and a value of 1 let entire component through. In a basic LSTM, there are four such gates.
@@ -277,8 +278,21 @@ There are several variants of LSTM, but basic variant was explored and used in t
 \subsection{LSTM Cell refinement} \label{state_refinement}
 
 The position of the pedestrian bounding box largely depends upon speed of the vehicle, pedestrian own speed and the direction pedestrian makes with the camera and other social behavior such as neighboring pedestrians, stationary obstacles etc. We propose an obvious factor which is not yet considered while predicting the future trajectory of the pedestrian by taking an important parameter into consideration; that pedestrian and vehicle always want to remain at safe distance from each other. A car lowers its speed greatly when moving at high speed to find a pedestrian near the curb waiting to cross or crossing the road. With a lesser speed and within the safe distance from pedestrian, it keeps moving slowly without halting even though pedestrians are moving in front of it.
-It is also noticed that, as pedestrian moves with normal speed when a vehicle is not near and feels confident that he is in safe zone, in contrast he increases his speed when vehicle approaches. So there exists a social relationship between vehicle and pedestrian and we attempted at extracting this information and make refinement to the LSTM state. With the motivation from \cite{zhang2019sr}, we constructed a message passing mechanism to refine the features of pedestrian by the current vehicle speed and the direction between pedestrian and vehicle(camera mounted on the vehicle). The SR module takes vehicle current speed, pedestrian movement information with respect to vehicle, cell states and hidden states from the LSTM as input and outputs the refined cell state. This can be expressed as 
+It is also noticed that, as pedestrian moves with normal speed when a vehicle is not near and feels confident that he is in safe zone, in contrast he increases his speed when vehicle approaches. So there exists a social relationship between vehicle and pedestrian and we attempted at extracting this information and make refinement to the LSTM state. With the motivation from \cite{zhang2019sr}, we constructed a message passing mechanism to refine the features of pedestrian by the current vehicle speed and the direction between pedestrian and vehicle(camera mounted on the vehicle). The SR module takes vehicle current speed, pedestrian movement information with respect to vehicle, cell states and hidden states from the LSTM as input and outputs the refined cell state as shown as part of the LSTM cell below.
+
+\begin{figure}[H]
+\begin{align*}
+\begin{tikzpicture}[baseline=-1pt]
+\node[] at (0,0) {\includegraphics[scale=0.8]{LSTM3-details}};
+\end{tikzpicture}&
+\end{align*}
+\begin{center}
+\caption{LSTM-details with State Refinement module}
+\end{center}
+\end{figure}
+
 %
+This can be expressed mathematically as
 \begin{equation}
 \hat{C}^{t, l+1}= M(V^t, {h}^{t, l}) + \hat{C}^{t, l}
 \end{equation}
