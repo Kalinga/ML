@@ -564,20 +564,30 @@ The magnitude of this vector in image space is transformed to object space using
 Object space displacement can be computed as below
 
 \begin{equation} \label{conversion}
-{d_o}= {d_i} \times SF
+{d_o}= {d_i} \times \lambda
 \end{equation} 
 
 where $d_o$ represents the distance in object space \\
 $d_i$ represents the displacement in image space \\
-SF is the scale factor
+${\lambda}$ is the scale factor of the camera that converts real world distance to distance in image space, it is is a function of camera's focal length and camera-object distance discussed in \cite{dougan2010real}, expressed as below relation .
+
+\begin{equation}
+\lambda \cong 1 + \frac{d}{f}
+\end{equation}
+
+d is distance between camera and object and f is the focal length of camera. Consider a fixed focal length for the camera in a particular setting $\lambda$ is a function of camera-object distance and shall be precomputed to be applied in the equation \ref{object-distance}
 
 When the vehicle moves with an angle ${\theta }$ in a time period of ${\Delta t}$, the point P now displaced by the same angle as ${\theta}$. Consider the vehicle speed \textit{v}, the displacement of the point \textit{P} on the image is given by
 
+ %object space displacement can be converted to image space by dividing it with the scale factor. 
 \begin{equation} \label{distance-in-pixel}
-{d_1}= \frac{v \times \Delta t}{SF}
+{d_1}= \frac{v \times \Delta t}{\lambda}
 \end{equation} 
 
-Where ${d_1}$ is the displacement in pixels, SF is the scale factor of the camera that converts real world distance to distance in pixels, $\Delta t$ as given in \ref{delta-t}.
+Where ${d_1}$ is the displacement in image space, $\Delta t$ as given in \ref{delta-t}.
+This equation gives the metric displacement (${d_1}$) amount in the image space and can be converted to number of pixels units using dimensions of effective image area and pixel size.
+
+${\lambda}$ is the scale factor
 
 Now to determine this translated point ${P_1}$, laws of sine is used as given below. 
 
@@ -592,7 +602,6 @@ By applying same laws of sine, the distance $d_c$ (from the imaginary vehicle po
 \begin{equation} \label{camera-distance}
 \frac{d_c}{sin \theta_3} = \frac{d}{sin \theta_2} 
 \end{equation} 
-
 
 The resultant angle between vehicle and pedestrian, ${\hat{\theta}}$ can be expressed as below.
 \begin{equation} \label{theta-large}
@@ -614,14 +623,23 @@ y_1 = d_c sin \hat{\theta }
 
 Where $d_c$ is given as in equation \ref{camera-distance} and $\hat{\theta}$ in \ref{theta-large}
 
-Determination of the distance to an object \cite{jungel2007improving} can be determined from size of the object and the focal length of the camera are known.
-The distance between camera and object in the scene can be derived by below equation.
+The distance between camera and object at $\hat{t}$𝑡is given as below
+\begin{equation} \label{object-distance}
+d_{\hat{t}} = d_c \times {\lambda} + K
+\end{equation}
+
+where $d_c$ is the measured distance in image space as in \ref{distance-in-pixel}, can be measured using any distance metric like inch or SI unit \\
+{\lambda} is the scale factor \\
+K is the constant distance that is not captured within the vehicle's camera and usually known as \textit{blind spot}. 
+%$\hat{d_c}$  is the least distance between the camera and the point in the ground that is captured in the image% frame, in the object space and measured in SI unit(e.g m). 
+
+The distance to an object \cite{jungel2007improving} can be determined from size of the object in the image space and the focal length of the camera. The distance between camera and object in the scene can be derived by below equation.
 
 \begin{equation} \label{distance-camera-object}
-d_object = \frac{w \times f}{p}
+d_{object} = \frac{w \times f}{p}
 \end{equation} 
 
-where \textit{d} is the distance between camera and object, \textit{w} corresponds to width of the object, \textit{f} represents the focal length of the camera and \textit{p} is the perceived width in number of pixel in the image.
+where $d_{object}$ is the distance between camera and object, \textit{w} corresponds to width of the object, \textit{f} represents the focal length of the camera and \textit{p} is the perceived width in the image space.
 
 So with a moving camera, modified perceived width and height in pixel represented as ${p_w}$ ${p_h}$ respectively given by below expression where $w_s$ and $h_s$ are the standard width and height of a pedestrian and used as a constant.
 
@@ -633,11 +651,6 @@ So with a moving camera, modified perceived width and height in pixel represente
 \end{equation} 
 
 Where ${d_{\hat{t}}}$ is the distance between camera and object at ${\hat{t}}$ given by below expression
-
-\begin{equation}
-d = d_p \times {CF} + k
-\end{equation}
-where $d_p$ is the measured pixel distance as in \ref{distance-in-pixel}, k is a constant, its the least distance between the camera and the point in the ground that is captured in the image frame.
 
 Combining the results of eq \ref{new-height-width-pixels} and \ref{new-height-width-pixels}, bounding box for the pedestrian is calculated as $({x_1}, {y_1},{p_w}, {p_h})$
 
