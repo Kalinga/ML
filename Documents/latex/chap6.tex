@@ -6,26 +6,15 @@
 %% prompt when you run the file main.tex through LaTeX.
 
 \chapter{Conclusion and Future Work}
-In the presented master thesis, i have looked various aspect of pedestrian behavior(pedestrian intention, pedestrian future location)  
-Solid findings
-Pipeline
-component substitution
-prediction
-real time discussion
+In the presented master thesis, i have looked various aspect of pedestrian behavior(pedestrian intention, pedestrian future location). The research is split in three main phases. In the first phase, end to end pipe line for pedestrian detection, tracking and future bounding box is understood. In the second phase, an experiment for pedestrian detection using Caltech dataset and an open implementation of SSD carried out. With a small scale SSD network and resource constrained environment, it is found that SSD can be used in the above mentioned pipeline where real time detection is of utmost importance.
 
-Chapter two describes .
-
-Chapter three describes as well as how the ..  were implemented.
-
-Chapter four describes the purpose 
-
-\section{Motivations for Pedestrian Intent prediction}
-
-The idea of  motivated by the recent trends in 
-architecture 
-substantial increases in 
 
 \section{Future Work}
+For the future work, further investigation may be done how resulted proposal can be applied to real-world scenarios, because following concerns are still open: \\
+for the implementation of the SR(state refinement \ref{state_refinement}) module, $\lambda$ should be pre-computed \ref{sf-precompute}. In the proposal for the state refinement, the distance from the camera to the least point which is captured in the image space is considered to be a constant \textit{K}, that constant value can be empirically evaluated.
 
+This work can be extended with focusing other useful features in the JAAD dataset such as pedestrian behavioral information to improve the accuracy and precision..
+
+A different approach can also be followed for choosing the accuracy evaluation criteria for the pedestrain bounding box by combining both the IoU and mean center distance.
 %\section{Old Text}
 %In general we can think of two types activity prediction, (i) early activity detection (ii) future activity prediction. In the case of early activity detection, the class label of an action is inferred at the point when the activity starts or shortly after the activity started. Where as in the future activity prediction, the class label of the action that will happen next is predicted and also the starting time in the future is also predicted.

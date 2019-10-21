@@ -559,7 +559,7 @@ v is the instantaneous velocity vector \\
 ${\delta p}$ displacement vector, displacement vector measured in pixel units \\
 ${\delta t}$ is the frame capture rate
 
-The magnitude of this vector in image space is transformed to object space using scale factor as described below. Scale factor (SF) related to distance between camera and object and the focal length of the camera.
+The magnitude of this vector in image space is transformed to object space using scale factor as described below. Scale factor (${\lambda}$) related to distance between camera and object and the focal length of the camera.
 
 Object space displacement can be computed as below
 
@@ -571,7 +571,7 @@ where $d_o$ represents the distance in object space \\
 $d_i$ represents the displacement in image space \\
 ${\lambda}$ is the scale factor of the camera that converts real world distance to distance in image space, it is is a function of camera's focal length and camera-object distance discussed in \cite{dougan2010real}, expressed as below relation .
 
-\begin{equation}
+\begin{equation} \label{sf-precompute}
 \lambda \cong 1 + \frac{d}{f}
 \end{equation}
 
