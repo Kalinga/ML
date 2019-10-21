@@ -584,12 +584,34 @@ When the vehicle moves with an angle ${\theta }$ in a time period of ${\Delta t}
 {d_1}= \frac{v \times \Delta t}{\lambda}
 \end{equation} 
 
-Where ${d_1}$ is the displacement in image space, $\Delta t$ as given in \ref{delta-t}.
-This equation gives the metric displacement (${d_1}$) amount in the image space and can be converted to number of pixels units using dimensions of effective image area and pixel size.
+Where ${\lambda}$ is the scale factor, ${d_1}$ is the displacement in image space, $\Delta t$ as given in \ref{delta-t}. This equation gives the metric displacement (${d_1}$) amount in the image space and can be converted to number of pixels units using dimensions of effective image area and pixel size.
 
-${\lambda}$ is the scale factor
+Now to determine this translated point ${P_1}$ in the below figure, laws of sine is used as given below.
+\comment{
+\begin{figure}[H]
+\begin{align*}
+\begin{tikzpicture}[baseline=-3pt]
+\node[] at (0,0) {\includegraphics[scale=0.8]{Illustration-vehicle-motion}};
+\end{tikzpicture}&
+\end{align*}
+\begin{center}
+\caption[Illustration of vehicles angular motion]
+\end{center}
+\end{figure}
 
-Now to determine this translated point ${P_1}$, laws of sine is used as given below. 
+}
+
+\begin{figure}[H]
+\begin{align*}
+\begin{tikzpicture}[baseline=-1pt]
+\node[] at (0,0) {\includegraphics[scale=0.8]{Illustration-vehicle-motion}};
+\end{tikzpicture}&
+\end{align*}
+\begin{center}
+\caption{Illustration of vehicles angular motion}
+\end{center}
+\end{figure}
+
 
 \begin{equation}
 \frac{d_1}{sin \theta_1} = \frac{d}{sin \theta_2} 
@@ -629,8 +651,7 @@ d_{\hat{t}} = d_c \times {\lambda} + K
 \end{equation}
 
 where $d_c$ is the measured distance in image space as in \ref{distance-in-pixel}, can be measured using any distance metric like inch or SI unit \\
-{\lambda} is the scale factor \\
-K is the constant distance that is not captured within the vehicle's camera and usually known as \textit{blind spot}. 
+${\lambda}$ is the scale factor, K is the constant distance that is not captured within the vehicle's camera and usually known as \textit{blind spot}. 
 %$\hat{d_c}$  is the least distance between the camera and the point in the ground that is captured in the image% frame, in the object space and measured in SI unit(e.g m). 
 
 The distance to an object \cite{jungel2007improving} can be determined from size of the object in the image space and the focal length of the camera. The distance between camera and object in the scene can be derived by below equation.
