@@ -9,7 +9,7 @@ During the thesis LSTM is used for predicting the future bounding box of the ped
 
 \section{LSTM - JAAD Dataset}
 \subsection{Data Acquisition}
-The early work includes prediction of road users behavior by employing dynamic factors e.g trajectory prediction, velocity prediction or predicting final goal of the pedestrian. JAAD dataset includes  behavioral aspect such as awareness by estimating head orientation along with other contextual information such as sign, weather condition, visibility and individual characteristics of the pedestrian such as things he carry, age and sex, size of the group he is associated with influence crossing behavior. JAAD is a publicly available large scale data set that includes data for pedestrian detection with behavioral and contextual information. It contains 346 video clips of pedestrian data that includes occlusion label, temporal correlation, behavioral aspect, contextual information weather related data.
+The early work includes prediction of road users behavior by employing dynamic factors e.g trajectory prediction, velocity prediction or predicting final goal of the pedestrian. JAAD dataset includes  behavioral aspect such as awareness by estimating head orientation along with other contextual information such as sign, weather condition, visibility and individual characteristics of the pedestrian such as things he carry, age and sex, size of the group he is associated with influence crossing behavior. JAAD is a publicly available large scale data set that includes data for pedestrian detection with behavioral and contextual information. It contains 346 video clips of pedestrian data that includes occlusion label, temporal correlation, behavioral aspect, such as contextual information weather related data.
 In JAAD annotations are divided into 5 groups:
 \begin{itemize}
 	\item Annotations: Information about pedestrian bounding box, occlusion information, activities. These annotations are one per frame per label.
@@ -19,10 +19,10 @@ In JAAD annotations are divided into 5 groups:
 	\item Vehicle: Per frame vehicle speed information e.g moving fast, speeding up.
 \end{itemize}
 
-The pedestrians\' actions are categorized into 3 groups: \\
-Precondition- this refers to the state of the pedestrian prior to crossing and can be either standing, moving slow or fast. \\
-Attention- the way the pedestrian becomes aware of the approaching vehicle. These actions, depending on their duration, are looking ( > 1s) or glancing ($\leq$ 1s). \\
-Response- this includes the behaviors that pedestrians exhibit in response
+The pedestrian's actions are categorized into 3 groups: \\
+\textbf{Precondition}- this refers to the state of the pedestrian prior to crossing and can be either standing, moving slow or fast. \\
+\textbf{Attention}- the way the pedestrian becomes aware of the approaching vehicle. These actions, depending on their duration, are looking ( > 1s) or glancing ($\leq$ 1s). \\
+\textbf{Response}- this includes the behaviors that pedestrians exhibit in response
 to the action of the approaching vehicle, namely, stop, clear path, slow down, speed up, hand gesture and nod.
 Occlusion information is provided in the form of tags for each bounding box: partial occlusion (between 25\% and 75\% visible) and full occlusion (less than 25\% visible).  654 unique pedestrian samples (out of 2.2k samples) with behavioral tags in the dataset. 
 
@@ -145,10 +145,10 @@ For the LSTM model number of units for the cell is used as 50, which determines 
 \subsection{Data Acquisition}
 Challenges are there while just considering image data, the verities of image sources for example we can get photos that are taken by professionals, synthetic photos drawn by image generators and real life photos that we see and capture in our day to day life. So the results of these benchmarks and 
 observation across these aforementioned classes of data set does not transfer to the other scenarios.
-As recommended always for machine learning tasks, we should consider real data as close as possible to the environment where the designed system is expected to work. And luckily there exist some excellent data set in the public domain. I chose Caltech Data set \cite{dollar2009pedestrian}, which is one of the latest data set available in the public till today. 
+As recommended always for machine learning tasks, we should consider real data as close as possible to the environment where the designed system is expected to work. And luckily there exist some excellent data set in the public domain. I chose Caltech Data set \cite{dollar2009pedestrian}, which is one of the efficient data set available in the public domain. 
 
 \newpara
-This data set contains highly annotated video, recorded from a moving vehicle in a normal trafic situation. It contains pedestrians vary largely in appearance, pose and scale. It also includes occlusion information. It contains close to 10 hours of recording at 30 fps with a video resolution 640 x 480. As seen and mentioned by the authors the overall image quality lower than that of same image resolution. The data set includes ~350,000  pedestrian bounding boxes (BB) labeled in 250,000frames and remains the largest such data set to  date. As already mentioned by \cite{walk2010new} Caltech data set is difficult for various reasons.
+This data set contains highly annotated video, recorded from a moving vehicle in a normal trafic situation. It contain pedestrian videos which vary largely in appearance, pose and scale. It also includes occlusion information. It contains close to 10 hours of recording at 30 fps with a video resolution 640 x 480. As seen and mentioned by the authors the overall image quality lower than that of same image resolution. The data set includes ~350,000  pedestrian bounding boxes (BB) labeled in 250,000frames and remains the largest such data set to  date. As already mentioned by \cite{walk2010new} Caltech data set is difficult for various reasons.
 
 \begin{itemize}
 	\setlength\itemsep{-1em}
@@ -162,7 +162,7 @@ This data set contains highly annotated video, recorded from a moving vehicle in
 \subsection{Data preparation}
 After the video data got acquired, with help of a publicly available python project \cite{shuntasaito2015}, the original annotations in \textit{MATLAB} compatible \textit{vbb} format is converted to a JSON structure for easier consumption. The generated json file further processed and required data is extracted into a csv file using a python script located at \url{ https://github.com/Kalinga/ML/blob/master/ssd_keras_caltech/json_anno_csv_conversion.ipynb}. As mentioned by \cite{dollar2009pedestrian} the video set from 00-05 is expected for training purpose and 06-10 is for testing purpose.
 
-In the Caltech data group of people are separately label as \textit{people}. With the intention, the ML model should learn individual person and identify persons rather than people, when there are several persons close by, i decided to remove \textit{people} class label from the training data set. And also the number of samples for \textit{people} and \textit{person} was disproportionately varying. This was another reason to exclude \textit{people }label from  the training. 
+In the Caltech data group of people are separately labeled as \textit{people}. With the intention, the ML model should learn individual person and identify persons rather than people, when there are several persons close by, i decided to remove \textit{people} class label from the training data set. And also the number of samples for \textit{people} and \textit{person} was disproportionately varying. This was another reason to exclude \textit{people }label from  the training. 
 %The frequency for the both classes are shown as below.
 
 %\begin{figure}[H]
@@ -172,7 +172,7 @@ In the Caltech data group of people are separately label as \textit{people}. Wit
 %\end{center}
 %\end{figure}
 
-As per \cite{walk2010new}, unoccluded pedestrians with 50-pixel-or-taller are considered , as they are not clear. For simplicity purpose below data are discarded from the training set.
+As per \cite{walk2010new}, unoccluded pedestrians with 50-pixel-or-taller are considered, as they are not clear. For simplicity purpose below data are discarded from the training set.
 \begin{itemize}
 	\item Class label with \textit{people}, \textit{person-fa}, \textit{person?}
 	\item occluded \textit{person} label
@@ -195,7 +195,7 @@ set00\textunderscore V000\textunderscore 654.png,406,417,162,194,1 \\
 }
 \end{center}
 
-During the training an NVIDIA GeForce GTX 1080 GPU with 8GB of video memory was used, while using a validation data size equals to standard 10\% of training data, the training time was equals to unusable, as training of a single epoch was taking nearly ~30-40 hours. The experiment was run on a shared Linux server hosted within the University Network and the computing resource was shared with other students. Keeping this in view, i decided to reduce the size of the validation data set size to great extent and get an approximate impression about the model's training efficiency. Below table show the training and validation data partition.
+During the training an NVIDIA GeForce GTX 1080 GPU with 8GB of video memory was used, while using a validation data size equals to standard 10\% of training data, the training time was equals to unusable, as training of a single epoch was taking nearly ~30-40 hours. The experiment was run on a shared Linux server hosted within the University Network and the computing resource was shared with other students. Keeping this in view, I decided to reduce the size of the validation data set size to great extent and get an approximate impression about the model's training efficiency. Below table shows the training and validation data partition.
 
 \begin {table}[H]
 \begin{center}
@@ -225,7 +225,7 @@ are in the far scale and rest in the medium scale. Most pedestrians are observed
 \end{figure}
 
 \subsection{Training }
-As SSD has predictors at multiple level, before the model training step, a pre-processing step is required where proposed BBs are generated and compared with the ground truth and depending on IoU threshold, certain prior BBs are considered and encoded for the training purpose. There are several parameters play a role in generating bounding boxes and some of critical parameters used are given below.
+As SSD has predictors at multiple level, before the model training step, a pre-processing step is required where proposed BBs are generated and compared with the ground truth and depending on IoU threshold, certain prior BBs are considered and encoded for the training purpose. There are several parameters which play a role in generating bounding boxes, some of critical parameters used are given below.
 
 \subsection{Framework parameters}
 In case of SSD there is a reprocessing subsystem, that reprocess and prepares the data such that it can be fit by the SSD neural network. Below table lists the major parameters of this reprocessing subsystem.

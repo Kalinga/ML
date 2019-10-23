@@ -9,14 +9,14 @@ In this chapter results related to various types of experiments with different p
 
 \section{LSTM results}
 %\subsection{LSTM results}
-LSTM model is trained with the videos 71-346. Video data from 317-346, 30 videos data is used for model testing. Normally performance of a future bounding box predictor evaluated  in two ways. 
+LSTM model is trained with the videos 71-346. Video data from 317-346, which consists of 30 video data in total, are used for model testing. Normally performance of a future bounding box predictor evaluated  in two ways. 
 (i) It is determined by the center location error, it computes the average
 euclidean distance between the center position of the tracked targets and the ground truth
-positions. This is computed for all the frames. But this However if the predictor predicts 
-output location sometimes randomly, then the average center location error value does not measure the
-true performance correctly. In our experimented we have used averaged center location error. \\
+positions. This is computed for all the frames. However, sometimes, when the predictor predicts 
+output location randomly, the average center location error value does not measure the
+true performance correctly. In our experimented we have used average center location error and Intersection over the Union  accuracy. \\
 
-(ii) To measure how precisely the predictions are, Intersection over the Union (IoU) is used. In our experiment we tried with several values for IoU. When a particular value for the IoU is considered, the measured IOU value greater than the particular value in the question is treated as positive.
+(ii) To measure how precise the predictions are, Intersection over the Union (IoU) is used. In our experiment we tried with several values for IoU. When a particular value for the IoU is considered, the measured IOU value greater than the particular value in the question is treated as positive.
 
 \subsection{Experiment. Phase 1. Effect of different future time stamp on prediction, with 15 frame as input}
 %---------------------------------------------------------------------
@@ -248,7 +248,7 @@ Below graphs depicts the validation error and the training error when SSD model 
 \caption{Training and Validation error at 10 epochs}
 \end{center}
 \end{figure}
-As the training error has not converged after 10 epochs it was decided to training for another 10 epoch and the graph as follows. After training for 10 epochs the training error gradually reduces and the validation error revolves around training error as shown in the below graph. As the training of single epoch takes significant time the statistics were taken with small epochs.
+As the training error has not converged after 10 epochs, it was decided to train for another 10 epoch and the graph as shown below. After training for 10 more epochs the training error gradually reduces. The validation error revolves around training error is shown in the below graph. As the training of single epoch takes significant time, the statistics were taken with small epochs.
 
 \begin{figure}[H]
 \includegraphics[scale=0.3]{conf0_loss-val_loss_10_20epochs}
@@ -287,7 +287,7 @@ for aspect\textunderscore ratios = $[0.1, 0.2, 0.33, 0.413, 0.418, 0.5, 0.6, 0.7
 \caption{Average Precision and fps with number of epochs}
 \end{center}
 \end{table}
-From the above result, it can be observed that training the data for more epochs actually not resulting a better model as both mAP and fps is lowered for the model trained with 20 epochs, this could be sign of \textit{over-fitting.}
+From the above result, it can be observed that training the data for more epochs is actually not resulting a better model as both mAP and fps are lowered for the model trained with 20 epochs, this could be a sign of \textit{over-fitting.}
 
 %conf1
 %0.2, 0.33, 0.413, 0.418, 0.5, 0.6, 0.7, 0.8, 1.0

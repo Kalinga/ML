@@ -483,11 +483,13 @@ Considering the below representation, a person represented as a bounding box in 
 \begin{equation}
 \begin{array}{l@{}}
 {P}_{t}=(x_t,y_t,w_t,h_t) \\
-{P}_{\hat{t}}=(x_{\hat{t}},y_{\hat{t}},w_{\hat{t}},h_{\hat{t}})
+%{P}_{\hat{t}}=(x_{\hat{t}},y_{\hat{t}},w_{\hat{t}},h_{\hat{t}})
+{P}_1=(x_1,y_1,w_1,h_1)
 \end{array}
 \end{equation}
 
-Where ${P}_{\hat{t}}$ is the position of the pedestrian at time stamp $(t+\Delta t)$, and $\Delta t$ is given by below equation.
+%Where ${P}_{\hat{t}}$ is the position of the pedestrian at time stamp $(t+\Delta t)$, and $\Delta t$ is given by below equation.
+Where ${P}_1$ is the position of the pedestrian at time stamp $(t+\Delta t)$, and $\Delta t$ is given by below equation.
 
 where $\hat{t}$ is time stamp at which the next frame is captured and can be given by below expression
 \begin{equation} \label{delta-t}
@@ -541,7 +543,9 @@ Here we focused the aspect of vehicle's motion (speed and direction).
 %\end{equation}
 
 
-Consider the mid point ($P$) of the lower side of the pedestrian bounding box as the initial position of the pedestrian (x,y) on the image frame-of-reference.
+%Consider the mid point ($P$) of the lower side of the pedestrian bounding box as the initial position of the pedestrian (x,y) on the image frame-of-reference.
+
+Consider ($P$) as the the top left point of the pedestrian bounding box as the initial position of the pedestrian (x,y) on the image frame-of-reference and (w,h) as bounding box width and height respectively.
 
 %, the initial angle between camera and pedestrain can be approximated as
 
@@ -575,7 +579,7 @@ ${\lambda}$ is the scale factor of the camera that converts real world distance 
 \lambda \cong 1 + \frac{d}{f}
 \end{equation}
 
-d is distance between camera and object and f is the focal length of camera. Consider a fixed focal length for the camera in a particular setting $\lambda$ is a function of camera-object distance and shall be precomputed to be applied in the equation \ref{object-distance}
+d is distance between camera and object and f is the focal length of camera. Consider a fixed focal length for the camera in a particular setting $\lambda$ is a function of camera-object distance and shall be precomputed. % to be applied in the equation \ref{object-distance}
 
 When the vehicle moves with an angle ${\theta }$ in a time period of ${\Delta t}$, the point P now displaced by the same angle as ${\theta}$. Consider the vehicle speed \textit{v}, the displacement of the point \textit{P} on the image is given by
 
@@ -591,14 +595,13 @@ Now to determine this translated point ${P_1}$ in the below figure, laws of sine
 \begin{figure}[H]
 \begin{align*}
 \begin{tikzpicture}[baseline=-3pt]
-\node[] at (0,0) {\includegraphics[scale=0.8]{Illustration-vehicle-motion}};
+\node[] at (0,0) {\includegraphics[scale=0.7]{Illustration-vehicle-motion}};
 \end{tikzpicture}&
 \end{align*}
 \begin{center}
 \caption[Illustration of vehicles angular motion]
 \end{center}
 \end{figure}
-
 }
 
 \begin{figure}[H]
@@ -635,7 +638,7 @@ The resultant angle between vehicle and pedestrian, ${\hat{\theta}}$ can be expr
 Where ${\theta}$ is the initial angle between vehicle and pedestrian and ${{\theta}_1}$ is the angle made by vehicle.
 
 The coordinates of point ${P_1(x_1, y_1)}$ can be formulated as
-\begin{equation}
+\begin{equation} \label{new-xy}
 \begin{array}{l@{}} 
 x_1 = d_c cos \hat{\theta } \\
 y_1 = d_c sin \hat{\theta } 
@@ -645,35 +648,53 @@ y_1 = d_c sin \hat{\theta }
 
 Where $d_c$ is given as in equation \ref{camera-distance} and $\hat{\theta}$ in \ref{theta-large}
 
-The distance between camera and object at $\hat{t}$𝑡is given as below
-\begin{equation} \label{object-distance}
-d_{\hat{t}} = d_c \times {\lambda} + K
-\end{equation}
+%The distance between camera and object at ${\hat{t}}$𝑡is given as below
+%\begin{equation} \label{object-distance}
+%d_{\hat{t}} = d_c \times {\lambda} + K
+%\end{equation}
 
-where $d_c$ is the measured distance in image space as in \ref{distance-in-pixel}, can be measured using any distance metric like inch or SI unit \\
-${\lambda}$ is the scale factor, K is the constant distance that is not captured within the vehicle's camera and usually known as \textit{blind spot}. 
+%where $d_c$ is the measured distance in image space as in \ref{distance-in-pixel}, can be measured using any %distance metric like inch or SI unit \\
+%${\lambda}$ is the scale factor, K is the constant distance that is not captured within the vehicle's camera and usually known as \textit{blind spot}. 
 %$\hat{d_c}$  is the least distance between the camera and the point in the ground that is captured in the image% frame, in the object space and measured in SI unit(e.g m). 
 
-The distance to an object \cite{jungel2007improving} can be determined from size of the object in the image space and the focal length of the camera. The distance between camera and object in the scene can be derived by below equation.
+%The distance to an object \cite{jungel2007improving} can be determined from size of the object in the image space and the focal length of the camera. The distance between camera and object in the scene can be derived by below equation.
 
-\begin{equation} \label{distance-camera-object}
-d_{object} = \frac{w \times f}{p}
-\end{equation} 
+%\begin{equation} \label{distance-camera-object}
+%d_{object} = \frac{w \times f}{p}
+%\end{equation} 
 
-where $d_{object}$ is the distance between camera and object, \textit{w} corresponds to width of the object, \textit{f} represents the focal length of the camera and \textit{p} is the perceived width in the image space.
+%where $d_{object}$ is the distance between camera and object, \textit{w} corresponds to width of the object, \textit{f} represents the focal length of the camera and \textit{p} is the perceived width in the image space.
 
-So with a moving camera, modified perceived width and height in pixel represented as ${p_w}$ ${p_h}$ respectively given by below expression where $w_s$ and $h_s$ are the standard width and height of a pedestrian and used as a constant.
+Due to the angular rotation ${\theta}_1$, the bottom right point of the bounding box (x+w, y-h) is translated using the linear transformation as below \\
+ 
+%\begin{equation} \label{rotaion-translation}
+%(w_1, h_1) = (x+w, y-h) 
+\[ \label{rotation}
+\begin{bmatrix}
+w_1 & h_1
+\end{bmatrix}
+=\begin{bmatrix}
+cos \theta_1 & -sin \theta_1\\
+sin \theta_1 & cos \theta_1
+\end{bmatrix}
+\begin{bmatrix}
+x+w &  y-h
+\end{bmatrix}
+\]
+%\end{equation
 
-\begin{equation} \label{new-height-width-pixels}
-\begin{array}{l@{}}
-{p_w} = \frac{w_s \times f}{d_{\hat{t}}} \\
-{p_h} = \frac{h_s \times f}{d_{\hat{t}}}
-\end{array}			
-\end{equation} 
+%So with a moving camera, modified perceived width and height in pixel represented as ${p_w}$ ${p_h}$ respectively given by below expression where $w_s$ and $h_s$ are the standard width and height of a pedestrian and used as a constant.
 
-Where ${d_{\hat{t}}}$ is the distance between camera and object at ${\hat{t}}$ given by below expression
+%\begin{equation} \label{new-height-width-pixels}
+%\begin{array}{l@{}}
+%{p_w} = \frac{w_s \times f}{d_{\hat{t}}} \\
+%{p_h} = \frac{h_s \times f}{d_{\hat{t}}}
+%\end{array}			
+%\end{equation} 
 
-Combining the results of eq \ref{new-height-width-pixels} and \ref{new-height-width-pixels}, bounding box for the pedestrian is calculated as $({x_1}, {y_1},{p_w}, {p_h})$
+%Where ${d_{\hat{t}}}$ is the distance between camera and object at ${\hat{t}}$ given by below expression
+
+Combining above results with eq \ref{new-xy}, the bounding box for the pedestrian is approximated as $({x_1}, {y_1},{w_1}, {h_1})$, which helps in LSTM state refinement.
 
 %\comment{
 %}
@@ -681,14 +702,14 @@ Combining the results of eq \ref{new-height-width-pixels} and \ref{new-height-wi
 \textbf{Cell state Vs. Hidden State:}
 Two entities such as \textit{cell state} and \textit{hidden state} are carried over from one time stamp (One LSTM Cell) to another (next LSTM Cell) in an LSTM. Typically they can be represented by vectors. In an LSTM Cell, \textit{hidden state }contains information about previous inputs. The hidden state from the previous LSTM Cell and current input are combined and processed through various gates in a particular LSTM Cell. Cell state can be regarded as the memory of the LSTM Cell. There are several neural network behaves as gates and they act together to decide which information are allowed to be part of \textit{cell state}. Output-gate output and the updated cell state decide the next hidden state. \textit{Hidden states} are the output of an LSTM Cell or layer of cells and they are used for predictions.  
 
-\section{Object detection: SSD}
-After image data acquisition and data preparation, the challenging task remains, how to train the model. 
-To better understand the SSD framework and training steps, a flowchart is prepared that detailed it's workings. In the current work and by other authors also the term \textit{training }and \textit{learning}are used interchangeably. 
+\clearpage
 
+\section{Object detection: SSD}
+ % In the current work and by other authors also the term \textit{training }and \textit{learning}are used interchangeably. 
 \begin{figure}[H]
 \begin{center}
 \begin{tikzpicture}[
-    node distance = 8mm and 20mm,
+    node distance = 5mm and 20mm,
       start chain = going below,
      arrow/.style = {thick,-stealth},
       base/.style = {% common features of all nodes
@@ -697,7 +718,7 @@ To better understand the SSD framework and training steps, a flowchart is prepar
             inner sep=1mm, outer sep=0mm,
             on chain, join=by arrow},
   decision/.style = {diamond, base,
-            aspect=1.5, inner xsep=0mm},
+            aspect=1.7, inner xsep=0mm},
    process/.style = {rectangle, base},
  startstop/.style = {rectangle, rounded corners, base},
  stop/.style = {rectangle, rounded corners},
@@ -713,7 +734,7 @@ To better understand the SSD framework and training steps, a flowchart is prepar
 \node (sevralepocs) [process]{ Train it for several epochs}; 
 \node (7) [process]{ Validate and save the neural network model};
 \node [decision] (validation) { Is validation error accepted?};
-\node (end)  [startstop, below=10mm of validation]  {END};
+\node (end)  [startstop, below=5mm of validation]  {END};
 
 \draw [arrow] (validation.west) to node [] {No} + (-3,0) |-  (sevralepocs.west);
 \path (validation) to node []{Yes} (end);
@@ -724,6 +745,8 @@ To better understand the SSD framework and training steps, a flowchart is prepar
 \end{center}
 \end{center}
 \end{figure}
+
+After image data acquisition and data preparation, the challenging task remains, how to train the model. To better understand the SSD framework and training steps, a flowchart is prepared that detailed it's workings.
 
 After the model is trained, its accuracy and performance needs be measured and that is described in detail in the subsequent chapters.
 
