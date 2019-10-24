@@ -20,38 +20,43 @@ true performance correctly. In our experimented we have used average center loca
 
 \subsection{Experiment. Phase 1. Effect of different future time stamp on prediction, with 15 frame as input}
 %---------------------------------------------------------------------
-\begin{figure}[H] \label{15-15}
+\begin{figure}[H] 
 \includegraphics[scale=0.75]{conf7_1000e_15ffuture}
 \begin{center}
 \caption{Training and validation loss for - 15 frame input and prediction at 15 time step }
+\label{fig:15-15}
 \end{center}
 \end{figure}
 
-\begin{figure}[H] \label{15-30}
+\begin{figure}[H] 
 \includegraphics[scale=0.75]{conf8_300e_30ffuture}
 \begin{center}
 \caption{Training and validation loss for - 15 frame input and prediction at 30 time step }
+\label{fig:15-30}
 \end{center}
 \end{figure}
 
-\begin{figure}[H] \label{15-60}
+\begin{figure}[H] 
 \includegraphics[scale=0.8]{conf9_300e_60ffuture}
 \begin{center}
 \caption{Training and validation loss for - 15 frame input and prediction at 60 time step }
+\label{15-60}
 \end{center}
 \end{figure}
 
-\begin{figure}[H] \label{15-IoU}
+\begin{figure}[H] 
 \includegraphics[scale=0.8]{prediction-with-15frames-input_IoU}
 \begin{center}
 \caption{Test result (IoU) for - prediction with 15 frame input}
+\label{15-IoU}
 \end{center}
 \end{figure}
 
-\begin{figure}[H] \label{15-mcd}
+\begin{figure}[H] 
 \includegraphics[scale=0.8]{prediction-with-15frames-mean_distance_accuracy}
 \begin{center}
 \caption{Test result (mean\textunderscore distance\textunderscore accuracy) for - prediction with 15frame input }
+\label{15-mcd}
 \end{center}
 \end{figure}
 
@@ -59,33 +64,37 @@ From the above plots, we can see that, the validation error is least for '15 fra
 
 %---------------------------------------------------------------------
 \subsection{Experiment. Phase 2. Effect of different number of frames as input on prediction at 30  time step}
-For Training and validation loss for - 15 frame input and prediction at 30 time step \ref{15-30}
+For Training and validation loss for - 15 frame input and prediction at 30 time step \ref{fig:15-30}
 
-\begin{figure}[H] \label{30-30}
+\begin{figure}[H] 
 \includegraphics[scale=0.8]{conf10_300e_30ffuture}
 \begin{center}
 \caption{Training and validation loss for - 30 frame input and prediction at 30 time step }
+\label{30-30}
 \end{center}
 \end{figure}
 
-\begin{figure}[H] \label{60-30}
+\begin{figure}[H] 
 \includegraphics[scale=0.8]{conf11_300e_60_30ffuture}
 \begin{center}
 \caption{Training and validation loss for - 60 frame input and prediction at 30 time step }
+\label{60-30}
 \end{center}
 \end{figure}
 
-\begin{figure}[H] \label{30-IoU}
+\begin{figure}[H] 
 \includegraphics[scale=0.8]{prediction-at-30frames_IoU}
 \begin{center}
 \caption{Test result for - prediction at 30 time step }
+\label{30-IoU}
 \end{center}
 \end{figure}
 
-\begin{figure}[H] \label{30-mcd}
+\begin{figure}[H] 
 \includegraphics[scale=0.8]{prediction-at-30frames-mean_distance_accuracy}
 \begin{center}
 \caption{Test result (mean\textunderscore distance\textunderscore accuracy) for - prediction at 30 time step  }
+\label{30-mcd}
 \end{center}
 \end{figure}
 
@@ -193,50 +202,88 @@ For Training and validation loss for - 15 frame input and prediction at 30 time 
 
 %\section{LSTM with refinement}
 
-As we can see from the above plots, the validation error is least for '60 frame input and prediction at 30 time step' case. Also prediction accuracy (using IoU) from fig with 60 frame as input, the prediction accuracy is better compared to 15 frames and 30 frames as input. It is also noticeable that with increase in the IoU for considering the prediction as accurate, the accuracy decreases linearly with increase in IoU threshold value. When considering mean center distance as a measure of performance, the lesser the mean center distance the better is the prediction. From the plot it is seen that for 30 frames input the prediction is slightly better than the model that takes 60 frames as input.
+As we can see from the above plots, the validation error is least for '60 frame input and prediction at 30 time step' case. Also prediction accuracy (using IoU) from fig \ref{30-IoU}, with 60 frame as input, the prediction accuracy is better compared to 15 frames and 30 frames as input. It is also noticeable that with increase in the IoU for considering the prediction as accurate, the accuracy decreases linearly with increase in IoU threshold value. When considering mean center distance as a measure of performance, the lesser the mean center distance the better is the prediction. From the plot it is seen that for 30 frames input the prediction is slightly better than the model that takes 60 frames as input.
 
 %---------------------------------------------------------------------
 \subsection{Experiment. Phase 3. Effect of different future time stamp on prediction, with 60 frame as input}
 Training and validation loss for 60 frame input and prediction at 30 time step is at \ref{60-30}
 
-\begin{figure}[H] \label{60-60}
+\begin{figure}[H] 
 \includegraphics[scale=0.8]{conf12_300e_60_60ffuture}
 \begin{center}
 \caption{Training and validation loss for - 60 frame input and prediction at 60 time step }
+\label{60-60}
 \end{center}
 \end{figure}
 
-\begin{figure}[H] \label{60-90}
+\begin{figure}[H] 
 \includegraphics[scale=0.8]{conf13_300e_60_90ffuture}
 \begin{center}
 \caption{Training and validation loss for - 60 frame input and prediction at 90 time step }
+\label{60-90}
 \end{center}
 \end{figure}
 
-\begin{figure}[H] \label{60-IoU}
+\begin{figure}[H] 
 \includegraphics[scale=0.8]{prediction-with-60frames-input_IoU.png}
 \begin{center}
 \caption{Test result (IoU) for - prediction with 60 frame input}
+\label{60-IoU}
 \end{center}
 \end{figure}
 
-\begin{figure}[H] \label{60-mcd}
+\begin{figure}[H] 
 \includegraphics[scale=0.7]{prediction-with-60frames-mean_distance_accuracy}
 \begin{center}
-\caption{Test result (mean\textunderscore distance\textunderscore accuracy) for - prediction with 60 time step input }
+\caption{Test result (mean\textunderscore distance\textunderscore accuracy) for - prediction with 60 time step
+ input }
+\label{60-mcd}
 \end{center}
 \end{figure}
 
 %---------------------------------------------------------------------
 \subsection{Experiment. Phase 4. Effect of different units in LSTM Cell on accuracy for prediction at 90 time step with 60 frames as input}
 
-\begin{figure}[H] \label{60-90-100unit}
+\begin{figure}[H] 
 \includegraphics[scale=0.7]{conf14_300e_60_90ffuture_100unit}
 \begin{center}
 \caption{Training and validation loss for - 60 frame input and prediction at 90 time step using 100 units in the Cell}
+\label{60-90-100unit}
 \end{center}
 \end{figure}
 
+\begin{figure}[H] 
+\includegraphics[scale=0.7]{conf15_300e_60_90ffuture_200unit}
+\begin{center}
+\caption{Training and validation loss for - 60 frame input and prediction at 90 time step using 200 units in the Cell}
+\label{60-90-200unit}
+\end{center}
+\end{figure}
+
+\begin{figure}[H] 
+\includegraphics[scale=0.7]{conf16_300e_60_90ffuture_300unit}
+\begin{center}
+\caption{Training and validation loss for - 60 frame input and prediction at 90 time step using 300 units in the
+ Cell}
+\label{60-90-300unit}
+\end{center}
+\end{figure}
+
+\begin{figure}[H] 
+\includegraphics[scale=0.8]{prediction-at-90frames-with-60frames-input_IoU.png}
+\begin{center}
+\caption{Test result (IoU) for - prediction at 90 frames with 60 frame input}
+\label{60-90-cell-untis-IoU}
+\end{center}
+\end{figure}
+
+\begin{figure}[H] 
+\includegraphics[scale=0.7]{prediction-at-90frames-with-60frames-mean_distance_accuracy}
+\begin{center}
+\caption{Test result (mean\textunderscore distance\textunderscore accuracy) for - prediction at 90 frames with 60 time step input }
+\label{60-90-cell-units-mcd}
+\end{center}
+\end{figure}
 
 
 \section{SSD results}
