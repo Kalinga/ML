@@ -60,7 +60,7 @@ true performance correctly. In our experimented we have used average center loca
 \end{center}
 \end{figure}
 
-From the above plots, we can see that, the validation error is least for '15 frame input and prediction at 15 time step' case. Also prediction accuracy (using IoU) from \ref{15-IoU}, for the case, with 15 frame input and prediction at 15 frame, prediction accuracy is better than prediction at 30 frames and 60 frames. It is also noticeable that with increase in the IoU for considering the prediction as accurate, the accuracy decreases linearly with increase in IoU threshold value. When considering mean center distance as a measure of performance, the lesser the mean center distance the better is the prediction. From the plot it is seen that, larger the future time slice larger is the is the mean center distance.
+From the plot \ref{fig:15-15}, we can see that, the validation error is least for '15 frame input and prediction at 15 time step' case. Also prediction accuracy (using IoU) from \ref{15-IoU}, for the case, with 15 frame input and prediction at 15 frame, is better than prediction at 30 frames and 60 frames. It is also noticeable that with increase in the IoU for considering the prediction as accurate, the accuracy decreases linearly with increase in IoU threshold value. When considering mean center distance as a measure of performance, the lesser the mean center distance the better is the prediction. From the plot it is seen that, larger the future time slice larger is the is the mean center distance.
 
 %---------------------------------------------------------------------
 \subsection{Experiment. Phase 2. Effect of different number of frames as input on prediction at 30  time step}
@@ -285,12 +285,62 @@ Training and validation loss for 60 frame input and prediction at 30 time step i
 \end{center}
 \end{figure}
 
+%x = ['15_15_1000', '15_30_300', '15_60_300', '30_30_300', '60_30_300', '60_60_300', '60_90_300', '60_90_300_100', '60_90_300_200', '60_90_300_300']
+
+%\comment{
+\begin {table}[H]
+\begin{center}
+ \begin{tabular}{||c c c c c||} 
+ \hline
+conf & input frame & prediction & epoch & units\\ [1.0ex] 
+\hline\hline
+conf1 & 15 & 15 & 1000 & 50 \\ 
+\hline
+conf2 & 15 & 30 & 300 & 50 \\ 
+\hline
+conf3 & 15 & 60 & 300 & 50 \\ 
+\hline
+conf4 & 30 & 30 & 300 & 50 \\ 
+\hline
+conf5 & 60 & 30 & 300 & 50 \\ 
+\hline
+conf6 & 60 & 60 & 300 & 50 \\ 
+\hline
+conf7 & 60 & 90 & 300 & 50 \\ 
+\hline
+conf8 & 60 & 90 & 300 & 100 \\ 
+\hline
+conf9 & 60 & 90 & 300 & 200 \\ 
+\hline
+conf10 & 60 & 90 & 300 & 300 \\ 
+\hline
+\end{tabular}
+\caption{LSTM model configuration}
+\end{center}
+\end{table}
+%}
+The above table captures various configurations are used during the experiment. \\
+\textit{input frame} refers to the number of input frames the model needs for the prediction \\
+\textit{prediction} refers to the frame at which the prediction is desired \\
+\textit{epoch } the number of epochs the model is trained \\
+\textit{units} number of units used in the LSTM cell
+
+The below graphs depict the prediction time for above mentioned configurations.
+
+\begin{figure}[H]
+\includegraphics[scale=0.8]{time-taken-for-prediction.png}
+\begin{center}
+\caption{Time taken for prediction with different configuration}
+\end{center}
+\end{figure}
+
+From the graph, it is seen that with increase in number of input time series value the prediction time increases. Change in number of epochs or amount of unit in the cell do not results in significant variation.
 
 \section{SSD results}
 %\subsection{Validation}
 Below graphs depicts the validation error and the training error when SSD model was trained for 10 epochs.
 \begin{figure}[H]
-\includegraphics[scale=0.3]{conf0_loss-val_loss_0_10epochs}
+\includegraphics[scale=0.4]{conf0_loss-val_loss_0_10epochs}
 \begin{center}
 \caption{Training and Validation error at 10 epochs}
 \end{center}
@@ -298,7 +348,7 @@ Below graphs depicts the validation error and the training error when SSD model 
 As the training error has not converged after 10 epochs, it was decided to train for another 10 epoch and the graph as shown below. After training for 10 more epochs the training error gradually reduces. The validation error revolves around training error is shown in the below graph. As the training of single epoch takes significant time, the statistics were taken with small epochs.
 
 \begin{figure}[H]
-\includegraphics[scale=0.3]{conf0_loss-val_loss_10_20epochs}
+\includegraphics[scale=0.4]{conf0_loss-val_loss_10_20epochs}
 \begin{center}
 \caption{Training and Validation error at 20 epochs}
 \end{center}
