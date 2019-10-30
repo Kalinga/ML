@@ -60,7 +60,7 @@ true performance correctly. In our experimented we have used average center loca
 \end{center}
 \end{figure}
 
-From the plot \ref{fig:15-15}, we can see that, the validation error is least for '15 frame input and prediction at 15 time step' case. Also prediction accuracy (using IoU) from \ref{15-IoU}, for the case, with 15 frame input and prediction at 15 frame, is better than prediction at 30 frames and 60 frames. It is also noticeable that with increase in the IoU for considering the prediction as accurate, the accuracy decreases linearly with increase in IoU threshold value. When considering mean center distance as a measure of performance, the lesser the mean center distance, the better is the prediction. From the plot it is seen that, the larger the future time slice, the larger is the mean center distance.
+From the plot \ref{fig:15-15}, we can see that, the validation error is least for '15 frame input and prediction at 15 time step' case. Also prediction accuracy (using IoU) from \ref{15-IoU}, for the use case, with 15 frame input and prediction at 15 frame, it's accuracy is better than prediction at 30 frames and 60 frames. It is also noticeable that with increase in the IoU for considering the prediction as accurate, the accuracy decreases linearly with increase in IoU threshold value. When considering mean center distance as a measure of performance, the lesser the mean center distance, the better is the prediction. From the plot it is seen that, the larger the future time slice, the larger is the mean center distance.
 
 %---------------------------------------------------------------------
 \subsection{Experiment. Phase 2. Effect of different number of frames as input on prediction at 30  time step}
@@ -79,6 +79,22 @@ For Training and validation loss for - 15 frame input and prediction at 30 time 
 \begin{center}
 \caption{Training and validation loss for - 60 frame input and prediction at 30 time step }
 \label{60-30}
+\end{center}
+\end{figure}
+
+\begin{figure}[H] 
+\includegraphics[scale=0.8]{conf17_300e_90_30ffuture}
+\begin{center}
+\caption{Training and validation loss for - 90 frame input and prediction at 30 time step }
+\label{90-30}
+\end{center}
+\end{figure}
+
+\begin{figure}[H] 
+\includegraphics[scale=0.8]{conf18_300e_120_30ffuture}
+\begin{center}
+\caption{Training and validation loss for - 120 frame input and prediction at 30 time step }
+\label{120-30}
 \end{center}
 \end{figure}
 
