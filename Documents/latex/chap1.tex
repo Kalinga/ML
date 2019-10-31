@@ -18,72 +18,69 @@
 \section{Overview}
 Detection of human is considered to be of high interest for many researchers, apart from object detection which includes different classes of living or non-living, as application of human detection finds its place in several areas such as patient monitoring, security system, robot-human co-working environment, autonomous driving and many more. Specifically, predicting the pedestrians future 
 location depending on his current and recent past locations, knowing the motive of the pedestrian to cross the road in front of the vehicle, before the pedestrian has actually entered into the road, would empower the ADAS to warn the driver or for autonomous vehicle to perform required maneuvers in time.
-Predicting future location of the pedestrian observed from a camera mounted on a moving vehicle is the main point of this thesis. It also covers some of the related concept of object tracking, object detection and image classification as they form the founding stone for my work. Some of the important observations which made a novel method for improving
-the prediction, are also proposed. This work is based on Deep learning and usage of CNN for image processing. The detection of the human is a partial task where human and machine must interact with each other and machine expected to understand human's intention. For example, an autonomous vehicle must anticipate and predict where the pedestrian is expected to arrive after a certain time interval, the pedestrian behavior in a reliable manner, whether the pedestrian intents to cross the road, or standing near the curb waiting for the moving vehicle to cross or waiting at the waiting-shelter. During this thesis work i tried to solve where the pedestrian is expected to arrive after a certain time interval. The previous locations for a pedestrian is collected as bounding boxes and future location shall be predicted with bounding box annotation.
+Predicting the future location of the pedestrian observed from a camera mounted on a moving vehicle is the main point of this thesis. It also covers some of the related concepts of object tracking, object detection and image classification as they form the founding stone for my work. Some of the important observations which made a novel method for improving the prediction are also proposed. This work is based on Deep learning and usage of CNN for image processing. The detection of the human is a partial task where human and machine must interact with each other and machine expected to understand human's intention. For example, an autonomous vehicle must anticipate and predict where the pedestrian is expected to arrive after a certain time interval, the pedestrian behavior in a reliable manner, whether the pedestrian intends to cross the road, or standing near the curb waiting for the moving vehicle to cross or waiting at the waiting-shelter. During this thesis work, i tried to solve where the pedestrian is expected to arrive after a certain time interval. The previous locations for a pedestrian is collected as bounding boxes and future location shall be predicted with bounding box annotation.
 
 \section{Motivation}
-Deep Learning, a subset of AI and machine learning was introduced in the 90's, but it's gaining  popularity recently due to the availability of low cost high performance computational unit (GPUs) and sophisticated training algorithms. Deep Learning has made some significant impacts in the areas of image classification, 
+Deep Learning, a subset of AI and machine learning was introduced in the 90's, but it's gaining popularity recently due to the availability of low-cost high-performance computational unit (GPUs) and sophisticated training algorithms. Deep Learning has made some significant impacts in the areas of image classification, 
 object detection, speech recognition, text-to-speech generation, machine translation,
 online recommender system, medical diagnosis and many more. Due to the availability of high 
 computing power such as high speed CPU, high bandwidth GPU, large amount of 
-data from which actionable insights are expected, further more nice and powerful ecosystem of  
+data from which actionable insights are expected, furthermore nice and powerful ecosystem of  
 tools such as TensorFlow and PyTorch; many researchers in the scientific community 
 starting from neurologist to computer scientist are enticed towards research in the areas 
-of Artificial Intelligence. Several interesting findings, new algorithms, record 
-breaking benchmarking results while applying Deep Learning algorithms has taken 
-AI to a different level. 
+of Artificial Intelligence. Several interesting findings, new algorithms, record-breaking benchmarking results while applying Deep Learning algorithms have taken AI to a different level.
 
 \newpara 
 
-\newpara Since the success of AlexNet at the 2012 ILSVRC, DL has become a standard method for image recognition tasks. Study shows that DL based models are better at image classification task than humans. However, unlike human, recognizing and localizing objects within an image still remains a challenge for artificial 
-systems, mainly because of two factors - view point dependent object variability and
+\newpara Since the success of AlexNet at the 2012 ILSVRC, DL has become a standard method for image recognition tasks. Study shows that DL based models are better at image classification task than humans. However, unlike humans, recognizing and localizing objects within an image still remains a challenge for artificial 
+systems, mainly because of two factors - viewpoint dependent object variability and
 high in-class variability. In the human detection task, intra-class variability includes
-color of the clothing, type of clothing, appearance, pose, illumination, partial occlusions
-and background. Pedestrian detection has remained one of the most studied problem in the computer vision.
-In the last decade with application of CNNs, researchers are able to get some nice results 
-those are good enough for application in practical scenarios. Success of Deep learning and challenge of pedestrian safety motivates the use of CNN and LSTM to solve the problem at hand.
+the color of the clothing, type of clothing, appearance, pose, illumination, partial occlusions
+and background. Pedestrian detection has remained one of the most studied problems in computer vision.
+In the last decade with the application of CNNs, researchers are able to get some nice results 
+that are good enough for application in practical scenarios. Success of Deep learning and challenge of pedestrian safety motivates the use of CNN and LSTM to solve the problem at hand.
 
 \section{Problem Statement }
 This thesis work mainly answers the below question by investigating and  applying several methodologies into the practice. 
 
 \begin{itemize}
-	\item Which model to be used for the problem that deals with detecting and tracking the pedestrians in the scene? If the model is capable of detecting multiple pedestrians in the scene? What is the processing time, if the processing time is under a threshold for the purpose of using it in the real time scenario?
+	\item Which model to be used for the problem that deals with detecting and tracking the pedestrians in the scene? If the model is capable of detecting multiple pedestrians in the scene? What is the processing time, if the processing time is under a threshold for the purpose of using it in the real-time scenario?
 
 	\item 
-What kind of algorithm to be used for the problem that deals with predicting the pedestrian intention? What is the time delay of such models and whether such models are suitable for real time application scenarios?
+What kind of algorithm to be used for the problem that deals with predicting the pedestrian intention? What is the time delay of such models and whether such models are suitable for real-time application scenarios?
 
-	\item How to choose right network for such problems, training them on large dataset which includes several thousand of images or hours of video recordings? How to set and tune several hyper parameters while training the neural network? 
+	\item How to choose the right network for such problems, training them on a large dataset which includes several thousand images or hours of video recordings? How to set and tune several hyper-parameters while training the neural network? 
 
 \end{itemize}
 
 \section{Proposed solution}
-The future location or bounding box prediction problem can be viewed as two step related problems. First detect the human and track the person in several frames and the second step builds a model for prediction. Such sequential observation of the data is identical to time-series data. As time-series data is a good fit for modeling with a Recurrent Neural Network(RNN/LSTM \footnote{LSTM is a variation of RNN and described in details in future chapter}). Predict the pedestrian location as a bounding box annotation after tracking it for a certain time window with help of a previously trained model. 
+The future location or bounding box prediction problem can be viewed as two-step related problems. First, detect the human and track the person in several frames and the second step builds a model for prediction. Such sequential observation of the data is identical to time-series data. As time-series data is a good fit for modeling with a Recurrent Neural Network(RNN/LSTM \footnote{LSTM is a variation of RNN and described in details in future chapter}). Predict the pedestrian location as a bounding box annotation after tracking it for a certain time window with the help of a previously trained model. 
 \newpara
-We also proposed a novel method of introducing a state-refined module that shall enhance the performance in comparison to the usage of a individual LSTM model. 
-We propose that there is a feeling of confidence factor with both the driver/vehicle(in case of autonomous driving) and pedestrian, depending on the speed at which both pedestrian and vehicle are moving. For example in a typical scenario when a pedestrian with awareness sees a fast moving vehicle coming, he would not enter into the road or if he is confident that he would cross the road before vehicle is in vicinity, then he shall try to cross the road. In case a pedestrian is not aware and enters into the road, the vehicle reduces its speed if vehicle is not confident that it can maintain a safe distance in future from the pedestrian. After reaching a certain speed and a confidence level, vehicle keeps moving if it is not a designated traffic post where it is supposed to stop. By modeling such confidence from the vehicle and pedestrian speed, we can refine the LSTM cell state which is used for prediction. More details can be found in \ref{state_refinement}.
+We also proposed a novel method of introducing a state-refined module that shall enhance the performance in comparison to the usage of an individual LSTM model. 
+We propose that there is a feeling of confidence factor with both the driver/vehicle(in case of autonomous driving) and pedestrian, depending on the speed at which both pedestrians and vehicles are moving. For example in a typical scenario when a pedestrian with awareness sees a fast-moving vehicle coming, he would not enter into the road or if he is confident that he would cross the road before the vehicle is in the vicinity, then he shall try to cross the road. In case a pedestrian is not aware and enters the road, the vehicle reduces its speed if the vehicle is not confident that it can maintain a safe distance in the future from the pedestrian. After reaching a certain speed and a confidence level, the vehicle keeps moving if it is not a designated traffic post where it is supposed to stop. By modeling such confidence from the vehicle and pedestrian speed, we can refine the LSTM cell state which is used for prediction. More details can be found in \ref{state_refinement}.
 
 
 \section{Objectives}
-\newpara The main objective of this thesis is to predict pedestrian's future location with help of bounding box annotations. To build a neural network based model for this. Such a model must be trained with set of sequence labeled data.
+\newpara The main objective of this thesis is to the predict pedestrian's future location with the help of bounding box annotations. To build a neural network-based model for this. Such a model must be trained with a set of sequence labeled data.
 
-By summing up, my objectives of the thesis are the below:
+By summing up, my objectives of the thesis are below:
 \begin{itemize}
 	\item  Acquiring the public dataset related to pedestrian movement and detecting pedestrian using bounding box annotations and estimate the performance
 
-	\item Implement and explore the RNN/LSTM architecture for sequence of bounding boxes as a time series task.
-	\item Explore the affect of varying sizes for number of input frames and prediction after a certain time window.
+	\item Implement and explore the RNN/LSTM architecture for the sequence of bounding boxes as a time series task.
+	\item Explore the effect of varying sizes for the number of input frames and prediction after a certain time window.
 \end{itemize}
 
 \section{Scope of work}
-As the expected task of prediction of bounding box for pedestrian is the last stage of a pipeline detection-tracking-prediction, below task are out of the scope of my work.
+As the expected task of prediction of bounding box for pedestrian is the last stage of a pipeline detection-tracking-prediction, the below task, are out of the scope of my work.
 \begin{itemize}
 	\item Detailed exploration of the pedestrian and multiple pedestrian in the scene
 	\item Exploration and implementation of pedestrian tracker
 \end{itemize}
-However a small scale study shall be done to get familiar with the topic.  Acquisition of reliable data set \footnote{There are several image and video datasets exist in the public domain for research purpose}, understanding the annotation in the data, identifying desired features were included in the scope of the work.
+However, a small scale study shall be done to get familiar with the topic.  Acquisition of reliable data set \footnote{There are several image and video datasets exist in the public domain for research purpose}, understanding the annotation in the data, identifying desired features were included in the scope of the work.
 
 \section{Contributions}
-The main contribution of this is state-refinement proposal. The cell state of the LSTM network may be refined with confidence awareness factor for enhancement of the result. And another contribution of this thesis is as part of result observation. We observed that....
+The main contribution of this is the \textbf{state-refinement } proposal. The cell state of the LSTM network may be refined with confidence awareness factor for enhancement of the result. And another contribution of this thesis is as part of result observation. The observations are detailed in \ref{observations}.
 
 \section{Limitations}
 Below are some of the limitation of my work
@@ -95,11 +92,11 @@ Below are some of the limitation of my work
 \end{itemize}
 
 \section{Thesis Organization }
-The thesis contents are divided in multiple chapters and are organized as below.
+The thesis contents are divided into multiple chapters and are organized as below.
 \begin{itemize}
   \item {\textbf {\textit{Chapter 2}} describes State-of-the-art, CNN for feature extraction, Deep Learning}
-  \item {\textbf {\textit{Chapter 3}} explains methodology choosing right algorithm}
-	\item {\textbf {\textit{Chapter 4}} presents implementation of model and architecture details  }
+  \item {\textbf {\textit{Chapter 3}} explains methodology choosing the right algorithm}
+	\item {\textbf {\textit{Chapter 4}} presents the implementation of model and architecture details  }
 	\item {\textbf {\textit{Chapter 5}} shows the results of various experiments and discussion  }
-	\item {\textbf {\textit{Chapter 6}} concludes my thesis with a summary of the main results and brief discussion for probable future topics of research}
+	\item {\textbf {\textit{Chapter 6}} concludes my thesis with a summary of the main results and a brief discussion for probable future topics of research}
 \end{itemize}
