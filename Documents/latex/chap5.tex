@@ -56,7 +56,7 @@ true performance correctly. In our experiment we have used average center locati
 \begin{figure}[H] 
 \includegraphics[scale=0.8]{prediction-with-15frames-mean_distance_accuracy}
 \begin{center}
-\caption{Test result (mean\textunderscore distance\textunderscore accuracy) for - prediction with 15frame input }
+\caption{Test result (mean\textunderscore distance\textunderscore accuracy) for - prediction with 15 frames input }
 \label{15-mcd}
 \end{center}
 \end{figure}
@@ -64,13 +64,13 @@ true performance correctly. In our experiment we have used average center locati
 From the plot \ref{fig:15-15}, we can see that the validation error is least for '15 frames input and prediction at 15-time step' case. Also prediction accuracy (using IoU) from \ref{15-IoU}, for the use case, with 15 frames input and prediction at $15^{th}$ frames, it's accuracy is better than prediction at $30^{th}$ frames and $60^{th}$ frames. It is also noticeable that with an increase in the IoU for considering the prediction as accurate, the accuracy decreases linearly with the increase in IoU threshold value. When considering mean center distance as a measure of performance, the lesser the mean center distance, the better is the prediction. From the plot it is seen that, the larger the future time slice, the larger is the mean center distance.
 
 %---------------------------------------------------------------------
-\subsection{Experiment. Phase 2. Effect of different number of frames as input on prediction at 30  time step}
+\subsection{Experiment. Phase 2. Effect of different number of frames as input on prediction at 30-time step}
 For Training and validation loss for - 15 frames input and prediction at 30-time step \ref{fig:15-30}
 
 \begin{figure}[H] 
 \includegraphics[scale=0.8]{conf10_300e_30ffuture}
 \begin{center}
-\caption{Training and validation loss for - 30 frame input and prediction at 30-time step }
+\caption{Training and validation loss for - 30 frames input and prediction at 30-time step }
 \label{30-30}
 \end{center}
 \end{figure}
@@ -78,7 +78,7 @@ For Training and validation loss for - 15 frames input and prediction at 30-time
 \begin{figure}[H] 
 \includegraphics[scale=0.8]{conf11_300e_60_30ffuture}
 \begin{center}
-\caption{Training and validation loss for - 60 frame input and prediction at 30-time step }
+\caption{Training and validation loss for - 60 frames input and prediction at 30-time step }
 \label{60-30}
 \end{center}
 \end{figure}
@@ -86,7 +86,7 @@ For Training and validation loss for - 15 frames input and prediction at 30-time
 \begin{figure}[H] 
 \includegraphics[scale=0.8]{conf17_300e_90_30ffuture}
 \begin{center}
-\caption{Training and validation loss for - 90 frame input and prediction at 30-time step }
+\caption{Training and validation loss for - 90 frames input and prediction at 30-time step }
 \label{90-30}
 \end{center}
 \end{figure}
@@ -94,7 +94,7 @@ For Training and validation loss for - 15 frames input and prediction at 30-time
 \begin{figure}[H] 
 \includegraphics[scale=0.8]{conf18_300e_120_30ffuture}
 \begin{center}
-\caption{Training and validation loss for - 120 frame input and prediction at 30-time step }
+\caption{Training and validation loss for - 120 frames input and prediction at 30-time step }
 \label{120-30}
 \end{center}
 \end{figure}
@@ -264,7 +264,7 @@ Training and validation loss for 60 frames input and prediction at 30-time step 
 \begin{figure}[H] 
 \includegraphics[scale=0.7]{conf14_300e_60_90ffuture_100unit}
 \begin{center}
-\caption{Training and validation loss for - 60 frame input and prediction at 90-time step using 100 units in the Cell}
+\caption{Training and validation loss for - 60 frames input and prediction at 90-time step using 100 units in the Cell}
 \label{60-90-100unit}
 \end{center}
 \end{figure}
@@ -272,7 +272,7 @@ Training and validation loss for 60 frames input and prediction at 30-time step 
 \begin{figure}[H] 
 \includegraphics[scale=0.7]{conf15_300e_60_90ffuture_200unit}
 \begin{center}
-\caption{Training and validation loss for - 60 frame input and prediction at 90-time step using 200 units in the Cell}
+\caption{Training and validation loss for - 60 frames input and prediction at 90-time step using 200 units in the Cell}
 \label{60-90-200unit}
 \end{center}
 \end{figure}
@@ -280,7 +280,7 @@ Training and validation loss for 60 frames input and prediction at 30-time step 
 \begin{figure}[H] 
 \includegraphics[scale=0.7]{conf16_300e_60_90ffuture_300unit}
 \begin{center}
-\caption{Training and validation loss for - 60 frame input and prediction at 90-time step using 300 units in the
+\caption{Training and validation loss for - 60 frames input and prediction at 90-time step using 300 units in the
  Cell}
 \label{60-90-300unit}
 \end{center}
@@ -342,7 +342,7 @@ The above table captures various configurations are used during the experiment. 
 \textit{epoch } the number of epochs the model is trained \\
 \textit{units} number of units used in the LSTM cell
 
-The below graphs depict the prediction time for the above mentioned configurations.
+The below graphs depict the prediction time for the above-mentioned configurations.
 
 \begin{figure}[H]
 \includegraphics[scale=0.8]{time-taken-for-prediction.png}

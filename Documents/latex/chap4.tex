@@ -86,8 +86,8 @@ reshape to the desired shape\;
 Once training data is prepared, the next step is to fit the model with data taking validation data as a guiding factor. During my work, Keras- LSTM APIs are used for the modeling. The below algorithms are used for the source code implementation.\\
 \begin{algorithm}[H]
 \SetAlgoLined
-\KwResult{Save the better model and it's weights after each training iteration}
- initialize the model check pointing using ModelCheckpoint class with relevant parameters\;
+\KwResult{Save the better model and its weights after each training iteration}
+ initialize the model checkpointing using ModelCheckpoint class with relevant parameters\;
  // monitor='val\textunderscore loss' is used to select better model\;
 	use model check pointing as a callback\;
  //design network\;
@@ -162,7 +162,7 @@ This data set contains highly annotated video, recorded from a moving vehicle in
 \subsection{Data preparation}
 After the video data got acquired, with the help of a publicly available python project \cite{shuntasaito2015}, the original annotations in \textit{MATLAB} compatible \textit{vbb} format are converted to a JSON structure for easier consumption. The generated JSON file further processed and required data is extracted into a CSV file using a python script located at \url{ https://github.com/Kalinga/ML/blob/master/ssd_keras_caltech/json_anno_csv_conversion.ipynb}. As mentioned by \cite{dollar2009pedestrian} the video set from 00-05 is expected for training purpose and 06-10 is for testing purposes.
 
-In the Caltech data group of people are separately labeled as \textit{people}. With the intention, the ML model should learn individual person and identify persons rather than people, when there are several persons close by, i decided to remove \textit{people} class label from the training data set. And also the number of samples for \textit{people} and \textit{person} was disproportionately varying. This was another reason to exclude \textit{people }label from  the training. 
+In the Caltech data group of people are separately labeled as \textit{people}. With the intention, the ML model should learn individual person and identify persons rather than people, when there are several persons close by, I decided to remove \textit{people} class label from the training data set. And also the number of samples for \textit{people} and \textit{person} was disproportionately varying. This was another reason to exclude \textit{people }label from  the training. 
 %The frequency for the both classes are shown as below.
 
 %\begin{figure}[H]
@@ -215,7 +215,7 @@ During the training an NVIDIA GeForce GTX 1080 GPU with 8GB of video memory was 
 \end {table}
 
 \cite{dollar2009pedestrian} defines pedestrians with 80 pixels or taller as in the near scale and 30 pixels or less
-are on the far scale and rest in the medium scale. Most pedestrians are observed on medium scale. A person with 1.8m tall is 1.5s away from the vehicle for the mentioned set up and speed of 55km\/h. \cite{dollar2011pedestrian} shows that the average aspect ratio \textit{$w \approx 0.41h$}. After above mentioned cleaning steps, a recalculation for the aspect ration distribution shows, it does not vary much from the original distribution, as shown below.
+are on the far scale and rest in the medium scale. Most pedestrians are observed on medium scale. A person with 1.8m tall is 1.5s away from the vehicle for the mentioned set up and speed of 55km\/h. \cite{dollar2011pedestrian} shows that the average aspect ratio \textit{$w \approx 0.41h$}. After above-mentioned cleaning steps, a recalculation for the aspect ration distribution shows, it does not vary much from the original distribution, as shown below.
 
 \begin{figure}[H]
 \includegraphics[scale=0.4]{aspect_ratio_distribution}
