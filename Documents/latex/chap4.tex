@@ -5,16 +5,16 @@
 %% \files=
 %% prompt when you run the file main.tex through LaTeX.
 \chapter{Implementation}
-During the thesis LSTM is used for predicting the future bounding box of the pedestrian using JAAD dataset. SSD is used as pedestrian detector. This chapter describes, how SSD is trained on large dataset, acquisition of data set and modeling LSTM on the JAAD dataset. Several aspect of Machine learning and Deep learning is discussed as well.
+During the thesis, LSTM is used for predicting the future bounding box of the pedestrian using the JAAD dataset. SSD is used as a pedestrian detector. This chapter describes, how SSD is trained on a large dataset, acquisition of data set and modeling LSTM on the JAAD dataset. Several aspects of Machine learning and Deep learning is discussed as well.
 
 \section{LSTM - JAAD Dataset}
 \subsection{Data Acquisition}
-The early work includes prediction of road users behavior by employing dynamic factors e.g trajectory prediction, velocity prediction or predicting final goal of the pedestrian. JAAD dataset includes  behavioral aspect such as awareness by estimating head orientation along with other contextual information such as sign, weather condition, visibility and individual characteristics of the pedestrian such as things he carry, age and sex, size of the group he is associated with influence crossing behavior. JAAD is a publicly available large scale data set that includes data for pedestrian detection with behavioral and contextual information. It contains 346 video clips of pedestrian data that includes occlusion label, temporal correlation, behavioral aspect, such as contextual information weather related data.
-In JAAD annotations are divided into 5 groups:
+The early work includes prediction of road user's behavior by employing dynamic factors e.g trajectory prediction, velocity prediction or predicting the final goal of the pedestrian. JAAD dataset includes  behavioral aspect such as awareness by estimating head orientation along with other contextual information such as sign, weather condition, visibility and individual characteristics of the pedestrian such as things he carries, age and sex, size of the group he is associated with influence crossing behavior. JAAD is a publicly available large scale data set that includes data for pedestrian detection with behavioral and contextual information. It contains 346 video clips of pedestrian data that includes occlusion labels, temporal correlation, behavioral aspects, such as contextual information weather-related data.
+In JAAD, annotations are divided into 5 groups:
 \begin{itemize}
 	\item Annotations: Information about pedestrian bounding box, occlusion information, activities. These annotations are one per frame per label.
 	\item Attribute: Contains information regarding pedestrian's crossing points, crossing characteristics. These annotations are one per pedestrian.
-	\item Appearance: Information regarding pedestrian pose, clothing, objects they carry. These information are one per frame per pedestrian.
+	\item Appearance: Information regarding pedestrian pose, clothing, objects they carry. This information are one per frame per pedestrian.
 	\item Traffic: Includes information about traffic signs, traffic light for each frame.
 	\item Vehicle: Per frame vehicle speed information e.g moving fast, speeding up.
 \end{itemize}
@@ -31,7 +31,7 @@ Occlusion information is provided in the form of tags for each bounding box: par
 \colorbox{lightgray} {JAAD\textunderscore clips/video\textunderscore  0001.mp4} \\
 \colorbox{lightgray} {JAAD\textunderscore clips/video\textunderscore  0002.mp4}
 
-Using \colorbox{lightgray}{split\textunderscore clips\textunderscore to\textunderscore .sh} the frames are extracted to corresponding video id directory with in a folder called \textit{images} \\
+Using \colorbox{lightgray}{split\textunderscore clips\textunderscore to\textunderscore .sh} the frames are extracted to corresponding video id directory within a folder called \textit{images} \\
 \begin{center}
 \colorbox{lightgray} {images/video\textunderscore  0001/0000.png} \\
 \colorbox{lightgray} {images/video\textunderscore  0001/0001.png} \\
@@ -39,20 +39,20 @@ Using \colorbox{lightgray}{split\textunderscore clips\textunderscore to\textunde
 \end{center}
 
 %https://github.com/ykotseruba/JAAD/issues/7
-The video data and image data was used to manual exploration of data set and was not used for LSTM training. For LSTM training annotations from JAAD was extracted for videos 71-346. These are the videos recorded with Garmin GDR-35 with dimension 1920x1980.\footnote{videos 1-60: GoPro Hero+ (1920x1980)
-videos 61-70: Highscreen Box Connect (1280x720) information received from author of JAAD paper ykotseruba}. Widely used python packages such as \textit{numpy }and \textit{pandas} are used for transform and manipulation of dataset. NumPy is a scientific computing package specializing array operations and Pandas provides high performance ease to use data analysis tool using python programming language.  \\
+The video data and image data were used for manual exploration of the data set and were not used for LSTM training. For LSTM training annotations from JAAD were extracted for videos 71-346. These are the videos recorded with Garmin GDR-35 with dimension 1920x1980.\footnote{videos 1-60: GoPro Hero+ (1920x1980)
+videos 61-70: Highscreen Box Connect (1280x720) information received from author of JAAD paper ykotseruba}. Widely used python packages such as \textit{numpy }and \textit{pandas} are used to transform and manipulation of the dataset. NumPy is a scientific computing package specializing array operations and Pandas provides high-performance ease to use data analysis tools using python programming language.  \\
 
 \begin{algorithm}[H]
 \SetAlgoLined
 \KwResult{Set of csv files containing bounding box information }
  initialize JAAD path and video set for bb information are to be extracted \;
  \While{video in video set}{
-  fetch the relevant information from json\;
+  fetch the relevant information from JSON\;
   \eIf{video length < 90}{
    discard such entries\;
    }{
-	 fetch the bb information from json data-structure
-   write the bb information to corresponding csv file\;
+	 fetch the bb information from JSON data-structure
+   write the bb information to corresponding CSV file\;
   }
  }
 ~\\
@@ -60,27 +60,27 @@ videos 61-70: Highscreen Box Connect (1280x720) information received from author
  \caption{Algorithm for BB data preparation}
 \end{algorithm}
 
-It is noticed that there are limited number of videos for some of the scenario and for other scenarios there are more number of videos. To avoid data-skew impacting the final result, the videos are watched and stored in categorized directory. After taking the frequencies of videos in category, factors are determined  and used  replication factor during preparation of training data for the LSTM. The training sequence for the LSTM is prepared as follows.
+It is noticed that there is a limited number of videos for some of the scenario and for other scenarios there is number of videos. To avoid data-skew impacting the final result, the videos are watched and stored in a categorized directory. After taking the frequencies of videos in category, factors are determined  and used  replication factor during preparation of training data for the LSTM. The training sequence for the LSTM is prepared as follows.
 
 \begin{algorithm}[H]
 \SetAlgoLined
 \KwResult{train\textunderscore X, val\textunderscore X: training and validation sequences for the model }
- initialize the path for different category and and replication factor to be considered \;
- \While{csv file in file set}{
-  fetch the relevant information from json\;
+ initialize the path for different category and replication factor to be considered \;
+ \While{CSV file in file set}{
+  fetch the relevant information from JSON\;
 	normalize and fit the co-ordinates using MinMaxScaler\;
 	form a series of sequence taking number of input and number of future step\;
 	append all such series and prepare a large structure 
  }
 reshape to the desired shape\;
-80 percentage of the prepared data is stored into train\textunderscore X\;
-20 percentage of the prepared data is stored into val\textunderscore X\; 
+80 percent of the prepared data is stored into train\textunderscore X\;
+20 percent of the prepared data is stored into val\textunderscore X\; 
 ~\\
 ~\\
  \caption{Algorithm for LSTM training data preparation}
 \end{algorithm}
 
-\textbf{Note:} MinMax scalar at a global scale introduce the error, because several video clips are taken from a very close distance to the object and several other video clips are recored from a far distance. To mitigate this issue \textit{MinMax scalar } for every video clip was created and the data sequence is transformed and fit in accordance to that.
+\textbf{Note:} MinMax scalar at a global scale introduces the error because several video clips are taken from a very close distance to the object and several other video clips are recorded from a far distance. To mitigate this issue \textit{MinMax scalar } for every video clip was created and the data sequence is transformed and fit in accordance with that.
 
 \subsection{Training }
 Once training data is prepared, the next step is to fit the model with data taking validation data as a guiding factor. During my work, Keras- LSTM APIs are used for the modeling. The below algorithms are used for the source code implementation.\\
@@ -138,17 +138,17 @@ model.save("{}.h5".format(lstm-model-name)) \;
 
 \subsection{Model parameters}
 % https://datascience.stackexchange.com/questions/20413/clarification-on-the-keras-recurrent-unit-cell
-For the LSTM model number of units for the cell is used as 50, which determines the learning capacity of the model. A dropout of 0.1 is used to avoid over fitting, model is trained for  300 number of epochs. A batch size of 72 is used. Mean absolute Error (\textit{mae}) is used as the loss function and Adaptive Moment Estimation (\textit{adam}) is used as the optimizer. The Keras's default values for adam's parameter are used. The default value for \textit{learning rate} is 0.01 and \textit{decay} is 0.0001. 
+For the LSTM model number of units for the cell is used as 50, which determines the learning capacity of the model. A dropout of 0.1 is used to avoid overfitting, the model is trained for  300 number of epochs. A batch size of 72 is used. Mean absolute error (\textit{mae}) is used as the loss function and Adaptive Moment Estimation (\textit{ADAM}) is used as the optimizer. The Keras's default values for Adam's parameter are used. The default value for the \textit{learning rate} is 0.01 and \textit{decay} is 0.0001. 
 
 \section{SSD - Caltech Dataset}
 
 \subsection{Data Acquisition}
-Challenges are there while just considering image data, the verities of image sources for example we can get photos that are taken by professionals, synthetic photos drawn by image generators and real life photos that we see and capture in our day to day life. So the results of these benchmarks and 
-observation across these aforementioned classes of data set does not transfer to the other scenarios.
+Challenges are there while just considering image data, the verities of image sources, for example we can get photos that are taken by professionals, synthetic photos drawn by image generators and real-life photos that we see and capture in our day to day life. So the results of these benchmarks and 
+observation across these aforementioned classes of data set do not transfer to the other scenarios.
 As recommended always for machine learning tasks, we should consider real data as close as possible to the environment where the designed system is expected to work. And luckily there exist some excellent data set in the public domain. I chose Caltech Data set \cite{dollar2009pedestrian}, which is one of the efficient data set available in the public domain. 
 
 \newpara
-This data set contains highly annotated video, recorded from a moving vehicle in a normal trafic situation. It contain pedestrian videos which vary largely in appearance, pose and scale. It also includes occlusion information. It contains close to 10 hours of recording at 30 fps with a video resolution 640 x 480. As seen and mentioned by the authors the overall image quality lower than that of same image resolution. The data set includes ~350,000  pedestrian bounding boxes (BB) labeled in 250,000frames and remains the largest such data set to  date. As already mentioned by \cite{walk2010new} Caltech data set is difficult for various reasons.
+This data set contains highly annotated video, recorded from a moving vehicle in a normal traffic situation. It contains pedestrian videos that vary largely in appearance, pose and scale. It also includes occlusion information. It contains close to 10 hours of recording at 30 fps with a video resolution of 640 x 480. As seen and mentioned by the authors the overall image quality lower than that of the same image resolution. The data set includes ~350,000  pedestrian bounding boxes (BB) labeled in 250,000frames and remains the largest such data set to  date. As already mentioned by \cite{walk2010new} Caltech data set is difficult for various reasons.
 
 \begin{itemize}
 	\setlength\itemsep{-1em}
@@ -160,7 +160,7 @@ This data set contains highly annotated video, recorded from a moving vehicle in
 \end{itemize}
 
 \subsection{Data preparation}
-After the video data got acquired, with help of a publicly available python project \cite{shuntasaito2015}, the original annotations in \textit{MATLAB} compatible \textit{vbb} format is converted to a JSON structure for easier consumption. The generated json file further processed and required data is extracted into a csv file using a python script located at \url{ https://github.com/Kalinga/ML/blob/master/ssd_keras_caltech/json_anno_csv_conversion.ipynb}. As mentioned by \cite{dollar2009pedestrian} the video set from 00-05 is expected for training purpose and 06-10 is for testing purpose.
+After the video data got acquired, with the help of a publicly available python project \cite{shuntasaito2015}, the original annotations in \textit{MATLAB} compatible \textit{vbb} format are converted to a JSON structure for easier consumption. The generated JSON file further processed and required data is extracted into a CSV file using a python script located at \url{ https://github.com/Kalinga/ML/blob/master/ssd_keras_caltech/json_anno_csv_conversion.ipynb}. As mentioned by \cite{dollar2009pedestrian} the video set from 00-05 is expected for training purpose and 06-10 is for testing purposes.
 
 In the Caltech data group of people are separately labeled as \textit{people}. With the intention, the ML model should learn individual person and identify persons rather than people, when there are several persons close by, i decided to remove \textit{people} class label from the training data set. And also the number of samples for \textit{people} and \textit{person} was disproportionately varying. This was another reason to exclude \textit{people }label from  the training. 
 %The frequency for the both classes are shown as below.
@@ -172,12 +172,12 @@ In the Caltech data group of people are separately labeled as \textit{people}. W
 %\end{center}
 %\end{figure}
 
-As per \cite{walk2010new}, unoccluded pedestrians with 50-pixel-or-taller are considered, as they are not clear. For simplicity purpose below data are discarded from the training set.
+As per \cite{walk2010new}, unoccluded pedestrians with 50-pixel-or-taller are considered, as they are not clear. For simplicity purposes below data are discarded from the training set.
 \begin{itemize}
 	\item Class label with \textit{people}, \textit{person-fa}, \textit{person?}
 	\item occluded \textit{person} label
-	\item images below 50 pixel in height
-	\item images below 5 pixel in width
+	\item images below 50 pixels in height
+	\item images below 5 pixels in width
 \end{itemize}
 
 After the above mentioned clean up, our training data contains total 48194 number of BB with person as a label in 26902 unique frames and sample data looks as below:
@@ -195,7 +195,7 @@ set00\textunderscore V000\textunderscore 654.png,406,417,162,194,1 \\
 }
 \end{center}
 
-During the training an NVIDIA GeForce GTX 1080 GPU with 8GB of video memory was used, while using a validation data size equals to standard 10\% of training data, the training time was equals to unusable, as training of a single epoch was taking nearly ~30-40 hours. The experiment was run on a shared Linux server hosted within the University Network and the computing resource was shared with other students. Keeping this in view, I decided to reduce the size of the validation data set size to great extent and get an approximate impression about the model's training efficiency. Below table shows the training and validation data partition.
+During the training an NVIDIA GeForce GTX 1080 GPU with 8GB of video memory was used, while using a validation data size equals to standard 10\% of training data, the training time equaled to unusable, as training of a single epoch was taking nearly ~30-40 hours. The experiment was run on a shared Linux server hosted within the University Network and the computing resource was shared with other students. Keeping this in view, I decided to reduce the size of the validation data set size to a great extent and get an approximate impression of the model's training efficiency. The below table shows the training and validation data partition.
 
 \begin {table}[H]
 \begin{center}
@@ -214,8 +214,8 @@ During the training an NVIDIA GeForce GTX 1080 GPU with 8GB of video memory was 
 \end{center}
 \end {table}
 
-\cite{dollar2009pedestrian} defines pedestrians with 80 pixels or taller as in the near scale and 30 pixel or less
-are in the far scale and rest in the medium scale. Most pedestrians are observed in medium scale. A person with 1.8m tall is 1.5s away from the vehicle for the mentioned set up and speed of 55km\/h. \cite{dollar2011pedestrian} shows that average aspect ratio \textit{$w \approx 0.41h$}. After above mentioned cleaning steps, a re calculation for the aspect ration distribution shows, it does not vary much from the original distribution, as shown below.
+\cite{dollar2009pedestrian} defines pedestrians with 80 pixels or taller as in the near scale and 30 pixels or less
+are on the far scale and rest in the medium scale. Most pedestrians are observed on medium scale. A person with 1.8m tall is 1.5s away from the vehicle for the mentioned set up and speed of 55km\/h. \cite{dollar2011pedestrian} shows that the average aspect ratio \textit{$w \approx 0.41h$}. After above mentioned cleaning steps, a recalculation for the aspect ration distribution shows, it does not vary much from the original distribution, as shown below.
 
 \begin{figure}[H]
 \includegraphics[scale=0.4]{aspect_ratio_distribution}
@@ -225,10 +225,10 @@ are in the far scale and rest in the medium scale. Most pedestrians are observed
 \end{figure}
 
 \subsection{Training }
-As SSD has predictors at multiple level, before the model training step, a pre-processing step is required where proposed BBs are generated and compared with the ground truth and depending on IoU threshold, certain prior BBs are considered and encoded for the training purpose. There are several parameters which play a role in generating bounding boxes, some of critical parameters used are given below.
+As SSD has predictors at multiple levels, before the model training step, a pre-processing step is required where proposed BBs are generated and compared with the ground truth and depending on the IoU threshold, certain prior BBs are considered and encoded for the training purpose. There are several parameters that play a role in generating bounding boxes, some of the critical parameters used are given below.
 
 \subsection{Framework parameters}
-In case of SSD there is a reprocessing subsystem, that reprocess and prepares the data such that it can be fit by the SSD neural network. Below table lists the major parameters of this reprocessing subsystem.
+In the case of SSD, there is a reprocessing subsystem, that reprocesses and prepares the data such that it can be fit by the SSD neural network. The below table lists the major parameters of this reprocessing subsystem.
 \begin {table}[H]
 \begin{center}
  \begin{tabular}{||c c||} 
@@ -251,10 +251,10 @@ In case of SSD there is a reprocessing subsystem, that reprocess and prepares th
 \end{table}
 
 \subsection{Model parameters}
-SSD model consists of convolutional feature layers and some convolutional predictor layers that take input from different feature layers, making the model fully convolutional. The used model consists of 7 convolutional layers and 4 predictors layers. These 4 convolutional predictors layers take input from layers 4, 5, 6, and 7 respectively. Convnet which was used for modeling created with Keras \footnote{Keras is a high-level neural networks API, written in Python and capable of running on top of TensorFlow, CNTK, or Theano.}.
+SSD model consists of convolutional feature layers and some convolutional predictor layers that take input from different feature layers, making the model fully convolutional. The used model consists of 7 convolutional layers and 4 predictors layers. These 4 convolutional predictors layers take input from layers 4, 5, 6, and 7 respectively. Conv-net which was used for modeling created with Keras \footnote{Keras is a high-level neural networks API, written in Python and capable of running on top of TensorFlow, CNTK, or Theano.}.
 
 \subsection{Hyper Parameters}
-For the SSD model, 0.0005 is used as L2 regularization factor. The model is trained for different number of epochs(300). A customized loss function is used. Adaptive Moment Estimation (adam) is used as the optimizer with below parameters.
+For the SSD model, 0.0005 is used as an L2 regularization factor. The model is trained for different number of epochs(300). A customized loss function is used. Adaptive Moment Estimation (ADAM) is used as the optimizer with the below parameters.
 \begin{itemize}
 	\item learning rate=0.001
 	\item parameter beta\textunderscore 1=0.9

@@ -4,26 +4,27 @@
 %% You can process specific files by typing their names in at the 
 %% \files=
 %% prompt when you run the file main.tex through LaTeX.
-\chapter{Simulation, Results and Discussion}
+\chapter{Simulation, Results, and Discussion}
+
 In this chapter results related to various types of experiments with different parameters are presented and discussed.
 
 \section{LSTM results} \label{observations}
 %\subsection{LSTM results}
 LSTM model is trained with the videos 71-346. Video data from 317-346, which consists of 30 video data in total, are used for model testing. Normally performance of a future bounding box predictor evaluated  in two ways. 
 (i) It is determined by the center location error, it computes the average
-euclidean distance between the center position of the tracked targets and the ground truth
+Euclidean distance between the center position of the tracked targets and the ground truth
 positions. This is computed for all the frames. However, sometimes, when the predictor predicts 
 output location randomly, the average center location error value does not measure the
-true performance correctly. In our experimented we have used average center location error and Intersection over the Union  accuracy. \\
+true performance correctly. In our experiment we have used average center location error and Intersection over the Union  accuracy. \\
 
-(ii) To measure how precise the predictions are, Intersection over the Union (IoU) is used. In our experiment we tried with several values for IoU. When a particular value for the IoU is considered, the measured IOU value greater than the particular value in the question is treated as positive.
+(ii) To measure how precise the predictions are, Intersection over the Union (IoU) is used. In our experiment, we tried with several values for the IoU. When a particular value for the IoU is considered, the measured IOU value greater than the particular value in the question is treated as positive.
 
-\subsection{Experiment. Phase 1. Effect of different future time stamp on prediction, with 15 frames as input}
+\subsection{Experiment. Phase 1. Effect of different future time-stamp on prediction, with 15 frames as input}
 %---------------------------------------------------------------------
 \begin{figure}[H] 
 \includegraphics[scale=0.75]{conf7_1000e_15ffuture}
 \begin{center}
-\caption{Training and validation loss for - 15 frames input and prediction at 15 time step }
+\caption{Training and validation loss for - 15 frames input and prediction at 15-time step }
 \label{fig:15-15}
 \end{center}
 \end{figure}
@@ -31,7 +32,7 @@ true performance correctly. In our experimented we have used average center loca
 \begin{figure}[H] 
 \includegraphics[scale=0.75]{conf8_300e_30ffuture}
 \begin{center}
-\caption{Training and validation loss for - 15 frames input and prediction at 30 time step }
+\caption{Training and validation loss for - 15 frames input and prediction at 30-time step }
 \label{fig:15-30}
 \end{center}
 \end{figure}
@@ -39,7 +40,7 @@ true performance correctly. In our experimented we have used average center loca
 \begin{figure}[H] 
 \includegraphics[scale=0.8]{conf9_300e_60ffuture}
 \begin{center}
-\caption{Training and validation loss for - 15 frames input and prediction at 60 time step }
+\caption{Training and validation loss for - 15 frames input and prediction at 60-time step }
 \label{15-60}
 \end{center}
 \end{figure}
@@ -60,7 +61,7 @@ true performance correctly. In our experimented we have used average center loca
 \end{center}
 \end{figure}
 
-From the plot \ref{fig:15-15}, we can see that, the validation error is least for '15 frames input and prediction at 15 time step' case. Also prediction accuracy (using IoU) from \ref{15-IoU}, for the use case, with 15 frames input and prediction at $15^{th}$ frame, it's accuracy is better than prediction at $30^{th}$ frames and $60^{th}$ frames. It is also noticeable that with increase in the IoU for considering the prediction as accurate, the accuracy decreases linearly with increase in IoU threshold value. When considering mean center distance as a measure of performance, the lesser the mean center distance, the better is the prediction. From the plot it is seen that, the larger the future time slice, the larger is the mean center distance.
+From the plot \ref{fig:15-15}, we can see that the validation error is least for '15 frames input and prediction at 15-time step' case. Also prediction accuracy (using IoU) from \ref{15-IoU}, for the use case, with 15 frames input and prediction at $15^{th}$ frames, it's accuracy is better than prediction at $30^{th}$ frames and $60^{th}$ frames. It is also noticeable that with an increase in the IoU for considering the prediction as accurate, the accuracy decreases linearly with the increase in IoU threshold value. When considering mean center distance as a measure of performance, the lesser the mean center distance, the better is the prediction. From the plot it is seen that, the larger the future time slice, the larger is the mean center distance.
 
 %---------------------------------------------------------------------
 \subsection{Experiment. Phase 2. Effect of different number of frames as input on prediction at 30  time step}
@@ -218,7 +219,7 @@ For Training and validation loss for - 15 frames input and prediction at 30-time
 
 %\section{LSTM with refinement}
 
-As we can see from the above plots, the validation error is least for '60 frames input and prediction at 30 time step' case. Also prediction accuracy (using IoU) from fig \ref{30-IoU}, with 60 frames as input, the prediction accuracy is better compared to 15 frames and 30 frames as input. It is also noticeable that with increase in the IoU for considering the prediction as accurate, the accuracy decreases linearly with increase in IoU threshold value. When considering mean center distance as a measure of performance, the lesser the mean center distance the better is the prediction. From the plot it is seen that for 30 frames input the prediction is slightly better than the model that takes 60 frames as input.
+As we can see from the above plots, the validation error is least for '60 frames input and prediction at 30-time step' case. Also prediction accuracy (using IoU) from fig \ref{30-IoU}, with 60 frames as input, the prediction accuracy is better compared to 15 frames and 30 frames as input. It is also noticeable that with an increase in the IoU for considering the prediction as accurate, the accuracy decreases linearly with an increase in IoU threshold value. When considering mean center distance as a measure of performance, the lesser the mean center distance the better is the prediction. From the plot, it is seen that for 30 frames input the prediction is slightly better than the model that takes 60 frames as input.
 
 %---------------------------------------------------------------------
 \subsection{Experiment. Phase 3. Effect of different future time stamp on prediction, with 60 frames as input}
@@ -263,7 +264,7 @@ Training and validation loss for 60 frames input and prediction at 30-time step 
 \begin{figure}[H] 
 \includegraphics[scale=0.7]{conf14_300e_60_90ffuture_100unit}
 \begin{center}
-\caption{Training and validation loss for - 60 frame input and prediction at 90 time step using 100 units in the Cell}
+\caption{Training and validation loss for - 60 frame input and prediction at 90-time step using 100 units in the Cell}
 \label{60-90-100unit}
 \end{center}
 \end{figure}
@@ -271,7 +272,7 @@ Training and validation loss for 60 frames input and prediction at 30-time step 
 \begin{figure}[H] 
 \includegraphics[scale=0.7]{conf15_300e_60_90ffuture_200unit}
 \begin{center}
-\caption{Training and validation loss for - 60 frame input and prediction at 90 time step using 200 units in the Cell}
+\caption{Training and validation loss for - 60 frame input and prediction at 90-time step using 200 units in the Cell}
 \label{60-90-200unit}
 \end{center}
 \end{figure}
@@ -279,7 +280,7 @@ Training and validation loss for 60 frames input and prediction at 30-time step 
 \begin{figure}[H] 
 \includegraphics[scale=0.7]{conf16_300e_60_90ffuture_300unit}
 \begin{center}
-\caption{Training and validation loss for - 60 frame input and prediction at 90 time step using 300 units in the
+\caption{Training and validation loss for - 60 frame input and prediction at 90-time step using 300 units in the
  Cell}
 \label{60-90-300unit}
 \end{center}
@@ -341,7 +342,7 @@ The above table captures various configurations are used during the experiment. 
 \textit{epoch } the number of epochs the model is trained \\
 \textit{units} number of units used in the LSTM cell
 
-The below graphs depict the prediction time for above mentioned configurations.
+The below graphs depict the prediction time for the above mentioned configurations.
 
 \begin{figure}[H]
 \includegraphics[scale=0.8]{time-taken-for-prediction.png}
@@ -350,18 +351,19 @@ The below graphs depict the prediction time for above mentioned configurations.
 \end{center}
 \end{figure}
 
-From the graph, it is seen that with increase in number of input time series value the prediction time increases. Change in number of epochs or amount of unit in the cell do not results in significant variation.
+From the graph, it is seen that with an increase in the number of input time series values the prediction time increases. Changes in the number of epochs or the amount of units in the cell do not result in significant variation.
 
 \section{SSD results}
 %\subsection{Validation}
-Below graphs depicts the validation error and the training error when SSD model was trained for 10 epochs.
+The below graphs depicts the validation error and the training error when the SSD model was trained for 10 epochs.
 \begin{figure}[H]
 \includegraphics[scale=0.4]{conf0_loss-val_loss_0_10epochs}
 \begin{center}
 \caption{Training and Validation error at 10 epochs}
 \end{center}
 \end{figure}
-As the training error has not converged after 10 epochs, it was decided to train for another 10 epoch and the graph as shown below. After training for 10 more epochs the training error gradually reduces. The validation error revolves around training error is shown in the below graph. As the training of single epoch takes significant time, the statistics were taken with small epochs.
+
+As the training error has not converged after 10 epochs, it was decided to train for another 10 epoch and the graph as shown below. After training for 10 more epochs the training error gradually reduces. The validation error that revolves around training error is shown in the below graph. As the training of a single epoch takes significant time, the statistics were taken with small epochs.
 
 \begin{figure}[H]
 \includegraphics[scale=0.4]{conf0_loss-val_loss_10_20epochs}
@@ -371,19 +373,19 @@ As the training error has not converged after 10 epochs, it was decided to train
 \end{figure}
 
 \newpara
-Looking at the graph which depicts training loss and validation loss drawn with several epochs, we could see training error gradually reduces with increase in the number of epochs, simultaneously we see validation loss also exhibiting same pattern and slowly decreasing with number of epochs. This trend of decrease in validation error with increase in training is a good indication of learning. The model could have trained for some more epochs until it converges, however due to long training time, it was not possible to do so, instead training with different configuration was done to see the behavior with other configuration.
+Looking at the graph which depicts training loss and validation loss has drawn with several epochs, we could see training error gradually reduces with an increase in the number of epochs, simultaneously we see validation loss also exhibiting the same pattern and slowly decreasing with the number of epochs. This trend of decrease in validation error with an increase in training is a good indication of learning. The model could have trained for some more epochs until it converges, however, due to long training time, it was not possible to do so, instead training with different configuration was done to see the behavior with other configuration.
 
 %\subsection{Testing} 
 For the testing of the generated model below steps were followed to prepare the test data and conduct the experiment.
 \begin{enumerate}
-	\item video set 06 - 10 was selected as test data and bounding box, label are extracted into labels\textunderscore test\textunderscore full.csv which contains total 154436 records
-	\item Rows with occluded and other classes except person were removed and remaining number of records were 73218, which consists of 42910 unique images 
-	\item records with less than 50 pixel for height or 5 pixel for width were discarded and data set left with 29620 records
-	\item From the above data 1000 records were randomly chosen for test purpose which consists of 902 unique images
+	\item video set 06 - 10 was selected as test data and bounding box, label is extracted into labels\textunderscore test\textunderscore full.csv which contains total 154436 records
+	\item Rows with occluded and other classes except person were removed and the remaining number of records were 73218, which consists of 42910 unique images 
+	\item records with less than 50 pixels for height or 5 pixels for width were discarded and data set left with 29620 records
+	\item From the above data, 1000 records were randomly chosen for test purpose which consists of 902 unique images
 \end{enumerate}
 
 \newpara
-While using SSD7, it was observed that, the algorithm is very sensitive to the list of aspect ratios for the anchor boxes. To begin with, the values for aspect\textunderscore ratios = $[0.5, 1.0, 2.0]$ were used and that lead to very poor result in the evaluation phase. Subsequently the model was trained with several different configuration and results are noted as below.
+While using SSD7, it was observed that the algorithm is very sensitive to the list of aspect ratios for the anchor boxes. To begin with, the values for aspect\textunderscore ratios = $[0.5, 1.0, 2.0]$ were used and that lead to a very poor results in the evaluation phase. Subsequently, the model was trained with several different configuration and results are noted as below.
 
 for aspect\textunderscore ratios = $[0.1, 0.2, 0.33, 0.413, 0.418, 0.5, 0.6, 0.7, 0.8, 1.0]$
 \begin{table}[H]
@@ -397,10 +399,10 @@ for aspect\textunderscore ratios = $[0.1, 0.2, 0.33, 0.413, 0.418, 0.5, 0.6, 0.7
  20  & 0.635 & 9.73 \\
 \hline
 \end{tabular}
-\caption{Average Precision and fps with number of epochs}
+\caption{Average Precision and fps with the number of epochs}
 \end{center}
 \end{table}
-From the above result, it can be observed that training the data for more epochs is actually not resulting a better model as both mAP and fps are lowered for the model trained with 20 epochs, this could be a sign of \textit{over-fitting.}
+From the above result, it can be observed that training the data for more epochs is actually not resulting in a better model as both mAP and fps are lowered for the model trained with 20 epochs, this could be a sign of \textit{over-fitting.}
 
 %conf1
 %0.2, 0.33, 0.413, 0.418, 0.5, 0.6, 0.7, 0.8, 1.0
@@ -416,4 +418,4 @@ From the above result, it can be observed that training the data for more epochs
 %conf 3 
 %0.1, 0.2, 0.33, 0.413, 0.418, 0.5, 0.6, 0.7, 0.8, 1.0
 
-With the increase in number of values in the list of aspect ratio, the number of predictor boxes increases. Increase in number of predictor boxes increases both training time as well as prediction time.
+With the increase in the number of values in the list of aspect ratio, the number of predictor boxes increases. An increase in the number of predictor boxes increases both training time as well as prediction time.
