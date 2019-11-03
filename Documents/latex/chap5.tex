@@ -15,7 +15,7 @@ LSTM model is trained with the videos 71-346. Video data from 317-346, which con
 Euclidean distance between the center position of the tracked targets and the ground truth
 positions. This is computed for all the frames. However, sometimes, when the predictor predicts 
 output location randomly, the average center location error value does not measure the
-true performance correctly. In our experiment we have used average center location error and Intersection over the Union  accuracy. \\
+true performance correctly. In our experiment, we have used average center location error and Intersection over the Union  accuracy. \\
 
 (ii) To measure how precise the predictions are, Intersection over the Union (IoU) is used. In our experiment, we tried with several values for the IoU. When a particular value for the IoU is considered, the measured IOU value greater than the particular value in the question is treated as positive.
 
@@ -351,7 +351,7 @@ The below graphs depict the prediction time for the above-mentioned configuratio
 \end{center}
 \end{figure}
 
-From the graph, it is seen that with an increase in the number of input time series values the prediction time increases. Changes in the number of epochs or the amount of units in the cell do not result in significant variation.
+From the graph, it is seen that with an increase in the number of input time series values the prediction time increases. Changes in the number of epochs or the number of units in the cell do not result in significant variation.
 
 \section{SSD results}
 %\subsection{Validation}
@@ -373,7 +373,7 @@ As the training error has not converged after 10 epochs, it was decided to train
 \end{figure}
 
 \newpara
-Looking at the graph which depicts training loss and validation loss has drawn with several epochs, we could see training error gradually reduces with an increase in the number of epochs, simultaneously we see validation loss also exhibiting the same pattern and slowly decreasing with the number of epochs. This trend of decrease in validation error with an increase in training is a good indication of learning. The model could have trained for some more epochs until it converges, however, due to long training time, it was not possible to do so, instead training with different configuration was done to see the behavior with other configuration.
+Looking at the graph which depicts training loss and validation loss has drawn with several epochs, we could see training error gradually reduces with an increase in the number of epochs, simultaneously we see validation loss also exhibiting the same pattern and slowly decreasing with the number of epochs. This trend of decrease in validation error with an increase in training is a good indication of learning. The model could have trained for some more epochs until it converges, however, due to long training time, it was not possible to do so, instead training with different configurations was done to see the behavior with other configuration.
 
 %\subsection{Testing} 
 For the testing of the generated model below steps were followed to prepare the test data and conduct the experiment.
@@ -385,7 +385,7 @@ For the testing of the generated model below steps were followed to prepare the 
 \end{enumerate}
 
 \newpara
-While using SSD7, it was observed that the algorithm is very sensitive to the list of aspect ratios for the anchor boxes. To begin with, the values for aspect\textunderscore ratios = $[0.5, 1.0, 2.0]$ were used and that lead to a very poor results in the evaluation phase. Subsequently, the model was trained with several different configuration and results are noted as below.
+While using SSD7, it was observed that the algorithm is very sensitive to the list of aspect ratios for the anchor boxes. To begin with, the values for aspect\textunderscore ratios = $[0.5, 1.0, 2.0]$ were used and that lead to very poor results in the evaluation phase. Subsequently, the model was trained with several different configurations and results are noted as below.
 
 for aspect\textunderscore ratios = $[0.1, 0.2, 0.33, 0.413, 0.418, 0.5, 0.6, 0.7, 0.8, 1.0]$
 \begin{table}[H]

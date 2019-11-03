@@ -40,7 +40,7 @@ Using \colorbox{lightgray}{split\textunderscore clips\textunderscore to\textunde
 
 %https://github.com/ykotseruba/JAAD/issues/7
 The video data and image data were used for manual exploration of the data set and were not used for LSTM training. For LSTM training annotations from JAAD were extracted for videos 71-346. These are the videos recorded with Garmin GDR-35 with dimension 1920x1980.\footnote{videos 1-60: GoPro Hero+ (1920x1980)
-videos 61-70: Highscreen Box Connect (1280x720) information received from author of JAAD paper ykotseruba}. Widely used python packages such as \textit{numpy }and \textit{pandas} are used to transform and manipulation of the dataset. NumPy is a scientific computing package specializing array operations and Pandas provides high-performance ease to use data analysis tools using python programming language.  \\
+videos 61-70: Highscreen Box Connect (1280x720) information received from author of JAAD paper ykotseruba}. Widely used python packages such as \textit{numpy }and \textit{pandas} are used to transform and manipulation the dataset. NumPy is a scientific computing package specializing array operations and Pandas provides high-performance ease to use data analysis tools using python programming language.  \\
 
 \begin{algorithm}[H]
 \SetAlgoLined
@@ -60,12 +60,12 @@ videos 61-70: Highscreen Box Connect (1280x720) information received from author
  \caption{Algorithm for BB data preparation}
 \end{algorithm}
 
-It is noticed that there is a limited number of videos for some of the scenario and for other scenarios there is number of videos. To avoid data-skew impacting the final result, the videos are watched and stored in a categorized directory. After taking the frequencies of videos in category, factors are determined  and used  replication factor during preparation of training data for the LSTM. The training sequence for the LSTM is prepared as follows.
+It is noticed that there is a limited number of videos for some of the scenario and for other scenarios there is a number of videos. To avoid data-skew impacting the final result, the videos are watched and stored in a categorized directory. After taking the frequencies of videos in category, factors are determined  and used  replication factor during preparation of training data for the LSTM. The training sequence for the LSTM is prepared as follows.
 
 \begin{algorithm}[H]
 \SetAlgoLined
 \KwResult{train\textunderscore X, val\textunderscore X: training and validation sequences for the model }
- initialize the path for different category and replication factor to be considered \;
+ initialize the path for different category and replication factor to be considered\;
  \While{CSV file in file set}{
   fetch the relevant information from JSON\;
 	normalize and fit the co-ordinates using MinMaxScaler\;
@@ -143,7 +143,7 @@ For the LSTM model number of units for the cell is used as 50, which determines 
 \section{SSD - Caltech Dataset}
 
 \subsection{Data Acquisition}
-Challenges are there while just considering image data, the verities of image sources, for example we can get photos that are taken by professionals, synthetic photos drawn by image generators and real-life photos that we see and capture in our day to day life. So the results of these benchmarks and 
+Challenges are there while just considering image data, the verities of image sources, for example, we can get photos that are taken by professionals, synthetic photos drawn by image generators and real-life photos that we see and capture in our day to day life. So the results of these benchmarks and 
 observation across these aforementioned classes of data set do not transfer to the other scenarios.
 As recommended always for machine learning tasks, we should consider real data as close as possible to the environment where the designed system is expected to work. And luckily there exist some excellent data set in the public domain. I chose Caltech Data set \cite{dollar2009pedestrian}, which is one of the efficient data set available in the public domain. 
 
@@ -215,7 +215,7 @@ During the training an NVIDIA GeForce GTX 1080 GPU with 8GB of video memory was 
 \end {table}
 
 \cite{dollar2009pedestrian} defines pedestrians with 80 pixels or taller as in the near scale and 30 pixels or less
-are on the far scale and rest in the medium scale. Most pedestrians are observed on medium scale. A person with 1.8m tall is 1.5s away from the vehicle for the mentioned set up and speed of 55km\/h. \cite{dollar2011pedestrian} shows that the average aspect ratio \textit{$w \approx 0.41h$}. After above-mentioned cleaning steps, a recalculation for the aspect ration distribution shows, it does not vary much from the original distribution, as shown below.
+are on the far scale and rest in the medium scale. Most pedestrians are observed on a medium scale. A person with 1.8m tall is 1.5s away from the vehicle for the mentioned set up and speed of 55km\/h. \cite{dollar2011pedestrian} shows that the average aspect ratio \textit{$w \approx 0.41h$}. After the above-mentioned cleaning steps, a recalculation for the aspect ration distribution shows, it does not vary much from the original distribution, as shown below.
 
 \begin{figure}[H]
 \includegraphics[scale=0.4]{aspect_ratio_distribution}
