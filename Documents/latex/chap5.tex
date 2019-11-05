@@ -89,7 +89,7 @@ From the plot \ref{fig:Phase1-15}, we can see that the validation error is least
 For Training and validation loss for - 15 frames input and prediction at 30-time step \ref{fig:Phase1-15} (b)
 
 \begin{figure}[H] 
-\includegraphics[scale=0.6]{Phase2-training}
+\includegraphics[scale=0.7]{Phase2-training}
 \begin{center}
 \caption{Training and validation loss for - prediction at 30-time step}
 \label{fig:Phase2-at-30}
@@ -135,7 +135,7 @@ In the above graph \ref{fig:Phase2-at-30} (a), (b), (c), (d) depict the training
 \includegraphics[scale=0.6]{Phase2-accuracy}
 \begin{center}
 \caption{Test result - prediction at 30-time step}
-\label{Phase1-accuracy}
+\label{Phase2-accuracy}
 \end{center}
 \end{figure}
 
@@ -266,84 +266,87 @@ As we can see from the above plots, the validation error is least for '60 frames
 
 %---------------------------------------------------------------------
 \subsection{Experiment. Phase 3. Effect of different future time stamp on prediction, with 60 frames as input}
-Training and validation loss for 60 frames input and prediction at 30-time step is at \ref{60-30}
+Training and validation loss for 60 frames input and prediction at 30-time step is at \ref{Phase2-accuracy}(b)
 
 \begin{figure}[H] 
-\includegraphics[scale=0.8]{conf12_300e_60_60ffuture}
+\includegraphics[scale=0.8]{Phase3-training}
 \begin{center}
-\caption{Training and validation loss for - 60 frames input and prediction at 60-time step }
-\label{60-60}
+\caption{Training and validation loss for - 60 frames input}
+\label{fig:Phase3-training}
 \end{center}
 \end{figure}
 
+In the above graph \ref{fig:Phase3-training} (a), (b) depict the training and validation loss for - prediction at 60-time step and at 90-time step respectively with 60 frames input \\
+
+
+%\begin{figure}[H] 
+%\includegraphics[scale=0.8]{conf12_300e_60_60ffuture}
+%\begin{center}
+%\caption{Training and validation loss for - 60 frames input and prediction at 60-time step }
+%\label{60-60}
+%\end{center}
+%\end{figure}
+
+%\begin{figure}[H] 
+%\includegraphics[scale=0.8]{conf13_300e_60_90ffuture}
+%\begin{center}
+%\caption{Training and validation loss for - 60 frames input and prediction at 90-time step }
+%\label{60-90}
+%\end{center}
+%\end{figure}
+
 \begin{figure}[H] 
-\includegraphics[scale=0.8]{conf13_300e_60_90ffuture}
+\includegraphics[scale=0.8]{Phase3-accuracy}
 \begin{center}
-\caption{Training and validation loss for - 60 frames input and prediction at 90-time step }
-\label{60-90}
+\caption{Test result for - prediction with 60 frames input}
+\label{Phase3-accuracy}
 \end{center}
 \end{figure}
 
-\begin{figure}[H] 
-\includegraphics[scale=0.8]{prediction-with-60frames-input_IoU.png}
-\begin{center}
-\caption{Test result (IoU) for - prediction with 60 frames input}
-\label{60-IoU}
-\end{center}
-\end{figure}
+Fig \ref{Phase3-accuracy} (a) and (b) depict the test result (IoU) and mean\textunderscore distance\textunderscore accuracy respectively for prediction at 60-time step and at at 90-time step with 60 frames input. 
 
-\begin{figure}[H] 
-\includegraphics[scale=0.7]{prediction-with-60frames-mean_distance_accuracy}
-\begin{center}
-\caption{Test result (mean\textunderscore distance\textunderscore accuracy) for - prediction with 60-time step
- input }
-\label{60-mcd}
-\end{center}
-\end{figure}
+%\begin{figure}[H] 
+%\includegraphics[scale=0.8]{prediction-with-60frames-input_IoU.png}
+%\begin{center}
+%\caption{Test result (IoU) for - prediction with 60 frames input}
+%\label{60-IoU}
+%\end{center}
+%\end{figure}
+
+%\begin{figure}[H] 
+%\includegraphics[scale=0.7]{prediction-with-60frames-mean_distance_accuracy}
+%\begin{center}
+%\caption{Test result (mean\textunderscore distance\textunderscore accuracy) for - prediction with 60-time step
+% input }
+%\label{60-mcd}
+%\end{center}
+%\end{figure}
+
+
 
 %---------------------------------------------------------------------
 \subsection{Experiment. Phase 4. Effect of different units in LSTM Cell on accuracy for prediction at 90-time step with 60 frames as input}
 
 \begin{figure}[H] 
-\includegraphics[scale=0.7]{conf14_300e_60_90ffuture_100unit}
+\includegraphics[scale=0.6]{Phase4-training}
 \begin{center}
 \caption{Training and validation loss for - 60 frames input and prediction at 90-time step using 100 units in the Cell}
-\label{60-90-100unit}
+\label{fig:Phase4-training}
 \end{center}
 \end{figure}
 
+
+In the above graph \ref{fig:Phase4-training} (a), (b), (c) depict the training and validation loss for - prediction at 90-time with 60 frames input and with 100, 200 and 300 units in the LSTM cell respectively. \\
+
 \begin{figure}[H] 
-\includegraphics[scale=0.7]{conf15_300e_60_90ffuture_200unit}
+\includegraphics[scale=0.8]{Phase4-accuracy.png}
 \begin{center}
-\caption{Training and validation loss for - 60 frames input and prediction at 90-time step using 200 units in the Cell}
-\label{60-90-200unit}
+\caption{Test result for - prediction at 90 frames with 60 frame input}
+\label{Phase4-accuracy}
 \end{center}
 \end{figure}
 
-\begin{figure}[H] 
-\includegraphics[scale=0.7]{conf16_300e_60_90ffuture_300unit}
-\begin{center}
-\caption{Training and validation loss for - 60 frames input and prediction at 90-time step using 300 units in the
- Cell}
-\label{60-90-300unit}
-\end{center}
-\end{figure}
-
-\begin{figure}[H] 
-\includegraphics[scale=0.8]{prediction-at-90frames-with-60frames-input_IoU.png}
-\begin{center}
-\caption{Test result (IoU) for - prediction at 90 frames with 60 frame input}
-\label{60-90-cell-untis-IoU}
-\end{center}
-\end{figure}
-
-\begin{figure}[H] 
-\includegraphics[scale=0.7]{prediction-at-90frames-with-60frames-mean_distance_accuracy}
-\begin{center}
-\caption{Test result (mean\textunderscore distance\textunderscore accuracy) for - prediction at 90 frames with 60 time step input }
-\label{60-90-cell-units-mcd}
-\end{center}
-\end{figure}
+Fig \ref{Phase4-accuracy} (a) and (b) depict the IoU accuracy and mean\textunderscore distance\textunderscore accuracy respectively for prediction at 90-time with 60 frames input with different units in the cell. 
 
 %x = ['15_15_1000', '15_30_300', '15_60_300', '30_30_300', '60_30_300', '60_60_300', '60_90_300', '60_90_300_100', '60_90_300_200', '60_90_300_300']
 
@@ -399,21 +402,20 @@ From the graph, it is seen that with an increase in the number of input time ser
 \section{SSD results}
 %\subsection{Validation}
 The below graphs depicts the validation error and the training error when the SSD model was trained for 10 epochs.
+
 \begin{figure}[H]
-\includegraphics[scale=0.4]{conf0_loss-val_loss_0_10epochs}
+\includegraphics[scale=0.7]{ssd-training}
 \begin{center}
-\caption{Training and Validation error at 10 epochs}
+\caption{Training and Validation error at different epochs}
+\label{fig:ssd-training}
 \end{center}
 \end{figure}
 
-As the training error has not converged after 10 epochs, it was decided to train for another 10 epoch and the graph as shown below. After training for 10 more epochs the training error gradually reduces. The validation error that revolves around training error is shown in the below graph. As the training of a single epoch takes significant time, the statistics were taken with small epochs.
+In the above graph \ref{fig:ssd-training} (a), (b) depict the training and validation loss at 10 epochs and 20 epochs respectively. \\
 
-\begin{figure}[H]
-\includegraphics[scale=0.4]{conf0_loss-val_loss_10_20epochs}
-\begin{center}
-\caption{Training and Validation error at 20 epochs}
-\end{center}
-\end{figure}
+
+As seen in the \ref{fig:ssd-training} (a), the training error has not converged after 10 epochs, it was decided to train for another 10 epoch and the graph as shown below. After training for 10 more epochs the training error gradually reduces. The validation error that revolves around training error is shown in the \ref{fig:ssd-training} (b). As the training of a single epoch takes significant time, the statistics were taken with small epochs.
+
 
 \newpara
 Looking at the graph which depicts training loss and validation loss has drawn with several epochs, we could see training error gradually reduces with an increase in the number of epochs, simultaneously we see validation loss also exhibiting the same pattern and slowly decreasing with the number of epochs. This trend of decrease in validation error with an increase in training is a good indication of learning. The model could have trained for some more epochs until it converges, however, due to long training time, it was not possible to do so, instead training with different configurations was done to see the behavior with other configuration.
