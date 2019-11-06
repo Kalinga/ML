@@ -409,18 +409,6 @@ So
 
 %Where ${\theta }_f$ is the focal angle made by change in vehicle angle.
 
-%The distance between camera and object in the scene can be derived by below equation.
-%\begin{equation}
-%d = \frac{w \times f}{p}
-%\end{equation}
-%where d is the distance between camera and object, w corresponds to width of the object, f represents the focal length of the camera and p is the perceived width in number of pixel in the image.
-%So with a moving camera, modified perceived width in pixel given by
-
-%\begin{equation}
-%\hat{p} = \frac{w \times f}{d_{\hat{t}}}
-%\end{equation}
-%Where $d_{\hat{t}}$ is the distance between camera and object at $\hat{t}$.
-
 \newpara
 \textbf{Awareness:}
 Considering ${t_p}$ represents vehicle time to reach the pedestrian and \\
@@ -587,7 +575,8 @@ ${\lambda}$ is the scale factor of the camera that converts real-world distance 
 
 d is the distance between camera and object and f is the focal length of the camera. Consider a fixed focal length for the camera in a particular setting $\lambda$ is a function of camera-object distance and shall be precomputed. % to be applied in the equation \ref{object-distance}
 
-When the vehicle moves with an angle ${\theta }$ in a time period ${\Delta t}$, the point P now displaced by the same angle as ${\theta}$. Consider the vehicle speed \textit{v}, the displacement of the point \textit{P} on the image is given by
+%When the vehicle moves with an angle ${\theta }$ in a time period ${\Delta t}$, the point P now displaced by the same angle as ${\theta}$. 
+Consider the vehicle speed \textit{v}, the displacement of the point \textit{P} on the image is given by
 
  %object space displacement can be converted to image space by dividing it with the scale factor. 
 \begin{equation} \label{distance-in-pixel}
@@ -673,23 +662,23 @@ Where $d_c$ is given as in equation \ref{camera-distance} and $\hat{\theta}$ in 
 %where $d_{object}$ is the distance between camera and object, \textit{w} corresponds to width of the object, \textit{f} represents the focal length of the camera and \textit{p} is the perceived width in the image space.
 
 \pagebreak
-Due to the angular rotation ${\theta}_1$, the bottom right point of the bounding box (x+w, y-h) is translated using the linear transformation as below \\
+%Due to the angular rotation ${\theta}_1$, the bottom right point of the bounding box (x+w, y-h) is translated using the linear transformation as below \\
  
 %\begin{equation} \label{rotaion-translation}
 %(w_1, h_1) = (x+w, y-h) 
 
-\[ 
-\begin{bmatrix}
-w_1 & h_1
-\end{bmatrix}
-=\begin{bmatrix}
-cos \theta_1 & -sin \theta_1\\
-sin \theta_1 & cos \theta_1
-\end{bmatrix}
-\begin{bmatrix}
-x+w &  y-h
-\end{bmatrix}
-\]
+%\[ 
+%\begin{bmatrix}
+%w_1 & h_1
+%\end{bmatrix}
+%=\begin{bmatrix}
+%cos \theta_1 & -sin \theta_1\\
+%sin \theta_1 & cos \theta_1
+%\end{bmatrix}
+%\begin{bmatrix}
+%x+w &  y-h
+%\end{bmatrix}
+%\]
 
 %\end{equation
 
@@ -702,7 +691,20 @@ x+w &  y-h
 %\end{array}			
 %\end{equation} 
 
-%Where ${d_{\hat{t}}}$ is the distance between camera and object at ${\hat{t}}$ given by below expression
+The distance between camera and object in the scene can be derived by below equation.
+\begin{equation}
+d = \frac{w \times f}{p}
+\end{equation}
+where d is the distance between camera and object, w corresponds to width of the object, f represents the focal length of the camera and ${w_1}$, ${h_1}$ are the perceived width and height in the image respectively.
+So with a moving camera, modified perceived width given by
+
+\begin{equation}
+\begin{array}{l@{}} 
+{w_1} = \frac{w \times f}{d_{\hat{t}}} \\
+{h_1} = \frac{h \times f}{d_{\hat{t}}}
+\end{array}
+\end{equation}
+Where $d_{\hat{t}}$ is the distance between camera and object at $\hat{t}$.
 
 Combining the above results with eq \ref{new-xy}, the bounding box for the pedestrian is approximated as $({x_1}, {y_1},{w_1}, {h_1})$, which helps in LSTM state refinement.
 
