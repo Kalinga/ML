@@ -16,7 +16,8 @@ From the prediction run time graph, it is concluded that with the increase in th
 
 The LSTM Cell state refinement proposal is made and related mathematical aspect are reviewed and presented in the section \ref{state_refinement}
 
-It is seen that the best prediction at 30 frames is done with 90 frames as input instead of 120 frames as input. The reason behind this deviation could be because of an insufficient number of long-enough videos. So it can be concluded that for prediction at a particular future time slice, a certain number of prior frames as input performs better than more input frames (than desired) and dependent on data set.
+
+It is seen that the best prediction at 30 frames is done with 90 frames as input instead of 120 frames as input. The reason behind this deviation could be attributed to an insufficient number of long-enough videos. There are 212 videos with more than 120 frames, 175 videos with more than 150 frames in the training set. In total, there are 24 videos with more than 120 frames and 19 videos with more than 150 frames in the testing set. So it can be concluded that for prediction at a particular future time slice, a certain number of prior frames as input performs better than more input frames (than desired) and dependent on data set.
 
 \newpara
 
