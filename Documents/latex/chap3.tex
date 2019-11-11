@@ -469,9 +469,22 @@ Considering the pedestrian and vehicle system always expected to be safe, LSTM c
 \pagebreak
 \newpara
 \textbf{Pedestrian bounding box location calculation:}
-To aid the LSTM cell refinement because of vehicle movement and its change in direction we proposed the following. Assuming the vehicle from a constant distance from a virtual point on the x-axis in the image frame of reference.
+To aid the LSTM cell refinement because of vehicle movement and its change in direction we proposed the following. %Assuming the vehicle from a constant distance from a virtual point on the x-axis in the image frame of reference.
 
-Considering the below representation, a person represented as a bounding box in a frame by (x,y,w,h), where (x,y) is the top left corner co-ordinate and \textit{w} is the width of the bounding box and \textit{h} is the height of the bounding box. The position of the pedestrian bounding box in the next frame is symbolically shown as ${P}_1$.
+Considering the below representation, a person represented as a bounding box in a frame by (x,y,w,h), where (x,y) is the center co-ordinate of the bottom edge of the bounding box and \textit{w} is the width of the bounding box and \textit{h} is the height of the bounding box. The position of the pedestrian bounding box in the next frame is  shown as ${P}_1$ in the below figure.
+
+\begin{figure}[H]
+\begin{align*}
+\begin{tikzpicture}[baseline=-1pt]
+\node[] at (0,0) {\includegraphics[scale=0.8]{Illustration-vehicle-motion}};
+\end{tikzpicture}&
+\end{align*}
+\begin{center}
+\caption{Illustration of vehicles angular motion}
+\end{center}
+\end{figure}
+
+In the above figure, the expanded bounding box showed in the dashed-line to differentiate the change in dimension due to the vehicle motion.
 
 \begin{equation}
 \begin{array}{l@{}}
@@ -482,9 +495,8 @@ Considering the below representation, a person represented as a bounding box in 
 \end{equation}
 
 %Where ${P}_{\hat{t}}$ is the position of the pedestrian at timestamp $(t+\Delta t)$, and $\Delta t$ is given by below equation.
-Where ${P}_1$ is the position of the pedestrian at timestamp $\hat{t}$, as given by the below equation.
-
-where $\hat{t}$ is timestamp at which the next frame is captured and can be given by below expression
+Where ${P}_1$ is the position of the pedestrian at the next frame time stamp.
+The next frame time stamp symbolically $\hat{t}$ is time-stamp at which the next frame is captured and can be given by below expression
 \begin{equation} \label{delta-t}
 \begin{array}{l@{}}
 \hat{t} = t +  \Delta t \\
@@ -495,7 +507,7 @@ where $\hat{t}$ is timestamp at which the next frame is captured and can be give
 
 Where \textit{fps} is a measure of how many frames captured by the camera in one second
 
-$(x_1,y_1,w_1,h_1)$ depends on basically three factors speed of the vehicle, speed of the pedestrian and the angle between vehicle camera and pedestrian. Also, it is necessary to be noted that other social aspects such as obstacles, neighborhood pedestrian, a sudden change in pedestrian's own decision for the destination and displacement of the camera will have an impact.
+$(x_1,y_1,w_1,h_1)$ depends on basically three factors speed of the vehicle, speed of the pedestrian and the angle of rotation of the vehicle. Also, it is necessary to be noted that other social aspects such as obstacles, neighborhood pedestrian, a sudden change in pedestrian's own decision for the destination and displacement of the camera will have an impact.
 Here we focused on the aspect of the vehicle's motion (speed and direction).
 
 
@@ -537,8 +549,8 @@ Here we focused on the aspect of the vehicle's motion (speed and direction).
 
 
 %Consider the mid point ($P$) of the lower side of the pedestrian bounding box as the initial position of the pedestrian (x,y) on the image frame-of-reference.
-
-Consider ($P$) as the top-left point of the pedestrian bounding box as the initial position of the pedestrian (x,y) on the image frame-of-reference and (w,h) as bounding box width and height respectively.
+\textbf{Effect of vehicle angular motion:} \\
+Consider ($P$) as the center of the lower edge of the pedestrian bounding box as the initial position of the pedestrian with co-ordinate (x,y) on the image frame-of-reference and (w,h) as bounding box width and height respectively.
 
 %, the initial angle between camera and pedestrain can be approximated as
 
@@ -548,101 +560,113 @@ Consider ($P$) as the top-left point of the pedestrian bounding box as the initi
 
 %\textit{Note:} Some image processing software package considers top-left corner as (0,0) and some others consider bottom-left corner as (0,0). For the simplicity purpose we assumed  bottom-left corner as (0,0).
 
-\pagebreak
-Using the given equation in \cite{dougan2010real}, which tries to estimate the instantaneous velocity vector of a point (in 2D space) using displacement vector which depends upon the scale of the image, frame rate, and vehicle speed.
-\begin{equation} \label{conversion}
-{v}= \frac{\delta p}{\delta t}
-\end{equation} 
-v is the instantaneous velocity vector \\
-${\delta p}$ displacement vector, displacement vector measured in pixel units \\
-${\delta t}$ is the frame capture rate
+%\pagebreak
+For the YAW-motion of the camera, we have observed from the experiment that, with the camera angular motion, the particular object makes a horizontal displacement. And the magnitude of this displacement is approximated with the amount of the camera rotation. This displacement depends on the following factors, the angle of view of the camera measured in degrees, and the frame width measured in pixel. Mathematically, the displacement of the bounding box can be given as below
 
-The magnitude of this vector in image space is transformed into object space using a scale factor as described below. Scale factor (${\lambda}$) related to distance between camera and object and the focal length of the camera.
-
-Object space displacement can be computed as below
-
-\begin{equation} \label{conversion}
-{d_o}= {d_i} \times \lambda
-\end{equation} 
-
-where $d_o$ represents the distance in object space \\
-$d_i$ represents the displacement in image space \\
-${\lambda}$ is the scale factor of the camera that converts real-world distance to distance in image space, it is is a function of camera's focal length and camera-object distance discussed in \cite{dougan2010real}, expressed as below relation.
-
-\begin{equation} \label{sf-precompute}
-\lambda \cong 1 + \frac{d}{f}
+\begin{equation} \label{yaw-displacement}
+{d_{yaw}} = f({\theta , fw, AoV})
 \end{equation}
 
-d is the distance between camera and object and f is the focal length of the camera. Consider a fixed focal length for the camera in a particular setting $\lambda$ is a function of camera-object distance and shall be precomputed. % to be applied in the equation \ref{object-distance}
+Where ${d_{yaw}}$ is the displacement in the image measured in pixel due to camera rotation ${\theta}$ degrees, and $fw$ is the frame width, and $AoV$ is the angle of view.
 
-%When the vehicle moves with an angle ${\theta }$ in a time period ${\Delta t}$, the point P now displaced by the same angle as ${\theta}$. 
-Consider the vehicle speed \textit{v}, the displacement of the point \textit{P} on the image is given by
+It is also noted that for the counter-clockwise motion the object makes a left-right displacement and the reverse for a clockwise motion. 
+
+Considering the cameras angle of view $\alpha$, which is given by the below equation
+\begin{equation} \label{angle-of-view}
+\alpha =2\arctan {\frac {d_s}{2f}}
+\end{equation}
+where ${d_s}$ is the sensor dimension and $f$ is the focal length.
+% https://en.wikipedia.org/wiki/Angle_of_view
+
+The visible part of the scene (within the angle of view) is represented by the frame with $fw$. Now, the displacement can be expressed as
+\begin{equation} \label{yaw-displacement-detail}
+{d_{yaw}} = \frac {fw}{\alpha} \times {\theta}
+\end{equation}
+
+The modified position of P due to displacement ${d_{yaw}}$ is expressed as
+\begin{equation} \label{new-xy}
+(x_1, y_1) = (x + d_{yaw}, y)
+\end{equation}
+$(x_1, y_1)$ is the anticipated position, A point to be noted that, there is a minute change in the y-displacement due to the YAW-motion of the camera and in the above equation it is neglected for the current estimation.
+
+%Using the given equation in \cite{dougan2010real}, which tries to estimate the instantaneous velocity vector of a point (in 2D space) using displacement vector which depends upon the scale of the image, frame rate, and vehicle speed.
+%\begin{equation} \label{conversion}
+%{v}= \frac{\delta p}{\delta t}
+%\end{equation} 
+%v is the instantaneous velocity vector \\
+%${\delta p}$ displacement vector, displacement vector measured in pixel units \\
+%${\delta t}$ is the frame capture rate
+
+%The magnitude of this vector in image space is transformed into object space using a scale factor as described below. Scale factor (${\lambda}$) related to distance between camera and object and the focal length of the camera.
+
+%Object space displacement can be computed as below
+
+%\begin{equation} \label{conversion}
+%{d_o}= {d_i} \times \lambda
+%\end{equation} 
+
+%where $d_o$ represents the distance in object space \\
+%$d_i$ represents the displacement in image space \\
+%${\lambda}$ is the scale factor of the camera that converts real-world distance to distance in image space, it is is a function of camera's focal length and camera-object distance discussed in \cite{dougan2010real}, expressed as below relation.
+
+%\begin{equation} \label{sf-precompute}
+%\lambda \cong 1 + \frac{d}{f}
+%\end{equation}
+
+%d is the distance between camera and object and f is the focal length of the camera. Consider a fixed focal length for the camera in a particular setting $\lambda$ is a function of camera-object distance and shall be precomputed. % to be applied in the equation \ref{object-distance}
+
+%When the vehicle moves with an angle ${\theta }$ in a time period ${\Delta t}$, the point P now displaced by the same angle as ${\theta}$.
+
+\textbf{Effect of vehicle linear motion:} \\
+Consider the $d$ is the current distance between the vehicle and the pedestrian, which can be found by using the midpoint of the bottom edge of the detected bounding box \cite{CarND-Advanced-Lane}. After performing a perspective transformation, its position on the warped image can be calculated. From the warped image, the pixel position can be correlated with the distance in meter(SI unit). The change in the distance after a frame time due to vehicle movement is computed as below. Consider the vehicle speed \textit{v}, a vehicle moves a distance $d_v$ in a frame time period $\Delta t$ is given by the below equation and measured in the SI unit.
+\begin{equation} \label{distance-in-pixel}
+{d_v}= v \times \Delta t
+\end{equation} 
+
+
+% the displacement of the point \textit{P} on the image is given by
 
  %object space displacement can be converted to image space by dividing it with the scale factor. 
-\begin{equation} \label{distance-in-pixel}
-{d_1}= \frac{v \times \Delta t}{\lambda}
-\end{equation} 
+%\begin{equation} \label{distance-in-pixel}
+%{d_1}= \frac{v \times \Delta t}{\lambda}
+%\end{equation} 
 
-\pagebreak
-Where ${\lambda}$ is the scale factor, ${d_1}$ is the displacement in image space, $\Delta t$ as given in \ref{delta-t}. This equation gives the metric displacement (${d_1}$) amount in the image space and can be converted to the number of pixels units using dimensions of effective image area and pixel size.
+%\pagebreak
+%Where ${\lambda}$ is the scale factor, ${d_1}$ is the displacement in image space, $\Delta t$ as given in \ref{delta-t}. This equation gives the metric displacement (${d_1}$) amount in the image space and can be converted to the number of pixels units using dimensions of effective image area and pixel size.
 
-Now to determine this translated point ${P_1}$ in the below figure, laws of sine is used as given below.
-\comment{
-\begin{figure}[H]
-\begin{align*}
-\begin{tikzpicture}[baseline=-3pt]
-\node[] at (0,0) {\includegraphics[scale=0.7]{Illustration-vehicle-motion}};
-\end{tikzpicture}&
-\end{align*}
-\begin{center}
-\caption[Illustration of vehicles angular motion]
-\end{center}
-\end{figure}
-}
+%Now to determine this translated point ${P_1}$ in the below figure, laws of sine is used as given below.
 
-\begin{figure}[H]
-\begin{align*}
-\begin{tikzpicture}[baseline=-1pt]
-\node[] at (0,0) {\includegraphics[scale=0.8]{Illustration-vehicle-motion}};
-\end{tikzpicture}&
-\end{align*}
-\begin{center}
-\caption{Illustration of vehicles angular motion}
-\end{center}
-\end{figure}
+%\begin{equation}
+%\frac{d_1}{sin \theta_1} = \frac{d}{sin \theta_2} 
+%\end{equation}
 
+%In the above equation, $\theta_1$ is the angle made by vehicle, $\theta_2$ is the only unknown, after finding that $\theta_3$ can be easily found.
 
-\begin{equation}
-\frac{d_1}{sin \theta_1} = \frac{d}{sin \theta_2} 
-\end{equation}
+%By applying same laws of sine, the distance $d_c$ (from the imaginary vehicle point to the point $P_1$) in pixels can be evaluated from the below equation.
 
-In the above equation, $\theta_1$ is the angle made by vehicle, $\theta_2$ is the only unknown, after finding that $\theta_3$ can be easily found.
+%\begin{equation} \label{camera-distance}
+%\frac{d_c}{sin \theta_3} = \frac{d}{sin \theta_2} 
+%\end{equation} 
 
-By applying same laws of sine, the distance $d_c$ (from the imaginary vehicle point to the point $P_1$) in pixels can be evaluated from the below equation.
+%The resultant angle between vehicle and pedestrian, ${\hat{\theta}}$ can be expressed as below.
+%\begin{equation} \label{theta-large}
+%\begin{array}{l@{}}
+%\hat{\theta } = \theta  + {\theta}_1
+%\end{array}			
+%\end{equation} 
 
-\begin{equation} \label{camera-distance}
-\frac{d_c}{sin \theta_3} = \frac{d}{sin \theta_2} 
-\end{equation} 
+%Where ${\theta}$ is the initial angle between vehicle and pedestrian and ${{\theta}_1}$ is the angle made by the vehicle.
 
-The resultant angle between vehicle and pedestrian, ${\hat{\theta}}$ can be expressed as below.
-\begin{equation} \label{theta-large}
-\begin{array}{l@{}}
-\hat{\theta } = \theta  + {\theta}_1
-\end{array}			
-\end{equation} 
-
-Where ${\theta}$ is the initial angle between vehicle and pedestrian and ${{\theta}_1}$ is the angle made by the vehicle.
-
-The coordinates of point ${P_1(x_1, y_1)}$ can be formulated as
-\begin{equation} \label{new-xy}
-\begin{array}{l@{}} 
-x_1 = d_c cos \hat{\theta } \\
-y_1 = d_c sin \hat{\theta } 
-\end{array}			
-\end{equation} 
+%The coordinates of point ${P_1(x_1, y_1)}$ can be formulated as
+%\begin{equation} \label{new-xy}
+%\begin{array}{l@{}} 
+%x_1 = d_c cos \hat{\theta } \\
+%y_1 = d_c sin \hat{\theta } 
+%\end{array}			
+%\end{equation} 
 %\label{new-xy}
 
-Where $d_c$ is given as in equation \ref{camera-distance} and $\hat{\theta}$ in \ref{theta-large}
+%Where $d_c$ is given as in equation \ref{camera-distance} and $\hat{\theta}$ in \ref{theta-large}
 
 %The distance between camera and object at ${\hat{t}}$𝑡is given as below
 %\begin{equation} \label{object-distance}
@@ -661,7 +685,7 @@ Where $d_c$ is given as in equation \ref{camera-distance} and $\hat{\theta}$ in 
 
 %where $d_{object}$ is the distance between camera and object, \textit{w} corresponds to width of the object, \textit{f} represents the focal length of the camera and \textit{p} is the perceived width in the image space.
 
-\pagebreak
+%\pagebreak
 %Due to the angular rotation ${\theta}_1$, the bottom right point of the bounding box (x+w, y-h) is translated using the linear transformation as below \\
  
 %\begin{equation} \label{rotaion-translation}
@@ -691,28 +715,29 @@ Where $d_c$ is given as in equation \ref{camera-distance} and $\hat{\theta}$ in 
 %\end{array}			
 %\end{equation} 
 
-The distance between camera and object in the scene can be derived by below equation.
+The distance between the camera and object in the scene can be derived by the below equation.
 \begin{equation}
-d = \frac{w \times f}{p}
+d_o = \frac{w \times f}{p}
 \end{equation}
-where d is the distance between camera and object, w corresponds to width of the object, f represents the focal length of the camera and ${w_1}$, ${h_1}$ are the perceived width and height in the image respectively.
-So with a moving camera, modified perceived width given by
+where $d_o$ is the distance between camera and object, w corresponds to the width of the object, f represents the focal length of the camera and $p$ is the perceived width of the object. \\
+
+So due to the vehicle's angular movement, ${w_1}$, ${h_1}$ are the modified perceived width and height in the image respectively and are given by
 
 \begin{equation}
 \begin{array}{l@{}} 
-{w_1} = \frac{w \times f}{d_{\hat{t}}} \\
-{h_1} = \frac{h \times f}{d_{\hat{t}}}
+{w_1} = \frac{w \times f}{d-d_v} \\
+{h_1} = \frac{h \times f}{d-d_v}
 \end{array}
 \end{equation}
-Where $d_{\hat{t}}$ is the distance between camera and object at $\hat{t}$.
+Where $d$ is the distance between camera and object computed from the pedestrian bounding box and $d_v$ is the distance covered by the vehicle in a frame time.
 
-Combining the above results with eq \ref{new-xy}, the bounding box for the pedestrian is approximated as $({x_1}, {y_1},{w_1}, {h_1})$, which helps in LSTM state refinement.
+Combining the above results with equation \ref{new-xy}, the midpoint of the bottom edge of the pedestrian bounding box is approximated as $({x_1}, {y_1})$ and the modified dimension for width and height as $({w_1}, {h_1})$, which helps in LSTM state refinement.
 
 %\comment{
 %}
 
 \textbf{Cell state Vs. Hidden State:}
-Two entities such as \textit{cell state} and \textit{hidden state} are carried over from one timestamp (One LSTM Cell) to another (next LSTM Cell) in an LSTM. Typically they can be represented by vectors. In an LSTM Cell, a \textit{hidden state }contains information about previous inputs. The hidden state from the previous LSTM Cell and current input are combined and processed through various gates in a particular LSTM Cell. Cell state can be regarded as the memory of the LSTM cell. There are several neural network behaves as gates and they act together to decide which information is allowed to be part of \textit{cell state}. Output-gate output and the updated cell state decide the next hidden state. \textit{Hidden states} are the output of an LSTM Cell or layer of cells and they are used for predictions.  
+Two entities such as \textit{cell state} and \textit{hidden state} are carried over from one-time stamp (One LSTM Cell) to another (next LSTM Cell) in an LSTM. Typically they can be represented by vectors. In an LSTM Cell, a \textit{hidden state }contains information about previous inputs. The hidden state from the previous LSTM Cell and current input are combined and processed through various gates in a particular LSTM Cell. Cell state can be regarded as the memory of the LSTM cell. There are several neural network behaves as gates and they act together to decide which information is allowed to be part of \textit{cell state}. Output-gate output and the updated cell state decide the next hidden state. \textit{Hidden states} are the output of an LSTM Cell or layer of cells and they are used for predictions.  
 
 \section{Object detection: SSD}
 After image data acquisition and data preparation, the challenging task remains, how to train the model. To better understand the SSD framework and training steps, a flowchart is prepared that detailed it's workings.
@@ -735,16 +760,16 @@ After image data acquisition and data preparation, the challenging task remains,
  stop/.style = {rectangle, rounded corners},
                         ]
 \node (start) [startstop] {Start};
-\node (0) [process]{Image data is prepared with data augmentation}; 
-\node (1) [process]{A set of default bounding boxes associated with each feature map cell}; 
-\node (2) [process]{ At each feature map cell, offsets relative to default box shapes in the cell is predicted}; 
-\node (3) [process]{ Per-class score that indicates class instance is predicted}; 
-\node (4) [process]{ Each ground truth box is matched with the default box with best jaccard overlap};
-\node (5) [process]{ Match default box to any ground truth with jaccard overlap greater than 0.5}; 
-\node (6) [process]{ A combined loss function and back propagation applied end-to-end}; 
-\node (sevralepocs) [process]{ Train it for several epochs}; 
-\node (7) [process]{ Validate and save the neural network model};
-\node [decision] (validation) { Is validation error accepted?};
+\node (0) [process]{Image data preparation}; 
+\node (1) [process]{Default bounding boxes}; 
+\node (2) [process]{ Offsets is predicted}; 
+\node (3) [process]{ Per-class score prediction}; 
+\node (4) [process]{Ground truth box and default box matching };
+\node (5) [process]{ Default-box and ground truth matching}; 
+\node (6) [process]{ Combined loss function and back propagation}; 
+\node (sevralepocs) [process]{ Train for several epochs}; 
+\node (7) [process]{ Validate and save the model};
+\node [decision] (validation) { val-error accepted?};
 \node (end)  [startstop, below=5mm of validation]  {END};
 
 \draw [arrow] (validation.west) to node [] {No} + (-3,0) |-  (sevralepocs.west);
@@ -757,8 +782,8 @@ After image data acquisition and data preparation, the challenging task remains,
 \end{center}
 \end{figure}
 
-
-After the model is trained, its accuracy and performance are measured and that is described in detail in the subsequent chapters.
+Image data is prepared with data augmentation. A set of default bounding boxes associated with each feature map cell is calculated. At each feature map cell, offsets relative to default box shapes in the cell is predicted.
+Each ground truth box is matched with the default box with best jaccard overlap. The default box is matched to any ground truth with jaccard overlap greater than 0.5. After the model is trained, its accuracy and performance are measured and that is described in detail in the subsequent chapters.
 
 \subsection{Network architectures}
 Below depicted the details of the convolution in image and CNN building blocks.

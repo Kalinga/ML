@@ -44,8 +44,8 @@ For the RNN training, the loss function used as below
     L = -log\, \hat{p_c} + (l_r - \hat{l_r})^2 +  I (l_n - \hat{l_n})^2 
 \end{equation}
 where \\
-$\hat{l_r}$ represents predicted remaining length of the current action, \\
-$\hat{l_n}$ represents the predicted length of the next action, \\
+$\hat{l_r}$ represents predicted remaining length of the current action in seconds, \\
+$\hat{l_n}$ represents the predicted length of the next action in seconds, \\
 $\hat{p_c}$ is the predicted class of the next action
 
 \newpara Unlike the recursive strategy in RNN, the CNN approach does the prediction in a single pass.
@@ -167,7 +167,7 @@ L1-norm gives the distance between two vectors, known as \textit{Sum of Absolute
 \end {equation}
 
 \textbf{Fixed Priors:} In the case of MultiBox, the priors are chosen according to their IoU with respect to ground truth above a certain defined ratio. \footnote{Usually 0.5 is considered as threshold value}.
-However, in the case of Fixed Priors, carefully, a set of different sizes and aspect ratio priors are chosen manually. This lead to the removal of the pre-training phase for the prior generation. For a feature map with \textit{b} default bounding boxes per cell and model is trained for \textit{c} classes, then the number of values for the feature map is given by the relation 
+However, in the case of Fixed Priors, carefully, a set of different sizes and aspect ratio priors are chosen manually. This lead to the removal of the pre-training phase for the prior generation. For a feature map with \textit{b} default bounding boxes per cell and model is trained for \textit{c} classes, then the number of values for the feature map $(f)$ is given by the relation 
 \begin{equation}
 	f = (m * n )  (4 + c) * b
 \end {equation}
