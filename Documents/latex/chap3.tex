@@ -282,7 +282,7 @@ There are several variants of LSTM, but the basic variant was explored and used 
 \subsection{LSTM Cell refinement} \label{state_refinement}
 
 The position of the pedestrian bounding box largely depends upon the speed of the vehicle, pedestrian own speed, and the direction pedestrian makes with the camera and other social behavior such as neighboring pedestrians, stationary obstacles, etc. We propose an obvious factor that is not yet considered while predicting the future trajectory of the pedestrian by taking an important parameter into consideration; that pedestrians and vehicles always want to remain at safe distance from each other. A car lowers its speed greatly when moving at high speed to find a pedestrian near the curb waiting to cross or crossing the road. With a lesser speed and within the safe distance from pedestrian, it keeps moving slowly without halting even though pedestrians are moving in front of it.
-It is also noticed that as a pedestrian moves with normal speed when a vehicle is not near and feels confident that he is in a safe zone, in contrast, he increases his speed when the vehicle approaches. So there exists a social relationship between vehicle and pedestrian and we attempted at extracting this information and make a refinement to the LSTM state. With the motivation from \cite{zhang2019sr}, we constructed a message-passing mechanism to refine the features of pedestrians by the current vehicle speed and the direction between pedestrian and vehicle(camera mounted on the vehicle). The SR module takes vehicle current speed, pedestrian movement information with respect to vehicle, cell states and hidden states from the LSTM as input and outputs the refined cell state as shown as part of the LSTM cell below.
+It is also noticed that as a pedestrian moves with normal speed when a vehicle is not near and feels confident that he is in a safe zone, in contrast, he increases his speed when the vehicle approaches. So there exists a social relationship between vehicle and pedestrian and we attempted at extracting this information and make a refinement to the LSTM state. With the motivation from \cite{zhang2019sr}, we constructed a message-passing mechanism to refine the features of pedestrians by the current vehicle speed and the direction between pedestrian and vehicle (camera mounted on the vehicle). The SR module takes vehicle current speed, pedestrian movement information with respect to vehicle, cell states and hidden states from the LSTM as input and outputs the refined cell state as shown as part of the LSTM cell below.
 
 \begin{figure}[H]
 \begin{align*}
@@ -300,14 +300,14 @@ This can be expressed mathematically as
 \begin{equation}
 \hat{C}^{t, l+1}= M(V^t, {h}^{t, l}) + \hat{C}^{t, l}
 \end{equation}
-Where $\hat{C}^{t, l+1}$ represents refined cell state at timestamp t and refined iteration l, $V^t$ is the vehicle speed at time t and rate of pedestrian location change in X-Y \\
-${h}^{t, l}$ is the hidden state of the Pedestrian at timestamp t
+Where $\hat{C}^{t, l+1}$ represents refined cell state at timestamp $t$ and refined iteration $l$, $V^t$ is the vehicle speed at time $t$ and rate of pedestrian location change in X-Y \\
+${h}^{t, l}$ is the hidden state of the Pedestrian at timestamp $t$
 
-After L iteration of refinement in the SR module, the updated equations would be
+After $l$ iteration of refinement in the SR module, the updated equations would be
 
 \begin{equation}
 \begin{array}{l@{}}
-\hat{C}^{t}=\hat{C}^{t, L} \\
+\hat{C}^{t}=\hat{C}^{t, l} \\
 \hat{h}^{t}={g}^{o,t} \odot tanh(\hat{C}^{t}) \\
 \left[ \hat{x}^{t+1}, \hat{y}^{t+1}, \hat{w}^{t+1}, \hat{h}^{t+1} \right] ^ T = W_p\hat{h}^{t}
 \end{array}
@@ -321,7 +321,7 @@ In this case, the message passing can be formulated as below
 \hat{C}^{t, l+1}=M(P_t, V_t) +  \hat{C}^{t, l}
 %{W}^{vp}\alpha_v
 \end{equation}
-$\hat{C}^{t, l+1}$ is the refined cell state for (l+1)th iteration at the t-timestamp \\
+$\hat{C}^{t, l+1}$ is the refined cell state for $(l+1)$th iteration at the $t$-timestamp \\
 $M(P_t, V_t)$ is the message passing between the state of pedestrian and vehicle as described below.
 
 We propose the message passing term $M(P_t, V_t)$ using the awareness gate as below.
@@ -422,10 +422,10 @@ ${t_p}$ and ${t_v}$  can be calculated as below.
 \end{array}
 \end{equation}
 
-Where ${d_p},{s_v}$ represent distance between vehicle and pedestrian and speed of the vehicle\\
-${d_c}, {s_p}$ represent distance between pedestrian and safe destination (eg. other side of the road) and speed of the pedestrian respectively \\
+Where ${d_p},{s_v}$ represent distance between vehicle and pedestrian, and speed of the vehicle respectively.\\
+${d_c}, {s_p}$ represent distance between pedestrian and safe destination (eg. other side of the road) and speed of the pedestrian respectively. The distance and speed assumed to be measured in SI units \\
 Awareness factor of pedestrian ${\alpha_p}$ and vehicle ${\alpha_v}$, 
-which are related by the below relation for a safe driving scenario and they are dependent on ${t_c}$ and ${t_c}$ in a certain way is proposed.
+which are related by the below relation for a safe driving scenario and they are dependent on ${t_p}$ and ${t_c}$ in a certain way is proposed.
 
 \comment
 {
@@ -469,7 +469,33 @@ Considering the pedestrian and vehicle system always expected to be safe, LSTM c
 \pagebreak
 \newpara
 \textbf{Pedestrian bounding box location calculation:}
-To aid the LSTM cell refinement because of vehicle movement and its change in direction we proposed the following. %Assuming the vehicle from a constant distance from a virtual point on the x-axis in the image frame of reference.
+To aid the LSTM cell refinement because of vehicle movement and its change in direction we did some experiment. Below figures are some of the sample images captured during the experiment. %Assuming the vehicle from a constant distance from a virtual point on the x-axis in the image frame of reference.
+
+\begin{figure}[H]
+\begin{align*}
+\begin{tikzpicture}[baseline=-1pt]
+\node[] at (0,0) {\includegraphics[scale=1.0]{6m339d}};
+\end{tikzpicture}&
+\end{align*}
+\begin{center}
+\caption{Vehicle's initial position }
+\end{center}
+\end{figure}
+
+The above image was captured when an object (a white board) was kept at distance of 6m and 339 degree angle with the object.
+
+\begin{figure}[H]
+\begin{align*}
+\begin{tikzpicture}[baseline=-1pt]
+\node[] at (0,0) {\includegraphics[scale=1.0]{6m14d_3_2cm}};
+\end{tikzpicture}&
+\end{align*}
+\begin{center}
+\caption{Vehicle's position after an angular movement}
+\end{center}
+\end{figure}
+
+The above image was captured when an object was kept at distance of 6m and 14 degree angle with the object.
 
 Considering the below representation, a person represented as a bounding box in a frame by (x,y,w,h), where (x,y) is the center co-ordinate of the bottom edge of the bounding box and \textit{w} is the width of the bounding box and \textit{h} is the height of the bounding box. The position of the pedestrian bounding box in the next frame is  shown as ${P}_1$ in the below figure.
 
@@ -480,7 +506,7 @@ Considering the below representation, a person represented as a bounding box in 
 \end{tikzpicture}&
 \end{align*}
 \begin{center}
-\caption{Illustration of vehicles angular motion}
+\caption{Illustration of vehicle's angular motion}
 \end{center}
 \end{figure}
 
@@ -567,18 +593,18 @@ For the YAW-motion of the camera, we have observed from the experiment that, wit
 {d_{yaw}} = f({\theta , fw, AoV})
 \end{equation}
 
-Where ${d_{yaw}}$ is the displacement in the image measured in pixel due to camera rotation ${\theta}$ degrees, and $fw$ is the frame width, and $AoV$ is the angle of view.
+Where ${d_{yaw}}$ is the displacement in the image measured in pixel due to camera rotation ${\theta}$ degrees, and $fw$ is the frame width measured with number of pixels, and $AoV$ is the angle of view.
 
-It is also noted that for the counter-clockwise motion the object makes a left-right displacement and the reverse for a clockwise motion. 
+It is also noted that for the counter-clockwise motion the object makes a left-to-right displacement and the reverse for a clockwise motion. 
 
-Considering the cameras angle of view $\alpha$, which is given by the below equation
+Considering the cameras angle of view $\alpha$ (in degrees), which is given by the below equation
 \begin{equation} \label{angle-of-view}
 \alpha =2\arctan {\frac {d_s}{2f}}
 \end{equation}
-where ${d_s}$ is the sensor dimension and $f$ is the focal length.
+where ${d_s}$ is the sensor dimension and $f$ is the focal length. Both are measured in $mm$.
 % https://en.wikipedia.org/wiki/Angle_of_view
 
-The visible part of the scene (within the angle of view) is represented by the frame with $fw$. Now, the displacement can be expressed as
+The visible part of the scene (within the angle of view) is represented by the frame with $fw$. Now, the displacement due to angular movement can be expressed as
 \begin{equation} \label{yaw-displacement-detail}
 {d_{yaw}} = \frac {fw}{\alpha} \times {\theta}
 \end{equation}
@@ -587,7 +613,8 @@ The modified position of P due to displacement ${d_{yaw}}$ is expressed as
 \begin{equation} \label{new-xy}
 (x_1, y_1) = (x + d_{yaw}, y)
 \end{equation}
-$(x_1, y_1)$ is the anticipated position, A point to be noted that, there is a minute change in the y-displacement due to the YAW-motion of the camera and in the above equation it is neglected for the current estimation.
+$(x_1, y_1)$ is the anticipated position in the image frame of reference, in the unit of pixel .
+A point to be noted that, there is a minute change in the y-displacement due to the YAW-motion of the camera as seen in the experiment and in the above equation it is neglected for the estimation.
 
 %Using the given equation in \cite{dougan2010real}, which tries to estimate the instantaneous velocity vector of a point (in 2D space) using displacement vector which depends upon the scale of the image, frame rate, and vehicle speed.
 %\begin{equation} \label{conversion}
@@ -717,19 +744,20 @@ Consider the $d$ is the current distance between the vehicle and the pedestrian,
 
 The distance between the camera and object in the scene can be derived by the below equation.
 \begin{equation}
-d_o = \frac{w \times f}{p}
+d_o = \frac{w_o \times f}{w}
 \end{equation}
-where $d_o$ is the distance between camera and object, w corresponds to the width of the object, f represents the focal length of the camera and $p$ is the perceived width of the object. \\
+where $d_o$ is the distance between camera and object, $w_o$ corresponds to the width of the object in the object space, f represents the focal length of the camera and $w$ is the perceived width of the object. \\
+$d_o$, $w_o$, $f$, $w$ are measured in SI units and $w$ can be converted to number of pixel using the image specification.
 
 So due to the vehicle's angular movement, ${w_1}$, ${h_1}$ are the modified perceived width and height in the image respectively and are given by
 
 \begin{equation}
 \begin{array}{l@{}} 
-{w_1} = \frac{w \times f}{d-d_v} \\
-{h_1} = \frac{h \times f}{d-d_v}
+{w_1} = \frac{d}{d-d_v} \times w \\
+{h_1} = \frac{d}{d-d_v} \times h
 \end{array}
 \end{equation}
-Where $d$ is the distance between camera and object computed from the pedestrian bounding box and $d_v$ is the distance covered by the vehicle in a frame time.
+Where $d$ is the distance between camera and object computed from the pedestrian bounding box and $d_v$ is the distance covered by the vehicle in a frame time. $(w,h)$ are the width and height of the bounding box as measured from the image in number of pixels. $(w_1,h_1)$ are the modified perceived width and height of the bounding box in number of pixels.
 
 Combining the above results with equation \ref{new-xy}, the midpoint of the bottom edge of the pedestrian bounding box is approximated as $({x_1}, {y_1})$ and the modified dimension for width and height as $({w_1}, {h_1})$, which helps in LSTM state refinement.
 
