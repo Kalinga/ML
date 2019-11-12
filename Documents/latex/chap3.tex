@@ -279,10 +279,13 @@ $b_o$ is the bias for the output gate
 
 There are several variants of LSTM, but the basic variant was explored and used in the scope of the thesis.
 
+\textbf{Cell state Vs. Hidden State:}
+Two entities such as \textit{cell state} and \textit{hidden state} are carried over from one-time stamp (One LSTM Cell) to another (next LSTM Cell) in an LSTM. Typically they can be represented by vectors. In an LSTM Cell, a \textit{hidden state }contains information about previous inputs. The hidden state from the previous LSTM Cell and current input are combined and processed through various gates in a particular LSTM Cell. Cell state can be regarded as the memory of the LSTM cell. There are several neural network behaves as gates and they act together to decide which information is allowed to be part of \textit{cell state}. Output-gate output and the updated cell state decide the next hidden state. \textit{Hidden states} are the output of an LSTM Cell or layer of cells and they are used for predictions.  
+
 \subsection{LSTM Cell refinement} \label{state_refinement}
 
 The position of the pedestrian bounding box largely depends upon the speed of the vehicle, pedestrian own speed, and the direction pedestrian makes with the camera and other social behavior such as neighboring pedestrians, stationary obstacles, etc. We propose an obvious factor that is not yet considered while predicting the future trajectory of the pedestrian by taking an important parameter into consideration; that pedestrians and vehicles always want to remain at safe distance from each other. A car lowers its speed greatly when moving at high speed to find a pedestrian near the curb waiting to cross or crossing the road. With a lesser speed and within the safe distance from pedestrian, it keeps moving slowly without halting even though pedestrians are moving in front of it.
-It is also noticed that as a pedestrian moves with normal speed when a vehicle is not near and feels confident that he is in a safe zone, in contrast, he increases his speed when the vehicle approaches. So there exists a social relationship between vehicle and pedestrian and we attempted at extracting this information and make a refinement to the LSTM state. With the motivation from \cite{zhang2019sr}, we constructed a message-passing mechanism to refine the features of pedestrians by the current vehicle speed and the direction between pedestrian and vehicle (camera mounted on the vehicle). The SR module takes vehicle current speed, pedestrian movement information with respect to vehicle, cell states and hidden states from the LSTM as input and outputs the refined cell state as shown as part of the LSTM cell below.
+It is also noticed that as a pedestrian moves with normal speed when a vehicle is not near and feels confident that he is in a safe zone, in contrast, he increases his speed when the vehicle approaches. So there exists a social relationship between vehicle and pedestrian and we attempted at extracting this information and make a refinement to the LSTM state. With the motivation from \cite{zhang2019sr}, we constructed a message-passing mechanism to refine the features of pedestrians by the current vehicle speed and the direction between pedestrian and vehicle (camera mounted on the vehicle). The SR module takes vehicle current speed, pedestrian movement information with respect to the vehicle, cell states and hidden states from the LSTM as input and outputs the refined cell state as shown as part of the LSTM cell below.
 
 \begin{figure}[H]
 \begin{align*}
@@ -324,19 +327,19 @@ In this case, the message passing can be formulated as below
 $\hat{C}^{t, l+1}$ is the refined cell state for $(l+1)$th iteration at the $t$-timestamp \\
 $M(P_t, V_t)$ is the message passing between the state of pedestrian and vehicle as described below.
 
-We propose the message passing term $M(P_t, V_t)$ using the awareness gate as below.
+We propose the message passing term $M(P_t, V_t)$ using the refinement gate as below.
 \begin{equation}
 M(P_t, V_t) = W^{a,p}.(g^{a,t,l} \odot {h}^{t, l} ) 
 %+ \hat{C}^{t, l}
 \end{equation}
-Where $W^{a,p}$ is a linear transform parameter and $g^{a,t,l}$ is the awareness gate vector and formulated by
+Where $W^{a,p}$ is a linear transform parameter and $g^{a,t,l}$ is the refinement (includes awareness and translated bounding box position and dimension) gate vector and formulated by
 
 \begin{equation}
-g^{a,t,l} = \sigma(W^{a} [ \alpha_p, {h}^{t, l} ] + b^{a} ) 
+g^{a,t,l} = \sigma(W^{a} [ \alpha_p, P1, {h}^{t, l} ] + b^{a} ) 
 %+ \hat{C}^{t, l}
 \end{equation}
 
-Where $W^{a}$, $b^{a}$ are parameters and $\sigma$ denotes the sigmoid function, $\alpha_p$ is the awareness factor of the pedestrian and described below \ref{awareness_factor}.
+Where $W^{a}$, $b^{a}$ are parameters and $\sigma$ denotes the sigmoid function, $\alpha_p$ is the awareness factor of the pedestrian and described below \ref{awareness_factor}. $P1$ is the translated position of the bounding box denoted by $(x_1, y_1, w_1, h_1)$.
 $g^{a,t,l}$ selects features from ${h}^{t, l}$ by element-wise product.
 
 So 
@@ -434,9 +437,20 @@ which are related by the below relation for a safe driving scenario and they are
   \alpha_p + \alpha_v = 1
 \end{equation}
 
-And $\alpha_p$ is given by a linear function \cite{osaragi2004modeling} $f(t_p, t_c)$ 
+And $\alpha_p$ is given by a linear function \cite{osaragi2004modeling} $\Omega(t_p, t_c)$ 
 
-Now let's consider three scenarios:
+Now let's consider three scenarios as seen in the below figure:
+
+\begin{figure}[H]
+\begin{align*}
+\begin{tikzpicture}[baseline=-1pt]
+\node[] at (0,0) {\includegraphics[scale=0.8]{awareness-line}};
+\end{tikzpicture}&
+\end{align*}
+\begin{center}
+\caption{Region segmentation for awareness}
+\end{center}
+\end{figure}
 
 \begin{itemize}
 \item 
@@ -455,7 +469,7 @@ For ${t_c}>>{t_p}$ this is undesirable and is a catastrophic scenario and not ex
 	\end{array}
 	\end{equation}
 
-	$f(t_p, t_c)$ is defined as follows, where $\hat{t}$ is given by $\frac{t_p}{t_c}$\\
+	$\Omega(t_p, t_c)$ is defined as follows, where $\hat{t}$ is given by $\frac{t_p}{t_c}$\\
 	\begin{empheq}[left=\empheqlbrace]{align}
 		0, \hat{t} < \beta_1 \\
 		\gamma, \hat{t} > \beta_2 \\
@@ -466,7 +480,7 @@ For ${t_c}>>{t_p}$ this is undesirable and is a catastrophic scenario and not ex
 
 Considering the pedestrian and vehicle system always expected to be safe, LSTM cell state may be refined with calculated value for $\alpha_v$
 
-\pagebreak
+%\pagebreak
 \newpara
 \textbf{Pedestrian bounding box location calculation:}
 To aid the LSTM cell refinement because of vehicle movement and its change in direction we did some experiment. Below figures are some of the sample images captured during the experiment. %Assuming the vehicle from a constant distance from a virtual point on the x-axis in the image frame of reference.
@@ -482,7 +496,7 @@ To aid the LSTM cell refinement because of vehicle movement and its change in di
 \end{center}
 \end{figure}
 
-The above image was captured when an object (a white board) was kept at distance of 6m and 339 degree angle with the object.
+The above image was captured when an object (a whiteboard) was kept at a distance of 6m and 339-degree angle with the object.
 
 \begin{figure}[H]
 \begin{align*}
@@ -495,7 +509,7 @@ The above image was captured when an object (a white board) was kept at distance
 \end{center}
 \end{figure}
 
-The above image was captured when an object was kept at distance of 6m and 14 degree angle with the object.
+The above image was captured when an object was kept at a distance of 6m and 14-degree angle with the object.
 
 Considering the below representation, a person represented as a bounding box in a frame by (x,y,w,h), where (x,y) is the center co-ordinate of the bottom edge of the bounding box and \textit{w} is the width of the bounding box and \textit{h} is the height of the bounding box. The position of the pedestrian bounding box in the next frame is  shown as ${P}_1$ in the below figure.
 
@@ -506,7 +520,7 @@ Considering the below representation, a person represented as a bounding box in 
 \end{tikzpicture}&
 \end{align*}
 \begin{center}
-\caption{Illustration of vehicle's angular motion}
+\caption{Illustration of the vehicle's angular motion}
 \end{center}
 \end{figure}
 
@@ -590,10 +604,10 @@ Consider ($P$) as the center of the lower edge of the pedestrian bounding box as
 For the YAW-motion of the camera, we have observed from the experiment that, with the camera angular motion, the particular object makes a horizontal displacement. And the magnitude of this displacement is approximated with the amount of the camera rotation. This displacement depends on the following factors, the angle of view of the camera measured in degrees, and the frame width measured in pixel. Mathematically, the displacement of the bounding box can be given as below
 
 \begin{equation} \label{yaw-displacement}
-{d_{yaw}} = f({\theta , fw, AoV})
+{d_{yaw}} = \pi({\theta , fw, \alpha})
 \end{equation}
 
-Where ${d_{yaw}}$ is the displacement in the image measured in pixel due to camera rotation ${\theta}$ degrees, and $fw$ is the frame width measured with number of pixels, and $AoV$ is the angle of view.
+Where ${d_{yaw}}$ is the displacement in the image measured in pixel due to camera rotation ${\theta}$ degrees, and $fw$ is the frame width measured with a number of pixels, and $\alpha$ is the angle of view.
 
 It is also noted that for the counter-clockwise motion the object makes a left-to-right displacement and the reverse for a clockwise motion. 
 
@@ -609,12 +623,14 @@ The visible part of the scene (within the angle of view) is represented by the f
 {d_{yaw}} = \frac {fw}{\alpha} \times {\theta}
 \end{equation}
 
+Considering a camera with AoV 90$^{\circ}$ and image width of the produced image as 720 pixels, we find for angular rotation of 15$^{\circ}$, the displacement is 120 pixels. \\
+ 
 The modified position of P due to displacement ${d_{yaw}}$ is expressed as
 \begin{equation} \label{new-xy}
 (x_1, y_1) = (x + d_{yaw}, y)
 \end{equation}
-$(x_1, y_1)$ is the anticipated position in the image frame of reference, in the unit of pixel .
-A point to be noted that, there is a minute change in the y-displacement due to the YAW-motion of the camera as seen in the experiment and in the above equation it is neglected for the estimation.
+$(x_1, y_1)$ is the anticipated position in the image frame of reference, in the unit of pixel.
+A point to be noted, there is a minute change in the inclination of the top and bottom edges of the bounding box due to the YAW-motion of the camera as seen in the experiment, and in the above equation it is neglected for the estimation.
 
 %Using the given equation in \cite{dougan2010real}, which tries to estimate the instantaneous velocity vector of a point (in 2D space) using displacement vector which depends upon the scale of the image, frame rate, and vehicle speed.
 %\begin{equation} \label{conversion}
@@ -743,13 +759,13 @@ Consider the $d$ is the current distance between the vehicle and the pedestrian,
 %\end{equation} 
 
 The distance between the camera and object in the scene can be derived by the below equation.
-\begin{equation}
+\begin{equation} \label{distance-camera-object}
 d_o = \frac{w_o \times f}{w}
 \end{equation}
 where $d_o$ is the distance between camera and object, $w_o$ corresponds to the width of the object in the object space, f represents the focal length of the camera and $w$ is the perceived width of the object. \\
-$d_o$, $w_o$, $f$, $w$ are measured in SI units and $w$ can be converted to number of pixel using the image specification.
+$d_o$, $w_o$, $f$, $w$ are measured in SI units and $w$ can be converted to a number of pixels using the image specification.
 
-So due to the vehicle's angular movement, ${w_1}$, ${h_1}$ are the modified perceived width and height in the image respectively and are given by
+So due to the vehicle's linear movement, ${w_1}$, ${h_1}$ are the modified perceived width and height in the image respectively, calculated using \ref{distance-camera-object} and given as below
 
 \begin{equation}
 \begin{array}{l@{}} 
@@ -757,15 +773,12 @@ So due to the vehicle's angular movement, ${w_1}$, ${h_1}$ are the modified perc
 {h_1} = \frac{d}{d-d_v} \times h
 \end{array}
 \end{equation}
-Where $d$ is the distance between camera and object computed from the pedestrian bounding box and $d_v$ is the distance covered by the vehicle in a frame time. $(w,h)$ are the width and height of the bounding box as measured from the image in number of pixels. $(w_1,h_1)$ are the modified perceived width and height of the bounding box in number of pixels.
+Where $d$ is the distance between camera and object computed from the pedestrian bounding box and $d_v$ is the distance covered by the vehicle in a frame time. $(w,h)$ are the width and height of the bounding box as measured from the image in number of pixels. $(w_1,h_1)$ are the modified perceived width and height of the bounding box in the number of pixels.
 
 Combining the above results with equation \ref{new-xy}, the midpoint of the bottom edge of the pedestrian bounding box is approximated as $({x_1}, {y_1})$ and the modified dimension for width and height as $({w_1}, {h_1})$, which helps in LSTM state refinement.
 
 %\comment{
 %}
-
-\textbf{Cell state Vs. Hidden State:}
-Two entities such as \textit{cell state} and \textit{hidden state} are carried over from one-time stamp (One LSTM Cell) to another (next LSTM Cell) in an LSTM. Typically they can be represented by vectors. In an LSTM Cell, a \textit{hidden state }contains information about previous inputs. The hidden state from the previous LSTM Cell and current input are combined and processed through various gates in a particular LSTM Cell. Cell state can be regarded as the memory of the LSTM cell. There are several neural network behaves as gates and they act together to decide which information is allowed to be part of \textit{cell state}. Output-gate output and the updated cell state decide the next hidden state. \textit{Hidden states} are the output of an LSTM Cell or layer of cells and they are used for predictions.  
 
 \section{Object detection: SSD}
 After image data acquisition and data preparation, the challenging task remains, how to train the model. To better understand the SSD framework and training steps, a flowchart is prepared that detailed it's workings.
