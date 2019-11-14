@@ -232,9 +232,6 @@ A sigmoid generates the outputs which decides the quantity a component should be
 With the arrival of new information, the model decides the long term information which is not needed anymore and forgets it. It stores a necessary part of the new information into long-term memory. An LSTM has three such gates, that controls the cell state.
 A \textbf{remember gate} is learned that takes new data and working memory as input and outputs \textit{n} bummers between 0 and 1, each determines the degree to which long-term memory element to be kept. Where 1 indicates to keep the data and 0 indicates as to forget the data entirely. A small neural network can model this \textbf{remember gate} given below. In the literature, this is also known as \textbf{forget gate}. 
 
-\textbf{Cell state Vs. Hidden State:}
-Two entities such as \textit{cell state} and \textit{hidden state} are carried over from one-time stamp (One LSTM Cell) to another (next LSTM Cell) in an LSTM. Typically they can be represented by vectors. In an LSTM Cell, a \textit{hidden state }contains information about previous inputs. The hidden state from the previous LSTM Cell and current input are combined and processed through various gates in a particular LSTM Cell. Cell state can be regarded as the memory of the LSTM cell. There are several neural network behaves as gates and they act together to decide which information is allowed to be part of \textit{cell state}. Output-gate output and the updated cell state decide the next hidden state. \textit{Hidden states} are the output of an LSTM Cell or layer of cells and they are used for predictions.  \\
-
 Below mathematical expressions details various internal operation within an LSTM memory cell as discussed in the original paper of Hochreiter et.al \cite{hochreiter1997long} and simplified rewriting \cite{christopherolah}
 
 \begin{equation}
@@ -282,7 +279,8 @@ $W_o$ is the weight matrix for the output gate \\
 $h_{t-1}$ is the hidden state at time (t-1) \\
 $b_o$ is the bias for the output gate
 
-There are several variants of LSTM, but the basic variant was explored and used in the scope of the thesis.
+\textbf{Cell state Vs. Hidden State:}
+Two entities such as \textit{cell state} and \textit{hidden state} are carried over from one-time stamp (One LSTM Cell) to another (next LSTM Cell) in an LSTM. Typically they can be represented by vectors. In an LSTM Cell, a \textit{hidden state }contains information about previous inputs. The hidden state from the previous LSTM Cell and current input are combined and processed through various gates in a particular LSTM Cell. Cell state can be regarded as the memory of the LSTM cell. There are several neural network behaves as gates and they act together to decide which information is allowed to be part of \textit{cell state}. Output-gate output and the updated cell state decide the next hidden state. \textit{Hidden states} are the output of an LSTM Cell or layer of cells and they are used for predictions.  \\
 
 \subsection{New Contribution} \label{novel_proposal}
 After observing the prediction results from the LSTM model trained as a vanilla LSTM network with sequence of bounding box data as time series input, we observed that for videos, the predictor gives very good results and for some others, the results are poor. 
@@ -321,8 +319,8 @@ This can be expressed mathematically as
 \hat{C}^{t, l+1}= M(V^t, {h}^{t, l}) + \hat{C}^{t, l}
 \end{equation}
 Where $\hat{C}^{t, l+1}$ represents refined cell state at timestamp $t$ and refined iteration $l$, $V^t$ is the vehicle speed at time $t$ and rate of pedestrian location change in X-Y \\
-${h}^{t, l}$ is the hidden state of the Pedestrian at timestamp $t$
-$\hat{C}^{t, 0}$ for first iteration is the same as $C_t$ as shown in \ref{cell-state}
+${h}^{t, l}$ is the hidden state of the pedestrian at timestamp $t$ \\
+$\hat{C}^{t, 0}$, for first iteration, is same as $C_t$ as shown in \ref{cell-state}
 
 After $l$ iteration of refinement in the SR module, the updated equations would be
 
@@ -489,9 +487,11 @@ For ${t_c}>>{t_p}$ this is undesirable and is a catastrophic scenario and not ex
 
 	$\Omega(t_p, t_c)$ = \\
 	\begin{empheq}[left=\empheqlbrace]{align}
+	\begin{split}
 		0, \beta < \beta_1 \\
 		\gamma, \beta > \beta_2 \\
 		\gamma \times \frac{\beta}{\beta_2 - \beta_1}, \beta_1 > \beta > \beta_1
+	\end{split}
 	\end{empheq}
 
 \end {itemize}
