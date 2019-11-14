@@ -230,7 +230,12 @@ LSTM has a chain-like structure as in RNN but the repeating module has a differe
 The core idea to LSTM is the cell state, it runs through the entire chain and performs some minor linear interaction. LSTM adds or removes information to the cell state with the help of a regulated structure called gates. Gates are represented by a neural network layer sigmoid activation and a point-wise multiplication operation.
 A sigmoid generates the outputs which decides the quantity a component should be provided to the system. A value of 0 blocks the whole component and a value of 1 let the entire component through. In a basic LSTM, there are four such gates.
 With the arrival of new information, the model decides the long term information which is not needed anymore and forgets it. It stores a necessary part of the new information into long-term memory. An LSTM has three such gates, that controls the cell state.
-A \textbf{remember gate} is learned that takes new data and working memory as input and outputs \textit{n} bummers between 0 and 1, each determines the degree to which long-term memory element to be kept. Where 1 indicates to keep the data and 0 indicates as to forget the data entirely. A small neural network can model this \textbf{remember gate} given below. In the literature, this is also known as \textbf{forget gate}. Below mathematical expressions details various internal operation within an LSTM memory cell as discussed in the original paper of Hochreiter et.al \cite{hochreiter1997long} and simplified rewriting \cite{christopherolah}
+A \textbf{remember gate} is learned that takes new data and working memory as input and outputs \textit{n} bummers between 0 and 1, each determines the degree to which long-term memory element to be kept. Where 1 indicates to keep the data and 0 indicates as to forget the data entirely. A small neural network can model this \textbf{remember gate} given below. In the literature, this is also known as \textbf{forget gate}. 
+
+\textbf{Cell state Vs. Hidden State:}
+Two entities such as \textit{cell state} and \textit{hidden state} are carried over from one-time stamp (One LSTM Cell) to another (next LSTM Cell) in an LSTM. Typically they can be represented by vectors. In an LSTM Cell, a \textit{hidden state }contains information about previous inputs. The hidden state from the previous LSTM Cell and current input are combined and processed through various gates in a particular LSTM Cell. Cell state can be regarded as the memory of the LSTM cell. There are several neural network behaves as gates and they act together to decide which information is allowed to be part of \textit{cell state}. Output-gate output and the updated cell state decide the next hidden state. \textit{Hidden states} are the output of an LSTM Cell or layer of cells and they are used for predictions.  \\
+
+Below mathematical expressions details various internal operation within an LSTM memory cell as discussed in the original paper of Hochreiter et.al \cite{hochreiter1997long} and simplified rewriting \cite{christopherolah}
 
 \begin{equation}
 f_t = \sigma(W_f. [h_{t-1}, x_t  ] + b_f)
@@ -279,8 +284,20 @@ $b_o$ is the bias for the output gate
 
 There are several variants of LSTM, but the basic variant was explored and used in the scope of the thesis.
 
-\textbf{Cell state Vs. Hidden State:}
-Two entities such as \textit{cell state} and \textit{hidden state} are carried over from one-time stamp (One LSTM Cell) to another (next LSTM Cell) in an LSTM. Typically they can be represented by vectors. In an LSTM Cell, a \textit{hidden state }contains information about previous inputs. The hidden state from the previous LSTM Cell and current input are combined and processed through various gates in a particular LSTM Cell. Cell state can be regarded as the memory of the LSTM cell. There are several neural network behaves as gates and they act together to decide which information is allowed to be part of \textit{cell state}. Output-gate output and the updated cell state decide the next hidden state. \textit{Hidden states} are the output of an LSTM Cell or layer of cells and they are used for predictions.  
+\subsection{New Contribution} \label{novel_proposal}
+After observing the prediction results from the LSTM model trained as a vanilla LSTM network with sequence of bounding box data as time series input, we observed that for videos, the predictor gives very good results and for some others, the results are poor. 
+
+When the IoU greater than 0.5 is considered a match, we get 0.3437 (34.37\%) as the average accuracy for the set of 30 test clip. For the video \textit{video\textunderscore 0317}, which has the vehicle accelerating and decelerating very fast, predictor's accuracy is 0.1488. On the other hand, for the video \textit{video\textunderscore 0318}, which show the vehicle moving with a slow speed and pedestrian also moves with slow speed and pedestrian is within the frame of view for more number of frames due to his lateral movement and accuracy stands at 0.9273. Similarly for the video \textit{video\textunderscore 0317}, in the beginning moving with a medium velocity and decelerating towards the end, the accuracy is 0.2909. For the video \textit{video\textunderscore 0321}, it is seen that the vehicle is moving with medium to high speed and the pedestrian is moving in longitudinal direction to the vehicle. And the pedestrian remains within the frame of view for less number of frames. And it produces very poor results in the prediction with accuracy 0.0677 (only 6.77 \%). \\
+
+On the exploration, we found that when the vehicle moves with varying speed the predictor performs poorly. To understand the the reason behind it, on further closer investigation we found below insights. 
+
+Varying velocity: In a general scenario, let's categories vehicle moving at speed less than 60Kmph, are \textit{slow}. A speed between 60Kmph and 120Kmph is \textit{medium} and between 120Kmph-220Kmph as \textit{high} speed. For slow category we have 60 data points and for medium and high 60 and 100 data points respectively.
+
+Varying distance: As the videos were taken in a real life scenario, pedestrians are captured from different distances from a moving vehicle, for some pedestrian it is 2 meters approximately and for others it if more than 500 meters. This varying distance range leads rise to 500 data points, considering the maximum distance a pedestrian captured in the camera and its bounding box detected is 500 meters.
+
+Combining above two variations, it gives rise to 60x500, 60x500, 100x500 unique possible data points, for slow, medium and high speed categories respectively. Due to the above variation some pedestrian bounding box is visible with-in the frame of view for larger number of frames and in some cases they are disappeared very soon. For example if a pedestrian bounding box detected at a distance for 150 meters when the vehicle is traveling at 60kmph, then this pedestrian bounding box is expected to be seen any more number of frames than the pedestrian at 100meters from the same vehicle.
+As no real-pedestrian database is able to supply the information for the mentioned scaled data points we proposed a novel concept utilizing the vehicles speed to augment the neural networks prediction.
+We also observed that at certain not-controlled-traffic-crossings, sometimes pedestrians are waiting for the vehicle to cross and other times vehicles are slowing down to  let the pedestrian cross. We also proposed a novel social interaction parameter in terms of awareness. This awareness also used to  to augment the neural networks prediction. The subsequent section elaborates on the working of that.
 
 \subsection{LSTM Cell refinement} \label{state_refinement}
 
@@ -434,12 +451,12 @@ which are related by the below relation for a safe driving scenario and they are
 {
 }
 \begin{equation} \label{awareness_factor}
-  \alpha_p + \alpha_v = 1
+  \rho_p + \rho_v = 1
 \end{equation}
 
-And $\alpha_p$ is given by a linear function \cite{osaragi2004modeling} $\Omega(t_p, t_c)$ 
+And $\rho_p$ is given by a linear function \cite{osaragi2004modeling} $\Omega(t_p, t_c)$ 
 
-Now let's consider three scenarios as seen in the below figure:
+Now let's consider three scenarios as seen in the below figure, where $\beta$ is the ratio between $t_p$ and $t_c$
 
 \begin{figure}[H]
 \begin{align*}
@@ -454,10 +471,10 @@ Now let's consider three scenarios as seen in the below figure:
 
 \begin{itemize}
 \item 
-For ${t_p}>>{t_c}$ vehicle is far away and both pedestrian and vehicle can just maintain their current speed. $\alpha_p$ = $\gamma,$ where $\gamma$ is considered to be fairly safe value for the system
+For ${t_p}>>{t_c}$ vehicle is far away and both pedestrian and vehicle can just maintain their current speed. $\rho_p$ = $\gamma,$ where $\gamma$ is considered to be fairly safe value for the system
 
 \item 
-For ${t_c}>>{t_p}$ this is undesirable and is a catastrophic scenario and not expected if the system is operational. $\alpha_p = 0$
+For ${t_c}>>{t_p}$ this is undesirable and is a catastrophic scenario and not expected if the system is operational. $\rho_p = 0$
 
 \item
 	Now considering some positive value $\beta_1$ and $\beta_2$ which gives a lower bound and upper bound of the ratio between $t_p$ and $t_c$. We are interested in evaluating the dynamics of \textit{awareness} within this value range ($t_p, t_c$). $\beta_1$ and $\beta_2$ can be mathematically shown as below. More on such a parameter can be found in \cite{yousef2016forward}.
@@ -469,16 +486,16 @@ For ${t_c}>>{t_p}$ this is undesirable and is a catastrophic scenario and not ex
 	\end{array}
 	\end{equation}
 
-	$\Omega(t_p, t_c)$ is defined as follows, where $\hat{t}$ is given by $\frac{t_p}{t_c}$\\
+	$\Omega(t_p, t_c)$ = \\
 	\begin{empheq}[left=\empheqlbrace]{align}
-		0, \hat{t} < \beta_1 \\
-		\gamma, \hat{t} > \beta_2 \\
-		\gamma \times \frac{\hat{t}}{\beta_2 - \beta_1}, \beta_1 > \hat{t} > \beta_1
+		0, \beta < \beta_1 \\
+		\gamma, \beta > \beta_2 \\
+		\gamma \times \frac{\beta}{\beta_2 - \beta_1}, \beta_1 > \beta > \beta_1
 	\end{empheq}
 
 \end {itemize}
 
-Considering the pedestrian and vehicle system always expected to be safe, LSTM cell state may be refined with calculated value for $\alpha_v$
+Considering the pedestrian and vehicle system always expected to be safe, LSTM cell state may be refined with calculated value for $\rho_v$
 
 %\pagebreak
 \newpara
@@ -535,11 +552,9 @@ In the above figure, the expanded bounding box showed in the dashed-line to diff
 \end{equation}
 
 %Where ${P}_{\hat{t}}$ is the position of the pedestrian at timestamp $(t+\Delta t)$, and $\Delta t$ is given by below equation.
-Where ${P}_1$ is the position of the pedestrian at the next frame time stamp.
-The next frame time stamp symbolically $\hat{t}$ is time-stamp at which the next frame is captured and can be given by below expression
+Where ${P}_1$ is the position of the pedestrian at the next frame time stamp. The next frame is captured after $\Delta t$ time and is given by below expression
 \begin{equation} \label{delta-t}
 \begin{array}{l@{}}
-\hat{t} = t +  \Delta t \\
 \Delta t = \frac{1}{fps}
 \end{array}
 \end{equation}
@@ -661,9 +676,9 @@ A point to be noted, there is a minute change in the inclination of the top and 
 %When the vehicle moves with an angle ${\theta }$ in a time period ${\Delta t}$, the point P now displaced by the same angle as ${\theta}$.
 
 \textbf{Effect of vehicle linear motion:} \\
-Consider the $d$ is the current distance between the vehicle and the pedestrian, which can be found by using the midpoint of the bottom edge of the detected bounding box \cite{CarND-Advanced-Lane}. After performing a perspective transformation, its position on the warped image can be calculated. From the warped image, the pixel position can be correlated with the distance in meter(SI unit). The change in the distance after a frame time due to vehicle movement is computed as below. Consider the vehicle speed \textit{v}, a vehicle moves a distance $d_v$ in a frame time period $\Delta t$ is given by the below equation and measured in the SI unit.
+Consider the $d$ is the current distance between the vehicle and the pedestrian, which can be found by using the midpoint of the bottom edge of the detected bounding box \cite{CarND-Advanced-Lane}. After performing a perspective transformation, its position on the warped image can be calculated. From the warped image, the pixel position can be correlated with the distance in meter(SI unit). The change in the distance after a frame time due to vehicle movement is computed as below. Consider the vehicle speed \textit{V}, a vehicle moves a distance $d_v$ in a frame time period $\Delta t$ is given by the below equation and measured in the SI unit.
 \begin{equation} \label{distance-in-pixel}
-{d_v}= v \times \Delta t
+{d_v}= V \times \Delta t
 \end{equation} 
 
 
