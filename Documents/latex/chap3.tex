@@ -94,7 +94,7 @@ And in general, if we unfold in n time slot back,
 \end{equation}
 
 \begin{equation}
-	\textbf{y}_t = (\textbf{W}_{hy}  \textbf{h}_{t}) 
+	\textbf{y}_t = (\textbf{W}  \textbf{h}_{t}) 
 \end{equation}
 
 Where \textbf{$y_t$}  represents output at a timestamp \textit{t} \\
@@ -262,7 +262,7 @@ $C_t\textasciitilde$ represents the vector of new candidate values for the cell 
 $W_C$ is the weight matrix for the tanh layer that computes the candidates\\
 Both $i_t$ and $C_t\textasciitilde$ is combined to update the cell state as below.
 
-\begin{equation}
+\begin{equation} \label{cell-state}
 C_t = f_t * C_{t-1} + i_t * C_t\textasciitilde
 \end{equation}
 
@@ -322,6 +322,7 @@ This can be expressed mathematically as
 \end{equation}
 Where $\hat{C}^{t, l+1}$ represents refined cell state at timestamp $t$ and refined iteration $l$, $V^t$ is the vehicle speed at time $t$ and rate of pedestrian location change in X-Y \\
 ${h}^{t, l}$ is the hidden state of the Pedestrian at timestamp $t$
+$\hat{C}^{t, 0}$ for first iteration is the same as $C_t$ as shown in \ref{cell-state}
 
 After $l$ iteration of refinement in the SR module, the updated equations would be
 
@@ -352,7 +353,7 @@ M(P_t, V_t) = W^{a,p}.(g^{a,t,l} \odot {h}^{t, l} )
 Where $W^{a,p}$ is a linear transform parameter and $g^{a,t,l}$ is the refinement (includes awareness and translated bounding box position and dimension) gate vector and formulated by
 
 \begin{equation}
-g^{a,t,l} = \sigma(W^{a} [ \alpha_p, P1, {h}^{t, l} ] + b^{a} ) 
+g^{a,t,l} = \sigma(W^{a} [ \alpha_p, P_1, {h}^{t, l} ] + b^{a} ) 
 %+ \hat{C}^{t, l}
 \end{equation}
 
