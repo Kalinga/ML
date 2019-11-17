@@ -64,7 +64,8 @@ In the above figure \ref{fig:Phase1-15},  (a) depicts the training and validatio
 \end{center}
 \end{figure}
 
-In the above figure \ref{Phase1-accuracy} (a) and (b), depict the (IoU) accuracy and mean\textunderscore distance\textunderscore accuracy respectively for - prediction with 15 frames input.
+In the above figure \ref{Phase1-accuracy} (a) depict the (IoU) accuracy for - prediction with 15 frames input. \\
+In the graph \ref{Phase1-accuracy}(b), the light blue line shows mean\textunderscore distance\textunderscore accuracy using vanilla LSTM implementation and the orange line shows the performance improvement using our proposed novel methodology. Using the our proposed method it is clearly shown that the Mean Center distance is reducing significantly. This phenomenon has been seen for varied numbers of input frames. The result improvement can be attributed to the adaptive refinement of current features of pedestrian and vehicle.
 
 %\begin{figure}[H] 
 %\includegraphics[scale=0.8]{prediction-with-15frames-input_IoU}
@@ -262,7 +263,8 @@ Fig \ref{Phase2-accuracy} (a) and (b) depict the test result (IoU) and mean\text
 
 %\section{LSTM with refinement}
 
-As we can see from the above plots, the validation error is least for '60 frames input and prediction at 30-time step' case. Also prediction accuracy (using IoU) from fig \ref{Phase2-accuracy} (a), with 60 frames as input, the prediction accuracy is better compared to 15 frames and 30 frames as input. It is also noticeable that with an increase in the IoU for considering the prediction as accurate, the accuracy decreases linearly with an increase in IoU threshold value. When considering mean center distance as a measure of performance, the lesser the mean center distance the better is the prediction. From the plot, it is seen that for 30 frames input the prediction is slightly better than the model that takes 60 frames as input.
+As we can see from the above plots, the validation error is least for '60 frames input and prediction at 30-time step' case. Also prediction accuracy (using IoU) from fig \ref{Phase2-accuracy} (a), with 60 frames as input, the prediction accuracy is better compared to 15 frames and 30 frames as input. It is also noticeable that with an increase in the IoU for considering the prediction as accurate, the accuracy decreases linearly with an increase in IoU threshold value. When considering mean center distance as a measure of performance, the lesser the mean center distance the better is the prediction.
+\ref{Phase2-accuracy} (b), the light blue line depicts the result using plain LSTM implementation and orange line shows the results from our LSTM-based proposed model. From the plot, it is seen that for 30 frames input the prediction is slightly better than the model that takes 60 frames as input, using the LSTM model without our proposed novel methodology. For the novel proposed model, with 60 frames input the prediction is better than the other number of input frames, and it is comparatively better than the original LSTM model prediction with 60 frames input.
 
 %---------------------------------------------------------------------
 \subsection{Experiment. Phase 3. Effect of different future time stamp on prediction, with 60 frames as input}

@@ -14,16 +14,14 @@ It is also concluded that with an increase in LSTM cell memory capacity the pred
 
 From the prediction run time graph, it is concluded that with the increase in the number of input frames the prediction time increases linearly. Impact due to the change in the number of epochs or the amount of unit in the cell is insignificant.
 
-The LSTM Cell state refinement proposal is made and related mathematical aspect are reviewed and presented in the section \ref{state_refinement}
+The LSTM Cell state refinement proposal is made and related mathematical aspect are reviewed and presented in the section \ref{state_refinement} and results are compared in Chapter 5. Our proposed novel method has shown improved results. 
 
-
-It is seen that the best prediction at 30 frames is done with 90 frames as input instead of 120 frames as input. The reason behind this deviation could be attributed to an insufficient number of long-enough videos. There are 212 videos with more than 120 frames, 175 videos with more than 150 frames in the training set. In total, there are 24 videos with more than 120 frames and 19 videos with more than 150 frames in the testing set. So it can be concluded that for prediction at a particular future time slice, a certain number of prior frames as input performs better than more input frames (than desired) and dependent on data set.
+It is seen that the best prediction at 30 frames is done with 90 frames as input instead of 120 frames as input. The reason behind this deviation could be attributed to an insufficient number of long-enough videos. There are 212 videos with more than 120 frames, 175 videos with more than 150 frames in the training set. In total, there are 24 videos with more than 120 frames and 19 videos with more than 150 frames in the testing set. So it can be concluded that for prediction at a particular future time slice, a certain number of prior frames as input performs better than more input frames (than desired) and dependent on data set. With the proposed method the accuracy performance is seen be to be improved. The mean center distance is greatly reduced which is a clear indication that the predictions are getting more precised.
 
 \newpara
 
 \textbf{Future Work}
 For the future work, further investigation may be done on how resulted proposal can be applied to real-world scenarios because the following concerns are still open: \\
-for the implementation of the SR (state refinement \ref{state_refinement}) module, $\lambda$ should be pre-computed \ref{sf-precompute}. In the proposal for the state refinement, the distance from the camera to the least point which is captured in the image space is considered to be a constant \textit{K}, that constant value can be empirically evaluated.
 
 This work can be extended by focusing on other useful features in the JAAD dataset such as pedestrian behavioral information to improve accuracy and precision.
 
